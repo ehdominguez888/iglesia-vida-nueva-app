@@ -136,7 +136,7 @@ const Index = () => {
                           href={CHURCH_CONFIG.liveStreams.youtube}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-transform active:scale-95"
+                          className="flex items-center justify-center gap-2 rounded-full bg-[#FF0000] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95"
                         >
                           <Youtube className="h-5 w-5" />
                           YouTube
@@ -145,7 +145,7 @@ const Index = () => {
                           href={CHURCH_CONFIG.liveStreams.facebook}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 rounded-full bg-[#349917] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95"
+                          className="flex items-center justify-center gap-2 rounded-full bg-[#04608e] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95"
                                       >
                                         <Facebook className="h-5 w-5" />
                                         Facebook

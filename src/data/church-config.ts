@@ -29,7 +29,7 @@ const CHURCH_CONFIG = {
   /** Enlaces a las transmisiones en vivo de cada servicio. */
   liveStreams: {
     youtube: "https://www.youtube.com/@iglesianuevavida",
-    facebook: "https://www.facebook.com/",
+    facebook: "https://www.facebook.com/VidaNuevaSO",
   },
 
   /** Sección "Acerca de nosotros". */
