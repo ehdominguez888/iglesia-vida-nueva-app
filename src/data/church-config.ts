@@ -23,12 +23,13 @@ const CHURCH_CONFIG = {
   website: "https://www.vidanuevaso.com/",
 
   /** Horarios de los servicios. Agrega o quita tantos como necesites. */
-  serviceTimes: [{ day: "Domingo", name: "Culto de adoración", time: "1:00 p. m." }],
+  serviceTimes: [{ day: "Domingo", name: "Servicio de Adoración", time: "1:00 p. m." }],
 
-  /** Enlaces a las transmisiones en vivo de cada servicio. */
+  /** Enlaces a las transmisiones en vivo y redes sociales. */
   liveStreams: {
     youtube: "https://www.youtube.com/@iglesianuevavida",
     facebook: "https://www.facebook.com/VidaNuevaSO",
+    instagram: "https://www.instagram.com/vidanuevaso",
   },
 
   /** Sección "Acerca de nosotros". */
@@ -49,10 +50,10 @@ const CHURCH_CONFIG = {
 
   /** Sección "Nuestro pastor". */
   pastor: {
-    name: "Pastor(a) [Nombre de su pastor]",
-    role: "Pastor titular",
-    initials: "PN",
-    bio: "Escribe aquí una breve biografía del pastor: su historia, su familia y su llamado al ministerio.",
+    name: "Carlos y Paty Castañedo",
+    role: "Pastores titulares",
+    initials: "CC",
+    bio: "Escribe aquí una breve biografía de los pastores: su historia, su familia y su llamado al ministerio.",
     philosophyTitle: "Filosofía de ministerio",
     philosophy: [
       "Predicar la Palabra con fidelidad y claridad.",
@@ -64,16 +65,17 @@ const CHURCH_CONFIG = {
 
   /** Página de ofrenda. */
   offering: {
-    /** Pon aquí el enlace real de su página de ofrendas/giving cuando esté listo. */
-    url: "",
+    /** Enlace real de su página de ofrendas/giving. */
+    url: "https://form.jotform.com/90324013191141",
     note: "Para dar tu ofrenda, escanea el código QR que aparece en pantalla durante el servicio.",
     comingSoon: "La opción de donar en línea estará disponible pronto.",
   },
 
   /** Información de contacto que aparece en la portada. */
   contact: {
-    address: "Av. Principal 123, Ciudad",
-    phone: "(555) 123-4567",
+    address: "20024 Crescent Oaks, San Antonio, TX 78258",
+    phone: "(210) 294-9427",
+    email: "iglesia@vidanuevaso.com",
   },
 };
 
