@@ -1,0 +1,85 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+export type SermonNote = {
+  id: string;
+  title: string;
+  /** Fecha del sermón en formato ISO (yyyy-mm-dd). */
+  date: string;
+  content: string;
+  createdAt: number;
+  updatedAt: number;
+};
+
+const STORAGE_KEY = "inv:sermon-notes";
+
+/** Fecha de hoy en formato yyyy-mm-dd (hora local). */
+export function todayISO(): string {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 10);
+}
+
+function loadNotes(): SermonNote[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as SermonNote[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function useSermonNotes() {
+  const [notes, setNotes] = useState<SermonNote[]>(loadNotes);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    } catch {
+      // Si el almacenamiento está lleno o no disponible, ignoramos.
+    }
+  }, [notes]);
+
+  const addNote = useCallback(
+    (title: string, date: string, content: string): SermonNote => {
+      const now = Date.now();
+      const note: SermonNote = {
+        id:
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `note-${now}-${Math.floor(Math.random() * 1e6)}`,
+        title: title.trim(),
+        date,
+        content: content.trim(),
+        createdAt: now,
+        updatedAt: now,
+      };
+      setNotes((prev) => [note, ...prev]);
+      return note;
+    },
+    []
+  );
+
+  const updateNote = useCallback((id: string, patch: Partial<Omit<SermonNote, "id">>) => {
+    setNotes((prev) =>
+      prev.map((note) => (note.id === id ? { ...note, ...patch, updatedAt: Date.now() } : note))
+    );
+  }, []);
+
+  const deleteNote = useCallback((id: string) => {
+    setNotes((prev) => prev.filter((note) => note.id !== id));
+  }, []);
+
+  /** Notas ordenadas de la más reciente a la más antigua. */
+  const sortedNotes = useMemo(
+    () =>
+      [...notes].sort((a, b) => {
+        if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+        return b.updatedAt - a.updatedAt;
+      }),
+    [notes]
+  );
+
+  return { notes: sortedNotes, addNote, updateNote, deleteNote };
+}
