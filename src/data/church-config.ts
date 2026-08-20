@@ -11,6 +11,12 @@ export type ServiceTime = {
   time: string;
 };
 
+/**
+ * Ruta del logo cuadrado de la iglesia usado en el encabezado, el favicon y la app.
+ * Coloca tu archivo de logo en `public/logo.png` y se mostrará automáticamente en todas partes.
+ */
+export const CHURCH_LOGO_URL = "/logo.png";
+
 const CHURCH_CONFIG = {
   name: "Iglesia Vida Nueva",
 
@@ -25,7 +31,7 @@ const CHURCH_CONFIG = {
   /** Horarios de los servicios. Agrega o quita tantos como necesites. */
   serviceTimes: [{ day: "Domingo", name: "Servicio de Adoración", time: "1:00 p. m." }],
 
-  /** Enlaces a las transmisiones en vivo y redes sociales. */
+  /** Enlaces a las transmisiones en vivo y a las redes sociales. */
   liveStreams: {
     youtube: "https://www.youtube.com/@iglesianuevavida",
     facebook: "https://www.facebook.com/VidaNuevaSO",

@@ -18,7 +18,7 @@ export default defineConfig(() => ({
       devOptions: {
         enabled: false,
       },
-      includeAssets: ["icon.svg", "favicon.ico"],
+      includeAssets: ["logo.png", "favicon.ico"],
       manifest: {
         name: "Iglesia Vida Nueva",
                 short_name: "VidaNueva",
@@ -33,19 +33,19 @@ export default defineConfig(() => ({
                 background_color: "#ffffff",
         categories: ["lifestyle", "education"],
         icons: [
-          {
-            src: "/icon.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "any",
-          },
-          {
-            src: "/icon.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "maskable",
-          },
-        ],
+                  {
+                    src: "/logo.png",
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "any",
+                  },
+                  {
+                    src: "/logo.png",
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "maskable",
+                  },
+                ],
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
