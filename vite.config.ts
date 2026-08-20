@@ -29,8 +29,8 @@ export default defineConfig(() => ({
         start_url: "/",
         scope: "/",
         orientation: "portrait",
-        theme_color: "#17815c",
-        background_color: "#faf9f5",
+        theme_color: "#04608e",
+                background_color: "#ffffff",
         categories: ["lifestyle", "education"],
         icons: [
           {
