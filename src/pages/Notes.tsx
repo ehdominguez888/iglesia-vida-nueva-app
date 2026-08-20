@@ -11,8 +11,8 @@ import { formatLongDate } from "@/utils/dates";
 
 const Notes = () => {
   usePageTitle("Notas del sermón");
-  const { notes, addNote, updateNote, deleteNote } = useSermonNotes();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { notes, addNote, updateNote, deleteNote, photosWithinBudget } = useSermonNotes();
+    const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<SermonNote | null>(null);
 
   const groups = useMemo(() => {
@@ -40,14 +40,16 @@ const Notes = () => {
   };
 
   const handleSave = (draft: NoteDraft) => {
-    if (editingNote) {
-      updateNote(editingNote.id, draft);
-      toast("Nota actualizada");
-    } else {
-      addNote(draft.title, draft.date, draft.content);
-      toast("Nota guardada");
-    }
-  };
+      const photos = photosWithinBudget(draft.photos);
+      const limited = photos.length < draft.photos.length;
+      if (editingNote) {
+        updateNote(editingNote.id, { ...draft, photos });
+        toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
+      } else {
+        addNote(draft.title, draft.date, draft.content, photos);
+        toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
+      }
+    };
 
   const handleDelete = (id: string) => {
     deleteNote(id);
@@ -55,8 +57,10 @@ const Notes = () => {
   };
 
   const handleShare = async (note: SermonNote) => {
-    const title = note.title.trim() || "Nota del sermón";
-    const text = `${title} · ${formatLongDate(note.date)}\n\n${note.content}`;
+      const title = note.title.trim() || "Nota del sermón";
+      const photoCount = note.photos?.length ?? 0;
+      const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
+      const text = `${title} · ${formatLongDate(note.date)}\n\n${note.content}${photoNote}`;
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({ title, text });
