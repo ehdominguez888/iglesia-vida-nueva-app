@@ -134,18 +134,22 @@ const Index = () => {
           <div className="mt-5 grid grid-cols-2 gap-3">
             <a
                           href={CHURCH_CONFIG.liveStreams.youtube}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 rounded-full bg-[#FF0000] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(CHURCH_CONFIG.liveStreams.youtube, "_blank", "noopener,noreferrer");
+                          }}
+                          className="flex items-center justify-center gap-2 rounded-full bg-[#FF0000] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95 cursor-pointer"
                         >
                           <Youtube className="h-5 w-5" />
                           YouTube
                         </a>
                         <a
                           href={CHURCH_CONFIG.liveStreams.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 rounded-full bg-[#04608e] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
+                          }}
+                          className="flex items-center justify-center gap-2 rounded-full bg-[#04608e] px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95 cursor-pointer"
                                       >
                                         <Facebook className="h-5 w-5" />
                                         Facebook
