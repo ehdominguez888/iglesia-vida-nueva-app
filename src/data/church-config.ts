@@ -1,5 +1,5 @@
 /**
- * ⚙️ CONFIGURACIÓN DE LA IGLESIA NUEVA VIDA
+ * ⚙️ CONFIGURACIÓN DE LA IGLESIA VIDA NUEVA
  * ---------------------------------------
  * Edita este archivo para actualizar toda la información de la app
  * (horarios, textos, enlaces a redes, etc.) sin tocar el código de la interfaz.
@@ -12,19 +12,18 @@ export type ServiceTime = {
 };
 
 const CHURCH_CONFIG = {
-  name: "Iglesia Nueva Vida",
+  name: "Iglesia Vida Nueva",
 
   /** Mensaje de bienvenida que aparece en la portada. */
   welcomeEyebrow: "Bienvenido a",
-  welcomeTitle: "Iglesia Nueva Vida",
-  welcomeMessage:
-    "Un lugar donde puedes encontrar esperanza, comunidad y un nuevo comienzo. Te esperamos con los brazos abiertos.",
+  welcomeTitle: "Iglesia Vida Nueva",
+  welcomeMessage: "Ven y conoce lo que Dios ya tiene planeado para tu vida.",
+
+  /** Sitio web oficial de la iglesia. */
+  website: "https://www.vidanuevaso.com/",
 
   /** Horarios de los servicios. Agrega o quita tantos como necesites. */
-  serviceTimes: [
-    { day: "Domingo", name: "Culto de adoración", time: "10:00 a. m." },
-    { day: "Miércoles", name: "Estudio bíblico", time: "7:00 p. m." },
-  ],
+  serviceTimes: [{ day: "Domingo", name: "Culto de adoración", time: "1:00 p. m." }],
 
   /** Enlaces a las transmisiones en vivo de cada servicio. */
   liveStreams: {

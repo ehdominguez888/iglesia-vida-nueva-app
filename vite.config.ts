@@ -20,10 +20,10 @@ export default defineConfig(() => ({
       },
       includeAssets: ["icon.svg", "favicon.ico"],
       manifest: {
-        name: "Iglesia Nueva Vida",
-        short_name: "NuevaVida",
-        description:
-          "La app de la Iglesia Nueva Vida: notas del sermón, la Biblia, información de la iglesia y mucho más.",
+        name: "Iglesia Vida Nueva",
+                short_name: "VidaNueva",
+                description:
+                  "La app de la Iglesia Vida Nueva: notas del sermón, la Biblia, información de la iglesia y mucho más.",
         lang: "es",
         display: "standalone",
         start_url: "/",
