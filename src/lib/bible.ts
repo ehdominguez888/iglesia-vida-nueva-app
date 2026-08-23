@@ -29,6 +29,7 @@ export type BibleChapter = {
 };
 
 const API_BASE = "https://api.getbible.net/v2";
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 const CACHE_KEY_PREFIX = "inv:bible";
 const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 días
 
@@ -58,21 +59,37 @@ function writeCache<T>(key: string, data: T) {
   }
 }
 
-async function fetchChapter(translation: string, book: string, chapter: number): Promise<BibleChapter> {
-  const url = `${API_BASE}/${translation.toLowerCase()}/${book}/${chapter}.json`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`No se pudo cargar el capítulo (${response.status}).`);
+async function fetchJson(url: string): Promise<unknown> {
+  let response: Response;
+  try {
+    response = await fetch(url);
+  } catch {
+    // Intenta usando un proxy CORS (para entornos donde el acceso directo está bloqueado)
+    const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(url)}`;
+    response = await fetch(proxiedUrl);
   }
-  const data = await response.json();
-  const rawVerses = data?.chapter?.verses ?? [];
-  const verses = rawVerses.map((verse: { number?: unknown; text?: unknown }) => ({
-    number: Number(verse?.number ?? 0),
-    text: String(verse?.text ?? ""),
+
+  if (!response.ok) {
+    throw new Error(`Error HTTP ${response.status}`);
+  }
+  return await response.json();
+}
+
+async function fetchChapter(
+  translation: string,
+  book: string,
+  chapter: number
+): Promise<BibleChapter> {
+  const url = `${API_BASE}/${translation.toLowerCase()}/${book}/${chapter}.json`;
+  const data = await fetchJson(url) as Record<string, unknown>;
+  const rawVerses = (data?.chapter as Record<string, unknown> | undefined)?.verses ?? [];
+  const verses = (rawVerses as Array<{ number?: unknown; text?: unknown }>).map((entry) => ({
+    number: Number(entry?.number ?? 0),
+    text: String(entry?.text ?? ""),
   }));
   return {
     reference: String(data?.reference ?? ""),
-    chapterNumber: Number(data?.chapter?.number ?? chapter),
+    chapterNumber: Number((data?.chapter as Record<string, unknown>)?.number ?? chapter),
     verses,
   };
 }
