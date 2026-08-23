@@ -1,166 +1,143 @@
-import { useEffect, useState } from "react";
-import { RotateCcw, WifiOff } from "lucide-react";
-import {
-  BIBLE_TRANSLATIONS,
-  bookDisplayName,
-  getChapter,
-  type BibleChapter,
-  type BibleTranslation,
-} from "@/lib/bible";
-import { BIBLE_BOOKS } from "@/data/books";
-import TranslationSelect from "@/components/bible/TranslationSelect";
+import { useState } from "react";
+import { BookOpenText, ExternalLink } from "lucide-react";
 import BookSelect from "@/components/bible/BookSelect";
 import ChapterSelect from "@/components/bible/ChapterSelect";
-import ChapterView from "@/components/bible/ChapterView";
+import VerseSelect from "@/components/bible/VerseSelect";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { BIBLE_BOOKS, type BibleBook } from "@/data/books";
+import {
+  BIBLE_VERSIONS,
+  buildBibleUrl,
+  formatReference,
+  type BibleVersion,
+} from "@/lib/bible-link";
 
-type Status = "loading" | "ready" | "error";
-
-const DEFAULT_TRANSLATION = "RVR1960";
-const DEFAULT_BOOK_INDEX = Math.max(
-  0,
-  BIBLE_BOOKS.findIndex((book) => book.code === "psa")
-);
+const DEFAULT_VERSION_INDEX = 0; // NVI
+const DEFAULT_BOOK_INDEX = Math.max(0, BIBLE_BOOKS.findIndex((book) => book.code === "psa"));
 
 const Bible = () => {
   usePageTitle("Biblia");
-  // Lectura de la Palabra
 
-  const [translation, setTranslation] = useState<BibleTranslation>(
-    BIBLE_TRANSLATIONS.find((item) => item.id === DEFAULT_TRANSLATION) ??
-      BIBLE_TRANSLATIONS[0]
-  );
+  const [version, setVersion] = useState<BibleVersion>(BIBLE_VERSIONS[DEFAULT_VERSION_INDEX]);
   const [bookIndex, setBookIndex] = useState(DEFAULT_BOOK_INDEX);
   const [chapter, setChapter] = useState(1);
-
-  const [data, setData] = useState<BibleChapter | null>(null);
-  const [status, setStatus] = useState<Status>("loading");
-  const [error, setError] = useState("");
-  const [attempt, setAttempt] = useState(0);
+  const [startVerse, setStartVerse] = useState<number | null>(null);
+  const [endVerse, setEndVerse] = useState<number | null>(null);
 
   const book = BIBLE_BOOKS[bookIndex];
+  const rangeInvalid = startVerse !== null && endVerse !== null && endVerse < startVerse;
 
-  useEffect(() => {
-    let cancelled = false;
-    setStatus("loading");
-    setError("");
-    getChapter(translation.id, book.code, chapter)
-      .then((result) => {
-        if (!cancelled) {
-          setData(result);
-          setStatus("ready");
-        }
-      })
-      .catch((err: unknown) => {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "No se pudo cargar el capítulo.");
-          setStatus("error");
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [translation.id, bookIndex, chapter, attempt]);
+  const reference = formatReference({
+    version,
+    book,
+    chapter,
+    verseStart: startVerse,
+    verseEnd: endVerse,
+  });
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [bookIndex, chapter]);
+  const url = buildBibleUrl({
+    versionCode: version.id,
+    bookCode: book.code,
+    chapter,
+    verseStart: startVerse,
+    verseEnd: endVerse,
+  });
 
-  const goToPrev = () => {
-    if (chapter > 1) {
-      setChapter(chapter - 1);
-    } else if (bookIndex > 0) {
-      setBookIndex(bookIndex - 1);
-      setChapter(BIBLE_BOOKS[bookIndex - 1].chapters);
-    }
-  };
-
-  const goToNext = () => {
-    if (chapter < book.chapters) {
-      setChapter(chapter + 1);
-    } else if (bookIndex < BIBLE_BOOKS.length - 1) {
-      setBookIndex(bookIndex + 1);
-      setChapter(1);
-    }
+  const handleBookChange = (nextBook: BibleBook) => {
+    const nextIndex = BIBLE_BOOKS.findIndex((candidate) => candidate.code === nextBook.code);
+    if (nextIndex >= 0) setBookIndex(nextIndex);
+    setChapter(1);
   };
 
   return (
-    <div>
+    <div className="animate-rise space-y-5">
       <PageHeader
         eyebrow="La Palabra"
         title="Biblia"
-        description="Lee la Palabra de Dios en varias versiones, dondequiera que estés."
+        description="Elige un pasaje y lo abriremos en Blue Letter Bible, en una pestaña nueva."
       />
 
-      <div className="mb-6 flex items-center gap-2">
-        <TranslationSelect value={translation} onChange={setTranslation} />
-        <BookSelect
-          value={book}
-          onChange={(nextBook) => {
-            const nextIndex = BIBLE_BOOKS.findIndex(
-              (candidate) => candidate.code === nextBook.code
-            );
-            if (nextIndex >= 0) setBookIndex(nextIndex);
-            setChapter(1);
-          }}
-        />
-      </div>
-      <div className="mb-6">
-        <ChapterSelect
-          bookName={book.name}
-          totalChapters={book.chapters}
-          value={chapter}
-          onChange={setChapter}
-        />
-      </div>
-
-      {status === "loading" ? (
-        <div className="space-y-3 rounded-3xl border border-border bg-card p-6">
-          <div className="h-5 w-40 animate-pulse rounded-full bg-muted" />
-          <div className="h-4 w-full animate-pulse rounded-full bg-muted/70" />
-          <div className="h-4 w-5/6 animate-pulse rounded-full bg-muted/70" />
-          <div className="h-4 w-4/6 animate-pulse rounded-full bg-muted/70" />
+      {/* Referencia en vivo */}
+      <div className="flex items-center justify-between gap-4 rounded-3xl bg-primary/10 px-5 py-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">Tu pasaje</p>
+          <p className="mt-0.5 truncate font-display text-xl font-semibold text-foreground sm:text-2xl">
+            {reference}
+          </p>
         </div>
-      ) : null}
+        <BookOpenText className="h-9 w-9 shrink-0 text-primary" />
+      </div>
 
-      {status === "error" ? (
-        <div className="flex flex-col items-center gap-4 rounded-3xl border border-border bg-card px-6 py-14 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-primary">
-            <WifiOff className="h-8 w-8" />
-          </span>
-          <div>
-            <h2 className="font-display text-xl font-semibold text-foreground">
-              No se pudo cargar el pasaje
-            </h2>
-            <p className="mx-auto mt-1 max-w-xs text-sm text-muted-foreground">
-              {error} Revisa tu conexión a internet y vuelve a intentarlo.
-            </p>
-          </div>
+      {/* Libro */}
+      <BookSelect value={book} onChange={handleBookChange} />
+
+      {/* Capítulo */}
+      <ChapterSelect
+        bookName={book.name}
+        totalChapters={book.chapters}
+        value={chapter}
+        onChange={setChapter}
+      />
+
+      {/* Versículos */}
+      <VerseSelect
+        startVerse={startVerse}
+        endVerse={endVerse}
+        onStartVerseChange={setStartVerse}
+        onEndVerseChange={setEndVerse}
+        rangeInvalid={rangeInvalid}
+      />
+
+      {/* Traducción */}
+      <section>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Traducción
+        </p>
+        <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-border bg-card p-1.5">
+          {BIBLE_VERSIONS.map((candidate) => (
+            <button
+              key={candidate.id}
+              type="button"
+              onClick={() => setVersion(candidate)}
+              className={`rounded-xl px-1 py-2.5 text-center text-xs font-semibold transition-colors sm:text-sm ${
+                candidate.id === version.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              {candidate.short}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Acción principal */}
+      <div className="space-y-3 pt-1">
+        {rangeInvalid ? (
           <button
             type="button"
-            onClick={() => setAttempt((value) => value + 1)}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground active:scale-95"
+            disabled
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-muted text-base font-semibold text-muted-foreground"
           >
-            <RotateCcw className="h-4 w-4" />
-            Reintentar
+            Abrir pasaje
+            <ExternalLink className="h-5 w-5" />
           </button>
-        </div>
-      ) : null}
-
-      {status === "ready" && data ? (
-        <ChapterView
-          key={`${translation.id}-${book.code}-${chapter}`}
-          bookName={bookDisplayName(book, translation)}
-          chapter={data.chapterNumber || chapter}
-          verses={data.verses}
-          translationLabel={translation.label}
-          hasPrev={bookIndex > 0 || chapter > 1}
-          hasNext={bookIndex < BIBLE_BOOKS.length - 1 || chapter < book.chapters}
-          onPrev={goToPrev}
-          onNext={goToNext}
-        />
-      ) : null}
+        ) : (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-sm transition-transform active:scale-[0.99]"
+          >
+            Abrir pasaje
+            <ExternalLink className="h-5 w-5" />
+          </a>
+        )}
+        <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          Se abrirá el pasaje en Blue Letter Bible en una pestaña nueva.
+        </p>
+      </div>
     </div>
   );
 };
