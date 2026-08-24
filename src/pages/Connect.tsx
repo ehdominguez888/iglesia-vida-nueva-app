@@ -35,10 +35,7 @@ const Connect = () => {
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
                   <Icon className="h-6 w-6" />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-foreground">{entry.title}</span>
-                  <span className="block text-sm text-muted-foreground">{entry.description}</span>
-                </span>
+                <span className="min-w-0 flex-1 font-semibold text-foreground">{entry.title}</span>
                 <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
               </Link>
             );

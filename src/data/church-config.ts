@@ -84,25 +84,21 @@ const CHURCH_CONFIG = {
             {
               to: "/conectar/eventos",
               title: "Próximos eventos",
-              description: "Mantente al tanto de lo que viene",
               kind: "events",
             },
             {
               to: "/conectar/visita",
               title: "Nuevo visitante",
-              description: "Cuéntanos que nos visitaste",
               kind: "visitor",
             },
             {
               to: "/conectar/oracion",
               title: "Solicitud de oración",
-              description: "Comparte tu pedido con nosotros",
               kind: "prayer",
             },
             {
               to: "/conectar/servir",
-              title: "Sírvete",
-              description: "Regístrate para servir en un ministerio",
+              title: "Quiero servir",
               kind: "volunteer",
             },
           ],
