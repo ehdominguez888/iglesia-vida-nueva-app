@@ -113,7 +113,8 @@ const CHURCH_CONFIG = {
        * (por ejemplo, `https://docs.google.com/forms/d/e/.../viewform?embedded=true`).
        * Deja vacío si aún no has creado el formulario.
        */
-      visitorFormEmbed: "",
+      visitorFormEmbed:
+            "https://docs.google.com/forms/d/e/1FAIpQLSe3CrdjKNLHVke_J5onshTganWTLZeDxKzlBbFSV_531FxblQ/viewform?embedded=true",
           prayerFormEmbed: "",
           volunteerFormEmbed: "",
   
