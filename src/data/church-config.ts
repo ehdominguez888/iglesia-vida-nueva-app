@@ -116,7 +116,8 @@ const CHURCH_CONFIG = {
       visitorFormEmbed:
             "https://docs.google.com/forms/d/e/1FAIpQLSe3CrdjKNLHVke_J5onshTganWTLZeDxKzlBbFSV_531FxblQ/viewform?embedded=true",
           prayerFormEmbed: "",
-          volunteerFormEmbed: "",
+              volunteerFormEmbed:
+                "https://docs.google.com/forms/d/e/1FAIpQLSeaZLZTWZoSJyHzb838SeVa1L3amvliy5-OaccBqVZ5EfBSYw/viewform?embedded=true",
   
       /** Próximos eventos. Agrega o quita tantos como necesites. */
       events: [
