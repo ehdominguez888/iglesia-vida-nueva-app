@@ -33,7 +33,11 @@ const About = () => {
               </span>
               <h2 className="font-display text-xl font-semibold text-foreground">{title}</h2>
             </div>
-            <p className="leading-relaxed text-muted-foreground">{text}</p>
+            {text.split("\n\n").map((paragraph, index) => (
+              <p key={index} className="leading-relaxed text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
           </section>
         ))}
       </div>

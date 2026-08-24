@@ -41,7 +41,7 @@ const CHURCH_CONFIG = {
   /** Sección "Acerca de nosotros". */
   about: {
       mission:
-        "Conectando amigos a tener una vida con Jesús. Mateo 28:19",
+        "Conectando amigos a tener una vida con Jesús. Mateo 28:19\n\nTodo el que pertenece a Cristo se ha convertido en una persona nueva. La vida antigua ha pasado; una vida nueva ha comenzado! 2 Corintios 5:17",
       history:
         "Aquí va la historia de la iglesia: cómo comenzó, dónde se reúne y cómo ha crecido. Edita este texto cuando esté listo.",
       vision:
