@@ -9,10 +9,8 @@ import {
   Instagram,
   Mail,
   MapPin,
-  NotebookPen,
   Phone,
-  HandHeart,
-  UserRound,
+    UserRound,
   Youtube,
 } from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
@@ -32,34 +30,9 @@ const Index = () => {
             {CHURCH_CONFIG.welcomeEyebrow}
           </p>
           <h1 className="mt-2 font-display text-3xl font-semibold leading-tight sm:text-4xl">
-            {CHURCH_CONFIG.welcomeTitle}
-          </h1>
-          <p className="mt-3 max-w-md leading-relaxed text-primary-foreground/90">
-            {CHURCH_CONFIG.welcomeMessage}
-          </p>
-          <div className="mt-7 flex items-center gap-2">
-                      <Link
-                        to="/notas"
-                        className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-primary-foreground px-3 py-2.5 text-sm font-semibold text-primary shadow-sm transition-transform active:scale-95"
-                      >
-                        <NotebookPen className="h-4 w-4 shrink-0" />
-                        <span className="truncate">Tomar notas</span>
-                      </Link>
-                      <Link
-                        to="/ofrenda"
-                        className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-primary-foreground/40 px-3 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 active:scale-95"
-                      >
-                        <span className="truncate">Ofrenda</span>
-                      </Link>
-                      <Link
-                        to="/conectar"
-                        className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-primary-foreground/40 px-3 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 active:scale-95"
-                      >
-                        <HandHeart className="h-4 w-4 shrink-0" />
-                        <span className="truncate">Conectar</span>
-                      </Link>
-                    </div>
-        </div>
+                      {CHURCH_CONFIG.welcomeTitle}
+                    </h1>
+                  </div>
       </section>
 
       {/* Servicios */}
