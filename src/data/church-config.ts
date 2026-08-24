@@ -111,7 +111,8 @@ const CHURCH_CONFIG = {
        */
       visitorFormEmbed:
             "https://docs.google.com/forms/d/e/1FAIpQLSe3CrdjKNLHVke_J5onshTganWTLZeDxKzlBbFSV_531FxblQ/viewform?embedded=true",
-          prayerFormEmbed: "",
+          prayerFormEmbed:
+            "https://docs.google.com/forms/d/e/1FAIpQLSfsd_YF8sxjWklP0V7od7aFdnSv-PpwE2VWNc-C0EIIUQ9Zgg/viewform?embedded=true",
               volunteerFormEmbed:
                 "https://docs.google.com/forms/d/e/1FAIpQLSeaZLZTWZoSJyHzb838SeVa1L3amvliy5-OaccBqVZ5EfBSYw/viewform?embedded=true",
   
