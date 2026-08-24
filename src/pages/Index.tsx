@@ -77,9 +77,56 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Enlaces rápidos */}
-      <section className="animate-rise" style={{ animationDelay: "140ms" }}>
-        <SectionHeading eyebrow="Conócenos" title="Más sobre nosotros" />
+      {/* Transmisión en vivo */}
+            <section className="animate-rise" style={{ animationDelay: "140ms" }}>
+              <div className="rounded-3xl bg-secondary/70 p-6 sm:p-7">
+                <h2 className="font-display text-2xl font-semibold text-foreground">
+                  Vive el servicio en línea
+                </h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  Sigue nuestras transmisiones en vivo desde donde estés.
+                </p>
+                <div className="mt-5 flex items-center justify-center gap-4">
+                  <a
+                    href={CHURCH_CONFIG.liveStreams.youtube}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(CHURCH_CONFIG.liveStreams.youtube, "_blank", "noopener,noreferrer");
+                    }}
+                    aria-label="YouTube"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FF0000] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
+                  >
+                    <Youtube className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={CHURCH_CONFIG.liveStreams.facebook}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
+                    }}
+                    aria-label="Facebook"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04608e] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={CHURCH_CONFIG.liveStreams.instagram}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(CHURCH_CONFIG.liveStreams.instagram, "_blank", "noopener,noreferrer");
+                    }}
+                    aria-label="Instagram"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
+            </section>
+      
+            {/* Enlaces rápidos */}
+            <section className="animate-rise" style={{ animationDelay: "200ms" }}>
+              <SectionHeading eyebrow="Conócenos" title="Más sobre nosotros" />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Link
             to="/acerca-de"
@@ -126,55 +173,8 @@ const Index = () => {
           </a>
         </div>
       </section>
-
-      {/* Transmisión en vivo */}
-      <section className="animate-rise" style={{ animationDelay: "200ms" }}>
-        <div className="rounded-3xl bg-secondary/70 p-6 sm:p-7">
-          <h2 className="font-display text-2xl font-semibold text-foreground">
-            Vive el servicio en línea
-          </h2>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Sigue nuestras transmisiones en vivo desde donde estés.
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-4">
-            <a
-              href={CHURCH_CONFIG.liveStreams.youtube}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.youtube, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="YouTube"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FF0000] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Youtube className="h-5 w-5" />
-            </a>
-            <a
-              href={CHURCH_CONFIG.liveStreams.facebook}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="Facebook"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04608e] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a
-              href={CHURCH_CONFIG.liveStreams.instagram}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.instagram, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="Instagram"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
           </div>
-        </div>
-      </section>
-    </div>
-  );
-};
-
-export default Index;
+        );
+      };
+      
+      export default Index;
