@@ -33,13 +33,13 @@ type Flow = {
 const FLOWS: Record<Platform, Flow> = {
   ios: {
     icon: Apple,
-    label: "Agregar a pantalla de inicio",
+    label: "Abrir como app",
     step1: "En Safari, toca el botón Compartir (un cuadrado con una flecha hacia arriba).",
     step2: "Desplázate y elige «Añadir a pantalla de inicio».",
   },
   android: {
     icon: Smartphone,
-    label: "Agregar a pantalla de inicio",
+    label: "Instalar como app",
     step1: "Abre el menú «⋮» en tu navegador (Chrome o Edge).",
     step2: "Elige «Agregar a pantalla de inicio» o «Instalar app».",
   },
@@ -79,7 +79,11 @@ const InstallPrompt = () => {
     setOpen(false);
   };
 
-  /** Descarga un acceso directo (.url) en escritorio para abrir la app. */
+  /**
+   * Escritorio: se puede iniciar la descarga de un acceso directo (.url).
+   * En móvil (iOS/Android) el sistema operativo no permite que una web lo haga
+   * automáticamente, por eso ahí guiamos con los pasos del navegador.
+   */
   const downloadShortcut = () => {
     const url = window.location.origin + window.location.pathname;
     const content = ["[InternetShortcut]", `URL=${url}`, "IconFile=/logo.png", ""].join(
@@ -98,8 +102,7 @@ const InstallPrompt = () => {
   if (!open) return null;
 
   const flow = FLOWS[platform];
-  const FlowIcon = flow.icon;
-  const onPrimary = platform === "desktop" ? downloadShortcut : undefined;
+    const isDesktop = platform === "desktop";
 
   return (
     <div
@@ -131,8 +134,9 @@ const InstallPrompt = () => {
           {CHURCH_CONFIG.name} en tu pantalla
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Agrega la app a tu pantalla de inicio y ábrela como una app completa,
-          sin el navegador.
+          {isDesktop
+            ? "Guarda la app en tu computadora para abrirla como si fuera una app completa."
+            : "Añade la app a tu pantalla de inicio y ábrela como una app completa, sin el navegador."}
         </p>
 
         <div className="mt-5 space-y-3 rounded-2xl border border-border/60 bg-muted/50 p-4">
@@ -150,20 +154,27 @@ const InstallPrompt = () => {
           </div>
         </div>
 
-        <Button onClick={onPrimary} className="mt-6 h-11 w-full rounded-2xl">
-                  {platform === "desktop" ? (
-                    <Download className="h-4 w-4" />
-                  ) : (
-                    <FlowIcon className="h-4 w-4" />
-                  )}
-                  {flow.label}
-                </Button>
+        {isDesktop && (
+          <Button onClick={downloadShortcut} className="mt-6 h-11 w-full rounded-2xl">
+            <Download className="h-4 w-4" />
+            Descargar acceso directo
+          </Button>
+        )}
+
+        {!isDesktop && (
+          <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+            Por seguridad, Apple y Google no permiten que una web se instale sola: basta con
+            seguir los dos pasos de arriba una sola vez para que aparezca en tu pantalla de
+            inicio con el ícono de {CHURCH_CONFIG.name}.
+          </p>
+        )}
+
         <Button
           onClick={dismiss}
           variant="ghost"
-          className="mt-2 h-11 w-full rounded-2xl text-muted-foreground"
+          className="mt-3 h-11 w-full rounded-2xl text-muted-foreground"
         >
-          Ahora no, gracias
+          {isDesktop ? "Ahora no, gracias" : "Entendido"}
         </Button>
       </div>
     </div>

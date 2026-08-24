@@ -1,0 +1,32 @@
+{
+  "name": "Iglesia Vida Nueva",
+  "short_name": "VidaNueva",
+  "description": "App de la Iglesia Vida Nueva: notas del sermón, la Biblia, información de la iglesia y más.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#04608e",
+  "categories": ["lifestyle", "utilities"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
