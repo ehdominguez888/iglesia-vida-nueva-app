@@ -45,7 +45,7 @@ const CHURCH_CONFIG = {
       history:
         "Aquí va la historia de la iglesia: cómo comenzó, dónde se reúne y cómo ha crecido. Edita este texto cuando esté listo.",
       vision:
-        "Todo el que pertenece a Cristo se ha convertido en una persona nueva. La vida antigua ha pasado; una vida nueva ha comenzado! 2 Corintios 5:17",
+        "En IGLESIA VIDA NUEVA STONE OAK buscamos el Desarrollo Espiritual, Personal y Familiar de cada uno de los miembros con un Fundamento Sólido en la Palabra de Dios.",
     values: [
       { title: "Fe", description: "Caminar confiando en Dios cada día." },
       { title: "Comunidad", description: "Vivir la vida en familia, no en soledad." },
