@@ -81,25 +81,31 @@ const CHURCH_CONFIG = {
     connect: {
       /** Tarjetas de acceso de la página de conexión. */
       entries: [
-        {
-          to: "/conectar/visita",
-          title: "Nuevo visitante",
-          description: "Cuéntanos que nos visitaste",
-          kind: "visitor",
-        },
-        {
-          to: "/conectar/oracion",
-          title: "Solicitud de oración",
-          description: "Comparte tu pedido con nosotros",
-          kind: "prayer",
-        },
-        {
-          to: "/conectar/eventos",
-          title: "Próximos eventos",
-          description: "Mantente al tanto de lo que viene",
-          kind: "events",
-        },
-      ],
+            {
+              to: "/conectar/eventos",
+              title: "Próximos eventos",
+              description: "Mantente al tanto de lo que viene",
+              kind: "events",
+            },
+            {
+              to: "/conectar/visita",
+              title: "Nuevo visitante",
+              description: "Cuéntanos que nos visitaste",
+              kind: "visitor",
+            },
+            {
+              to: "/conectar/oracion",
+              title: "Solicitud de oración",
+              description: "Comparte tu pedido con nosotros",
+              kind: "prayer",
+            },
+            {
+              to: "/conectar/servir",
+              title: "Sírvete",
+              description: "Regístrate para servir en un ministerio",
+              kind: "volunteer",
+            },
+          ],
   
       /**
        * Código de inserción de los formularios de Google.
@@ -108,7 +114,8 @@ const CHURCH_CONFIG = {
        * Deja vacío si aún no has creado el formulario.
        */
       visitorFormEmbed: "",
-      prayerFormEmbed: "",
+          prayerFormEmbed: "",
+          volunteerFormEmbed: "",
   
       /** Próximos eventos. Agrega o quita tantos como necesites. */
       events: [
@@ -144,7 +151,7 @@ export type ChurchConfig = typeof CHURCH_CONFIG;
 export type ChurchValues = (typeof CHURCH_CONFIG.about.values)[number];
 
 /** Qué clase de tarjeta de conexión representa cada entrada de acceso. */
-export type ConnectKind = "visitor" | "prayer" | "events";
+export type ConnectKind = "visitor" | "prayer" | "events" | "volunteer";
 
 /** Tarjeta de acceso de la página "Conectar". */
 export type ConnectEntry = {

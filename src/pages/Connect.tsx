@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, HandHeart, Heart, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, HandHeart, Heart, UsersRound, UserRound } from "lucide-react";
 import CHURCH_CONFIG, { ConnectKind } from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -8,6 +8,7 @@ const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
   visitor: UserRound,
   prayer: Heart,
   events: CalendarDays,
+  volunteer: UsersRound,
 };
 
 const Connect = () => {
