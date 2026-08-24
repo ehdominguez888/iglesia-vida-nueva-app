@@ -40,12 +40,12 @@ const CHURCH_CONFIG = {
 
   /** Sección "Acerca de nosotros". */
   about: {
-    mission:
-      "Compartir el amor de Dios y guiar a cada persona a una nueva vida en Cristo a través de la adoración, la Palabra y el servicio a la comunidad.",
-    history:
-      "Aquí va la historia de la iglesia: cómo comenzó, dónde se reúne y cómo ha crecido. Edita este texto cuando esté listo.",
-    vision:
-      "Ser una iglesia que transforma vidas y familias, siendo luz y esperanza en nuestra comunidad.",
+      mission:
+        "Conectando amigos a tener una vida con Jesús. Mateo 28:19",
+      history:
+        "Aquí va la historia de la iglesia: cómo comenzó, dónde se reúne y cómo ha crecido. Edita este texto cuando esté listo.",
+      vision:
+        "Todo el que pertenece a Cristo se ha convertido en una persona nueva. La vida antigua ha pasado; una vida nueva ha comenzado! 2 Corintios 5:17",
     values: [
       { title: "Fe", description: "Caminar confiando en Dios cada día." },
       { title: "Comunidad", description: "Vivir la vida en familia, no en soledad." },
