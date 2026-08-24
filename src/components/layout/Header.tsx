@@ -6,7 +6,8 @@ const NAV = [
   { to: "/notas", label: "Notas", end: false },
   { to: "/biblia", label: "Biblia", end: false },
   { to: "/ofrenda", label: "Ofrenda", end: false },
-];
+    { to: "/conectar", label: "Conectar", end: false },
+  ];
 
 const Header = () => {
   return (

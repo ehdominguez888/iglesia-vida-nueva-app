@@ -70,22 +70,99 @@ const CHURCH_CONFIG = {
   },
 
   /** Página de ofrenda. */
-  offering: {
-    /** Enlace real de su página de ofrendas/giving. */
-    url: "https://form.jotform.com/90324013191141",
-    note: "Para dar tu ofrenda, escanea el código QR que aparece en pantalla durante el servicio.",
-    comingSoon: "La opción de donar en línea estará disponible pronto.",
-  },
-
-  /** Información de contacto que aparece en la portada. */
-  contact: {
-    address: "20024 Crescent Oaks, San Antonio, TX 78258",
-    phone: "(210) 294-9427",
-    email: "iglesia@vidanuevaso.com",
-  },
-};
+    offering: {
+      /** Enlace real de su página de ofrendas/giving. */
+      url: "https://form.jotform.com/90324013191141",
+      note: "Para dar tu ofrenda, escanea el código QR que aparece en pantalla durante el servicio.",
+      comingSoon: "La opción de donar en línea estará disponible pronto.",
+    },
+  
+    /** Pestaña "Conectar": formularios y próximos eventos. */
+    connect: {
+      /** Tarjetas de acceso de la página de conexión. */
+      entries: [
+        {
+          to: "/conectar/visita",
+          title: "Nuevo visitante",
+          description: "Cuéntanos que nos visitaste",
+          kind: "visitor",
+        },
+        {
+          to: "/conectar/oracion",
+          title: "Solicitud de oración",
+          description: "Comparte tu pedido con nosotros",
+          kind: "prayer",
+        },
+        {
+          to: "/conectar/eventos",
+          title: "Próximos eventos",
+          description: "Mantente al tanto de lo que viene",
+          kind: "events",
+        },
+      ],
+  
+      /**
+       * Código de inserción de los formularios de Google.
+       * Pega aquí el `src` del iframe que Google Forms te genera al compartir el formulario
+       * (por ejemplo, `https://docs.google.com/forms/d/e/.../viewform?embedded=true`).
+       * Deja vacío si aún no has creado el formulario.
+       */
+      visitorFormEmbed: "",
+      prayerFormEmbed: "",
+  
+      /** Próximos eventos. Agrega o quita tantos como necesites. */
+      events: [
+        {
+          date: "15 de mayo",
+          title: "Servicio de acción de gracias",
+          time: "7:00 p. m.",
+          location: "Templo principal",
+          description:
+            "Únete a nosotros para un servicio especial de acción de gracias por la vida de nuestra iglesia.",
+          link: "",
+        },
+        {
+          date: "22 de mayo",
+          title: "Escuela de líderes",
+          time: "5:00 p. m.",
+          location: "Salón de jóvenes",
+          description:
+            "Un espacio de formación para quienes quieren servir en los ministerios de la iglesia.",
+        },
+      ],
+    },
+  
+    /** Información de contacto que aparece en la portada. */
+    contact: {
+      address: "20024 Crescent Oaks, San Antonio, TX 78258",
+      phone: "(210) 294-9427",
+      email: "iglesia@vidanuevaso.com",
+    },
+  };
 
 export type ChurchConfig = typeof CHURCH_CONFIG;
 export type ChurchValues = (typeof CHURCH_CONFIG.about.values)[number];
+
+/** Qué clase de tarjeta de conexión representa cada entrada de acceso. */
+export type ConnectKind = "visitor" | "prayer" | "events";
+
+/** Tarjeta de acceso de la página "Conectar". */
+export type ConnectEntry = {
+  to: string;
+  title: string;
+  description: string;
+  kind: ConnectKind;
+};
+
+/** Próximo evento gestionado desde la configuración. */
+export type EventItem = {
+  date: string;
+  title: string;
+  time?: string;
+  location?: string;
+  description?: string;
+  /** Enlace opcional de registro o información externa. */
+  link?: string;
+};
 
 export default CHURCH_CONFIG;

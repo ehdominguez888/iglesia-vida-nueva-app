@@ -10,6 +10,10 @@ import Pastor from "./pages/Pastor";
 import Notes from "./pages/Notes";
 import Bible from "./pages/Bible";
 import Offering from "./pages/Offering";
+import Connect from "./pages/Connect";
+import VisitorForm from "./pages/VisitorForm";
+import Prayer from "./pages/Prayer";
+import Events from "./pages/Events";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,7 +32,11 @@ const App = () => (
             <Route path="/notas" element={<Notes />} />
             <Route path="/biblia" element={<Bible />} />
             <Route path="/ofrenda" element={<Offering />} />
-          </Route>
+                        <Route path="/conectar" element={<Connect />} />
+                        <Route path="/conectar/visita" element={<VisitorForm />} />
+                        <Route path="/conectar/oracion" element={<Prayer />} />
+                        <Route path="/conectar/eventos" element={<Events />} />
+                      </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -12,8 +12,9 @@ import {
   NotebookPen,
   Phone,
   UserRound,
-  Youtube,
-} from "lucide-react";
+    HandHeart,
+    Youtube,
+  } from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
 import SectionHeading from "@/components/layout/SectionHeading";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -114,19 +115,32 @@ const Index = () => {
                     <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
                   </Link>
                   <Link
-                    to="/pastor"
-                    className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                      <UserRound className="h-6 w-6" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold text-foreground">Nuestro pastor</span>
-                      <span className="block text-sm text-muted-foreground">Conoce a nuestro equipo</span>
-                    </span>
-                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                  </Link>
-                  <a
+                                      to="/pastor"
+                                      className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+                                    >
+                                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+                                        <UserRound className="h-6 w-6" />
+                                      </span>
+                                      <span className="min-w-0 flex-1">
+                                        <span className="block font-semibold text-foreground">Nuestro pastor</span>
+                                        <span className="block text-sm text-muted-foreground">Conoce a nuestro equipo</span>
+                                      </span>
+                                      <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                                    </Link>
+                                    <Link
+                                      to="/conectar"
+                                      className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+                                    >
+                                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+                                        <HandHeart className="h-6 w-6" />
+                                      </span>
+                                      <span className="min-w-0 flex-1">
+                                        <span className="block font-semibold text-foreground">Conectar</span>
+                                        <span className="block text-sm text-muted-foreground">Visítanos, ora y síguenos</span>
+                                      </span>
+                                      <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                                    </Link>
+                                    <a
                     href={CHURCH_CONFIG.website}
                     onClick={(e) => {
                       e.preventDefault();
