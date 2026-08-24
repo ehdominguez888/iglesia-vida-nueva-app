@@ -33,11 +33,13 @@ const About = () => {
               </span>
               <h2 className="font-display text-xl font-semibold text-foreground">{title}</h2>
             </div>
-            {text.split("\n\n").map((paragraph, index) => (
-              <p key={index} className="leading-relaxed text-muted-foreground">
-                {paragraph}
-              </p>
-            ))}
+            <div className="space-y-3">
+              {text.split("\n\n").map((paragraph, index) => (
+                <p key={index} className="leading-relaxed text-muted-foreground">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </section>
         ))}
       </div>
