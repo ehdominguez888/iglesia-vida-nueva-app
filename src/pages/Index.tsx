@@ -11,10 +11,10 @@ import {
   MapPin,
   NotebookPen,
   Phone,
+  HandHeart,
   UserRound,
-    HandHeart,
-    Youtube,
-  } from "lucide-react";
+  Youtube,
+} from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
 import SectionHeading from "@/components/layout/SectionHeading";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -50,6 +50,13 @@ const Index = () => {
               className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 active:scale-95"
             >
               Ofrenda
+            </Link>
+            <Link
+              to="/conectar"
+              className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 active:scale-95"
+            >
+              <HandHeart className="h-4 w-4" />
+              Conectar
             </Link>
           </div>
         </div>
@@ -100,64 +107,51 @@ const Index = () => {
       {/* Enlaces rápidos */}
       <section className="animate-rise" style={{ animationDelay: "140ms" }}>
         <SectionHeading eyebrow="Conócenos" title="Más sobre nosotros" />
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <Link
-                    to="/acerca-de"
-                    className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                      <BookOpenText className="h-6 w-6" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold text-foreground">Acerca de nosotros</span>
-                      <span className="block text-sm text-muted-foreground">Nuestra misión y visión</span>
-                    </span>
-                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                  </Link>
-                  <Link
-                                      to="/pastor"
-                                      className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-                                    >
-                                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                                        <UserRound className="h-6 w-6" />
-                                      </span>
-                                      <span className="min-w-0 flex-1">
-                                        <span className="block font-semibold text-foreground">Nuestro pastor</span>
-                                        <span className="block text-sm text-muted-foreground">Conoce a nuestro equipo</span>
-                                      </span>
-                                      <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                                    </Link>
-                                    <Link
-                                      to="/conectar"
-                                      className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-                                    >
-                                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                                        <HandHeart className="h-6 w-6" />
-                                      </span>
-                                      <span className="min-w-0 flex-1">
-                                        <span className="block font-semibold text-foreground">Conectar</span>
-                                        <span className="block text-sm text-muted-foreground">Visítanos, ora y síguenos</span>
-                                      </span>
-                                      <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                                    </Link>
-                                    <a
-                    href={CHURCH_CONFIG.website}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.open(CHURCH_CONFIG.website, "_blank", "noopener,noreferrer");
-                    }}
-                    className="group flex cursor-pointer items-center gap-4 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                      <Globe className="h-6 w-6" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold text-foreground">Visita nuestro sitio web</span>
-                      <span className="block text-sm text-muted-foreground">Explora nuestra página oficial</span>
-                    </span>
-                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                  </a>
-                </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <Link
+            to="/acerca-de"
+            className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+              <BookOpenText className="h-6 w-6" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold text-foreground">Acerca de nosotros</span>
+              <span className="block text-sm text-muted-foreground">Nuestra misión y visión</span>
+            </span>
+            <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+          </Link>
+          <Link
+            to="/pastor"
+            className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+              <UserRound className="h-6 w-6" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold text-foreground">Nuestro pastor</span>
+              <span className="block text-sm text-muted-foreground">Conoce a nuestro equipo</span>
+            </span>
+            <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+          </Link>
+          <a
+            href={CHURCH_CONFIG.website}
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(CHURCH_CONFIG.website, "_blank", "noopener,noreferrer");
+            }}
+            className="group flex cursor-pointer items-center gap-4 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+              <Globe className="h-6 w-6" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold text-foreground">Visita nuestro sitio web</span>
+              <span className="block text-sm text-muted-foreground">Explora nuestra página oficial</span>
+            </span>
+            <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+          </a>
+        </div>
       </section>
 
       {/* Transmisión en vivo */}
