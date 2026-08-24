@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import TabBar from "./TabBar";
+import InstallPrompt from "@/components/install/InstallPrompt";
 
 const AppShell = () => {
   return (
@@ -10,6 +11,7 @@ const AppShell = () => {
         <Outlet />
       </main>
       <TabBar />
+      <InstallPrompt />
     </div>
   );
 };
