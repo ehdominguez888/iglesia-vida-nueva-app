@@ -13,23 +13,22 @@ import {
   type BibleVersion,
 } from "@/lib/bible-link";
 
-const DEFAULT_VERSION_INDEX = 0; // NVI
 const DEFAULT_BOOK_INDEX = Math.max(0, BIBLE_BOOKS.findIndex((book) => book.code === "psa"));
 
 const Bible = () => {
   usePageTitle("Biblia");
 
-  const [version, setVersion] = useState<BibleVersion>(BIBLE_VERSIONS[DEFAULT_VERSION_INDEX]);
   const [bookIndex, setBookIndex] = useState(DEFAULT_BOOK_INDEX);
   const [chapter, setChapter] = useState(1);
   const [startVerse, setStartVerse] = useState<number | null>(null);
   const [endVerse, setEndVerse] = useState<number | null>(null);
+  const [selectedTranslation, setSelectedTranslation] = useState<"rvr1960" | "more">("rvr1960");
 
   const book = BIBLE_BOOKS[bookIndex];
   const rangeInvalid = startVerse !== null && endVerse !== null && endVerse < startVerse;
 
   const reference = formatReference({
-    version,
+    version: BIBLE_VERSIONS.find(v => v.id === "rvr1960")!,
     book,
     chapter,
     verseStart: startVerse,
@@ -37,7 +36,7 @@ const Bible = () => {
   });
 
   const url = buildBibleUrl({
-    versionCode: version.id,
+    versionCode: "rvr1960",
     bookCode: book.code,
     chapter,
     verseStart: startVerse,
@@ -50,12 +49,21 @@ const Bible = () => {
     setChapter(1);
   };
 
+  const handleTranslationChange = (translation: "rvr1960" | "more") => {
+    setSelectedTranslation(translation);
+    if (translation === "more") {
+      window.open("https://www.blueletterbible.org", "_blank", "noopener,noreferrer");
+      // Reset to RVR1960 after opening Blue Letter Bible
+      setTimeout(() => setSelectedTranslation("rvr1960"), 100);
+    }
+  };
+
   return (
     <div className="animate-rise space-y-5">
       <PageHeader
         eyebrow="La Palabra"
         title="Biblia"
-        description="Elige un pasaje y lo abriremos en Blue Letter Bible, en una pestaña nueva."
+        description="Lee la Biblia directamente en la app usando la Reina-Valera 1960, o abre más traducciones en Blue Letter Bible."
       />
 
       {/* Referencia en vivo */}
@@ -68,6 +76,42 @@ const Bible = () => {
         </div>
         <BookOpenText className="h-9 w-9 shrink-0 text-primary" />
       </div>
+
+      {/* Traducción */}
+      <section>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Traducción
+        </p>
+        <div className="grid grid-cols-2 gap-1.5 rounded-2xl border border-border bg-card p-1.5">
+          <button
+            type="button"
+            onClick={() => handleTranslationChange("rvr1960")}
+            className={`rounded-xl px-1 py-2.5 text-center text-xs font-semibold transition-colors sm:text-sm ${
+              selectedTranslation === "rvr1960"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            RVR1960
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTranslationChange("more")}
+            className={`rounded-xl px-1 py-2.5 text-center text-xs font-semibold transition-colors sm:text-sm ${
+              selectedTranslation === "more"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            Más traducciones
+          </button>
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {selectedTranslation === "rvr1960" 
+            ? "Leyendo Reina-Valera 1960 (dominio público)"
+            : "Abriendo Blue Letter Bible para más traducciones..."}
+        </p>
+      </section>
 
       {/* Libro */}
       <BookSelect value={book} onChange={handleBookChange} />
@@ -88,29 +132,6 @@ const Bible = () => {
         onEndVerseChange={setEndVerse}
         rangeInvalid={rangeInvalid}
       />
-
-      {/* Traducción */}
-      <section>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Traducción
-        </p>
-        <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-border bg-card p-1.5">
-          {BIBLE_VERSIONS.map((candidate) => (
-            <button
-              key={candidate.id}
-              type="button"
-              onClick={() => setVersion(candidate)}
-              className={`rounded-xl px-1 py-2.5 text-center text-xs font-semibold transition-colors sm:text-sm ${
-                candidate.id === version.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              {candidate.short}
-            </button>
-          ))}
-        </div>
-      </section>
 
       {/* Acción principal */}
       <div className="space-y-3 pt-1">
