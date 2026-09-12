@@ -62,14 +62,19 @@ export function formatReference({
   verseStart = null,
   verseEnd = null,
 }: {
-  version: BibleVersion;
+  version: BibleVersion | null;
   book: BibleBook;
   chapter: number;
   verseStart?: number | null;
   verseEnd?: number | null;
 }): string {
-  const bookName = version.language === "es" ? book.name : book.nameEn;
-  const base = `${version.short} · ${bookName} ${chapter}`;
+  // Handle case where version might be null/undefined
+  const versionShort = version?.short || "RVR60";
+  
+  // Use Spanish book name by default (since RVR1960 is Spanish)
+  const bookName = book.name;
+  
+  const base = `${versionShort} · ${bookName} ${chapter}`;
   if (verseStart && verseStart >= 1) {
     if (verseEnd && verseEnd >= 1 && verseEnd > verseStart) {
       return `${base}:${verseStart}–${verseEnd}`;
