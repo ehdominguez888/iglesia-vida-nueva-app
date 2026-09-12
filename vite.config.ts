@@ -4,7 +4,8 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
 
-import { nitro } from "nitro/vite";
+// Temporarily comment out nitro import to test if it's causing the issue
+// import { nitro } from "nitro/vite";
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -12,46 +13,52 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
   },
-  plugins: [dyadComponentTagger(), react(), VitePWA({
-    registerType: "autoUpdate",
-    devOptions: {
-      enabled: false,
-    },
-    includeAssets: ["logo.png", "favicon.ico"],
-    manifest: {
-      name: "Iglesia Vida Nueva",
-              short_name: "VidaNueva",
-              description:
-                "La app de la Iglesia Vida Nueva: notas del sermón, la Biblia, información de la iglesia y mucho más.",
-      lang: "es",
-      display: "standalone",
-      start_url: "/",
-      scope: "/",
-      orientation: "portrait",
-      theme_color: "#04608e",
-              background_color: "#ffffff",
-      categories: ["lifestyle", "education"],
-      icons: [
-                {
-                  src: "/logo.png",
-                  sizes: "512x512",
-                  type: "image/png",
-                  purpose: "any",
-                },
-                {
-                  src: "/logo.png",
-                  sizes: "512x512",
-                  type: "image/png",
-                  purpose: "maskable",
-                },
-              ],
-    },
-    workbox: {
-      globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
-      navigateFallback: "/index.html",
-      cleanupOutdatedCaches: true,
-    },
-  }), nitro()],
+  plugins: [
+    dyadComponentTagger(), 
+    react(), 
+    VitePWA({
+      registerType: "autoUpdate",
+      devOptions: {
+        enabled: false,
+      },
+      includeAssets: ["logo.png", "favicon.ico"],
+      manifest: {
+        name: "Iglesia Vida Nueva",
+        short_name: "VidaNueva",
+        description:
+          "La app de la Iglesia Vida Nueva: notas del sermón, la Biblia, información de la iglesia y mucho más.",
+        lang: "es",
+        display: "standalone",
+        start_url: "/",
+        scope: "/",
+        orientation: "portrait",
+        theme_color: "#04608e",
+        background_color: "#ffffff",
+        categories: ["lifestyle", "education"],
+        icons: [
+          {
+            src: "/logo.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "/logo.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
+        navigateFallback: "/index.html",
+        cleanupOutdatedCaches: true,
+      },
+    }),
+    // Temporarily disabled to test
+    // nitro()
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
