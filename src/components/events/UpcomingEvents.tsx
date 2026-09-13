@@ -127,10 +127,12 @@ const UpcomingEvents = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   const fetchEvents = async () => {
     setLoading(true);
     setError(null);
+    setDebugInfo(null);
     
     try {
       console.log("Fetching events via server API");
@@ -145,7 +147,9 @@ const UpcomingEvents = () => {
       
       const data = await response.json();
       console.log("Events data:", data);
+      
       setEvents(data.events || []);
+      setDebugInfo(data.debug);
     } catch (err) {
       console.error("Error fetching events:", err);
       setError(err instanceof Error ? err.message : "Error al cargar eventos");
@@ -182,21 +186,6 @@ const UpcomingEvents = () => {
     );
   }
 
-  if (events.length === 0) {
-    return (
-      <div className="rounded-3xl border border-dashed border-primary/40 bg-secondary/40 px-6 py-12 text-center">
-        <Calendar className="mx-auto h-10 w-10 text-primary" />
-        <p className="mt-3 text-sm text-muted-foreground">
-          No hay eventos programados en este momento. ¡Vuelve pronto!
-        </p>
-        <Button onClick={fetchEvents} variant="outline" size="sm" className="mt-4">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Actualizar
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -214,9 +203,29 @@ const UpcomingEvents = () => {
         </Button>
       </div>
       
-      {events.map((event) => (
-        <EventCard key={event.id} event={event} />
-      ))}
+      {events.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-primary/40 bg-secondary/40 px-6 py-12 text-center">
+          <Calendar className="mx-auto h-10 w-10 text-primary" />
+          <p className="mt-3 text-sm text-muted-foreground">
+            No hay eventos programados en este momento. ¡Vuelve pronto!
+          </p>
+          {debugInfo && (
+            <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-muted-foreground">
+              <p>Debug: {debugInfo.itemsCount} eventos encontrados</p>
+              <p>Calendario: {debugInfo.summary}</p>
+              <p>Zona horaria: {debugInfo.timeZone}</p>
+            </div>
+          )}
+          <Button onClick={fetchEvents} variant="outline" size="sm" className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Actualizar
+          </Button>
+        </div>
+      ) : (
+        events.map((event) => (
+          <EventCard key={event.id} event={event} />
+        ))
+      )}
     </div>
   );
 };

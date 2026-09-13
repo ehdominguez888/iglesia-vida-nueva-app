@@ -15,7 +15,7 @@ export default defineHandler(async (event) => {
     const API_KEY = "AIzaSyDeiji5_OBa_J2xzAfZhXyulI94U-y73KI";
     const timeMin = new Date().toISOString();
     
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=10`;
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=20`;
     
     console.log("Fetching from Google Calendar API:", url);
     
@@ -33,9 +33,28 @@ export default defineHandler(async (event) => {
     }
     
     const data = await response.json();
+    
+    // Debug logging
+    console.log("API Response:", {
+      itemsCount: data.items?.length || 0,
+      items: data.items?.map((item: any) => ({
+        summary: item.summary,
+        start: item.start,
+        end: item.end,
+        status: item.status
+      })),
+      timeZone: data.timeZone,
+      summary: data.summary
+    });
+    
     return {
       events: data.items || [],
-      success: true
+      success: true,
+      debug: {
+        itemsCount: data.items?.length || 0,
+        timeZone: data.timeZone,
+        summary: data.summary
+      }
     };
     
   } catch (error) {
