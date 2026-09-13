@@ -12,7 +12,7 @@ export type BibleChapter = {
 };
 
 const CACHE_KEY_PREFIX = "inv:bible";
-const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days cache
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 const cacheKey = (book: string, chapter: number) =>
   `${CACHE_KEY_PREFIX}:${book}:${chapter}`;
@@ -36,47 +36,54 @@ function writeCache<T>(key: string, data: T) {
   try {
     localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data }));
   } catch {
-    // Ignore cache write errors
+    // Storage full — ignore
   }
 }
 
 async function fetchChapter(bookCode: string, chapter: number): Promise<BibleChapter> {
-  try {
-    const response = await fetch(`/api/bible/${bookCode}/${chapter}`);
-    
-    if (!response.ok) {
-      throw new Error(`Error HTTP ${response.status}`);
-    }
-    
-    const result = await response.json();
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || "Error al cargar el capítulo");
-    }
-    
-    return result.data;
-  } catch (error) {
-    console.error("Error fetching chapter:", error);
-    throw new Error("No se pudo cargar el capítulo. Verifica tu conexión a internet.");
+  const response = await fetch(`/api/bible/${bookCode}/${chapter}`);
+
+  if (!response.ok) {
+    throw new Error(`Error HTTP ${response.status}`);
   }
+
+  const result = await response.json();
+
+  if (!result.success || !result.data) {
+    throw new Error(result.error || result.details || "Error al cargar el capítulo");
+  }
+
+  return result.data;
 }
 
-export async function getChapter(translation: string, book: string, chapter: number): Promise<BibleChapter> {
+/**
+ * Loads a chapter, using localStorage cache when available.
+ * On failure the cache entry (if any) is removed so the next
+ * attempt hits the network again.
+ */
+export async function getChapter(
+  _translation: string,
+  book: string,
+  chapter: number,
+): Promise<BibleChapter> {
   const key = cacheKey(book, chapter);
   const cached = readCache<BibleChapter>(key);
   if (cached) return cached;
-  
+
   const fresh = await fetchChapter(book, chapter);
   writeCache(key, fresh);
   return fresh;
 }
 
+/** Clears the entire Bible cache so every chapter is re-fetched. */
 export function clearBibleCache() {
   try {
-    const keys = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)).filter(
-      (k) => k?.startsWith(CACHE_KEY_PREFIX)
-    );
-    keys.forEach((k) => k && localStorage.removeItem(k));
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k?.startsWith(CACHE_KEY_PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => localStorage.removeItem(k));
   } catch {
     // noop
   }
