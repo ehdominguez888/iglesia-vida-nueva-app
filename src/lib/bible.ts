@@ -1,5 +1,4 @@
 import { BIBLE_BOOKS, type BibleBook } from "@/data/books";
-import { getSpanishBibleChapter, type BibleChapter as SpanishBibleChapter } from "@/data/spanish-bible";
 
 export type BibleVerse = {
   number: number;
@@ -13,7 +12,7 @@ export type BibleChapter = {
 };
 
 const CACHE_KEY_PREFIX = "inv:bible";
-const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 días
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days cache
 
 const cacheKey = (book: string, chapter: number) =>
   `${CACHE_KEY_PREFIX}:${book}:${chapter}`;
@@ -37,19 +36,11 @@ function writeCache<T>(key: string, data: T) {
   try {
     localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data }));
   } catch {
-    // Si el almacenamiento está lleno, simplemente ignoramos el cache.
+    // Ignore cache write errors
   }
 }
 
-// Use local Spanish Bible database
 async function fetchChapter(bookCode: string, chapter: number): Promise<BibleChapter> {
-  // First try local database
-  const localChapter = getSpanishBibleChapter(bookCode, chapter);
-  if (localChapter) {
-    return localChapter;
-  }
-
-  // If not in local database, try server API
   try {
     const response = await fetch(`/api/bible/${bookCode}/${chapter}`);
     
@@ -66,27 +57,10 @@ async function fetchChapter(bookCode: string, chapter: number): Promise<BibleCha
     return result.data;
   } catch (error) {
     console.error("Error fetching chapter:", error);
-    
-    // Create a placeholder chapter for unavailable chapters
-    const book = BIBLE_BOOKS.find(b => b.code === bookCode);
-    const bookName = book?.name || bookCode;
-    
-    return {
-      reference: `${bookName} ${chapter}`,
-      chapterNumber: chapter,
-      verses: [
-        {
-          number: 1,
-          text: `Este capítulo no está disponible en la base de datos local. Para leer ${bookName} ${chapter}, por favor visita Blue Letter Bible o Bible Gateway.`
-        }
-      ]
-    };
+    throw new Error("No se pudo cargar el capítulo. Verifica tu conexión a internet.");
   }
 }
 
-/**
- * Carga un capítulo usando el cache primero.
- */
 export async function getChapter(translation: string, book: string, chapter: number): Promise<BibleChapter> {
   const key = cacheKey(book, chapter);
   const cached = readCache<BibleChapter>(key);
@@ -97,7 +71,6 @@ export async function getChapter(translation: string, book: string, chapter: num
   return fresh;
 }
 
-/** Borra todo el cache de la Biblia. */
 export function clearBibleCache() {
   try {
     const keys = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)).filter(

@@ -8,8 +8,9 @@ export const showError = (message: string) => {
   toast.error(message);
 };
 
-export const showLoading = (message: string) => {
-  return toast.loading(message);
+export const showLoading = (message: string): string => {
+  const toastId = toast.loading(message);
+  return toastId.toString(); // Convert to string to ensure type safety
 };
 
 export const dismissToast = (toastId: string) => {
