@@ -3,9 +3,7 @@ import dyadComponentTagger from "@dyad-sh/react-vite-component-tagger";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
-
-// Temporarily comment out nitro import to test if it's causing the issue
-// import { nitro } from "nitro/vite";
+import { nitro } from "nitro/vite";
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -56,8 +54,7 @@ export default defineConfig(() => ({
         cleanupOutdatedCaches: true,
       },
     }),
-    // Temporarily disabled to test
-    // nitro()
+    nitro()
   ],
   resolve: {
     alias: {

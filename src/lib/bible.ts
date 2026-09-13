@@ -110,7 +110,7 @@ const bookNameMap: Record<string, string> = {
   "rev": "revelation"
 };
 
-// Use a reliable public domain Bible API
+// Use our server-side API proxy
 async function fetchChapter(bookCode: string, chapter: number): Promise<BibleChapter> {
   const bookName = bookNameMap[bookCode];
   if (!bookName) {
@@ -118,30 +118,19 @@ async function fetchChapter(bookCode: string, chapter: number): Promise<BibleCha
   }
 
   try {
-    // Try bible-api.com with proper URL encoding
-    const url = `https://bible-api.com/${encodeURIComponent(bookName)}+${chapter}?translation=rv1960`;
-    console.log("Fetching from:", url);
-    
-    const response = await fetch(url);
+    const response = await fetch(`/api/bible/${bookName}/${chapter}?version=rv1960`);
     
     if (!response.ok) {
       throw new Error(`Error HTTP ${response.status}`);
     }
     
-    const data = await response.json();
+    const result = await response.json();
     
-    if (!data.verses || !Array.isArray(data.verses)) {
-      throw new Error("Formato de respuesta inválido");
+    if (!result.success || !result.data) {
+      throw new Error(result.error || "Error al cargar el capítulo");
     }
     
-    return {
-      reference: data.reference,
-      chapterNumber: chapter,
-      verses: data.verses.map((verse: any) => ({
-        number: verse.verse,
-        text: verse.text
-      }))
-    };
+    return result.data;
   } catch (error) {
     console.error("Error fetching chapter:", error);
     // Fallback: Use a simple local data structure for common chapters
