@@ -2,17 +2,25 @@ import { useState, useEffect } from "react";
 import { RefreshCw, MapPin, Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, parseISO, isToday, isTomorrow, isThisWeek, isAfter } from "date-fns";
+import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
-import ical from 'ical';
 
+// Extract the calendar ID from the iCal URL
 const ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
+const CALENDAR_ID = "4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com";
+const API_KEY = "AIzaSyBKrdFMcIXY6oKMFEZw14OygjXv0vFh2GU";
 
 interface CalendarEvent {
   id: string;
   summary: string;
-  start: Date;
-  end: Date;
+  start: {
+    dateTime?: string;
+    date?: string;
+  };
+  end: {
+    dateTime?: string;
+    date?: string;
+  };
   location?: string;
   description?: string;
 }
@@ -24,24 +32,32 @@ interface EventCardProps {
 const EventCard = ({ event }: EventCardProps) => {
   const [expanded, setExpanded] = useState(false);
   
-  const isAllDay = event.start.getHours() === 0 && event.start.getMinutes() === 0;
+  const startDate = event.start.dateTime 
+    ? parseISO(event.start.dateTime)
+    : parseISO(event.start.date!);
+  
+  const endDate = event.end.dateTime 
+    ? parseISO(event.end.dateTime)
+    : parseISO(event.end.date!);
+  
+  const isAllDay = !event.start.dateTime;
   
   const formatDateRange = () => {
     if (isAllDay) {
-      return format(event.start, "EEE, MMM d", { locale: es });
+      return format(startDate, "EEE, MMM d", { locale: es });
     }
     
-    const startFormatted = format(event.start, "h:mm a", { locale: es });
-    const endFormatted = format(event.end, "h:mm a", { locale: es });
+    const startFormatted = format(startDate, "h:mm a", { locale: es });
+    const endFormatted = format(endDate, "h:mm a", { locale: es });
     
-    return `${format(event.start, "EEE", { locale: es })} ${startFormatted} - ${endFormatted}`;
+    return `${format(startDate, "EEE", { locale: es })} ${startFormatted} - ${endFormatted}`;
   };
   
   const getDateBadge = () => {
-    if (isToday(event.start)) return "HOY";
-    if (isTomorrow(event.start)) return "MAÑANA";
-    if (isThisWeek(event.start)) return format(event.start, "EEE", { locale: es }).toUpperCase();
-    return format(event.start, "MMM d", { locale: es }).toUpperCase();
+    if (isToday(startDate)) return "HOY";
+    if (isTomorrow(startDate)) return "MAÑANA";
+    if (isThisWeek(startDate)) return format(startDate, "EEE", { locale: es }).toUpperCase();
+    return format(startDate, "MMM d", { locale: es }).toUpperCase();
   };
 
   return (
@@ -120,43 +136,22 @@ const UpcomingEvents = () => {
     setError(null);
     
     try {
-      const response = await fetch(ICAL_URL);
+      const timeMin = new Date().toISOString();
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=10`;
+      
+      console.log("Fetching events from:", url);
+      
+      const response = await fetch(url);
       
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error("API Error:", response.status, response.statusText, errorData);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       
-      const icalData = await response.text();
-      
-      // Parse iCal data
-      const parsedData = ical.parseICS(icalData);
-      const now = new Date();
-      
-      const upcomingEvents: CalendarEvent[] = [];
-      
-      for (const key in parsedData) {
-        const event = parsedData[key];
-        if (event.type === 'VEVENT') {
-          const startDate = new Date(event.start);
-          
-          // Only include future events
-          if (isAfter(startDate, now) || isToday(startDate)) {
-            upcomingEvents.push({
-              id: event.uid || key,
-              summary: event.summary || 'Evento sin título',
-              start: new Date(event.start),
-              end: new Date(event.end),
-              location: event.location,
-              description: event.description
-            });
-          }
-        }
-      }
-      
-      // Sort by start date
-      upcomingEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
-      
-      setEvents(upcomingEvents);
+      const data = await response.json();
+      console.log("Events data:", data);
+      setEvents(data.items || []);
     } catch (err) {
       console.error("Error fetching events:", err);
       setError(err instanceof Error ? err.message : "Error al cargar eventos");
