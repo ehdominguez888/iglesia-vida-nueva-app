@@ -1,14 +1,91 @@
 import { defineHandler } from "nitro";
 import { getQuery } from "nitro/h3";
 
+// Map our book codes to API book names
+const bookNameMap: Record<string, string> = {
+  "gen": "genesis",
+  "exo": "exodo",
+  "lev": "levitico",
+  "num": "numeros",
+  "deu": "deuteronomio",
+  "jos": "josue",
+  "jdg": "jueces",
+  "rut": "rut",
+  "1sa": "1-samuel",
+  "2sa": "2-samuel",
+  "1ki": "1-reyes",
+  "2ki": "2-reyes",
+  "1ch": "1-cronicas",
+  "2ch": "2-cronicas",
+  "ezr": "esdras",
+  "neh": "nehemias",
+  "est": "ester",
+  "job": "job",
+  "psa": "salmos",
+  "pro": "proverbios",
+  "ecc": "eclesiastes",
+  "sng": "cantares",
+  "isa": "isaias",
+  "jer": "jeremias",
+  "lam": "lamentaciones",
+  "ezk": "ezequiel",
+  "dan": "daniel",
+  "hos": "oseas",
+  "jol": "joel",
+  "amo": "amos",
+  "oba": "abdias",
+  "jon": "jonas",
+  "mic": "miqueas",
+  "nam": "nahum",
+  "hab": "habacuc",
+  "zep": "sofonias",
+  "hag": "hageo",
+  "zec": "zacarias",
+  "mal": "malaquias",
+  "mat": "mateo",
+  "mrk": "marcos",
+  "luk": "lucas",
+  "jhn": "juan",
+  "act": "hechos",
+  "rom": "romanos",
+  "1co": "1-corintios",
+  "2co": "2-corintios",
+  "gal": "galatas",
+  "eph": "efesios",
+  "php": "filipenses",
+  "col": "colosenses",
+  "1th": "1-tesalonicenses",
+  "2th": "2-tesalonicenses",
+  "1ti": "1-timoteo",
+  "2ti": "2-timoteo",
+  "tit": "tito",
+  "phm": "filemon",
+  "heb": "hebreos",
+  "jas": "santiago",
+  "1pe": "1-pedro",
+  "2pe": "2-pedro",
+  "1jn": "1-juan",
+  "2jn": "2-juan",
+  "3jn": "3-juan",
+  "jud": "judas",
+  "rev": "apocalipsis"
+};
+
 export default defineHandler(async (event) => {
   const { book, chapter } = event.context.params;
   const query = getQuery(event);
-  const version = query.version || "rv1960";
-
+  
   try {
-    // Use bible-api.com with proper URL construction
-    const url = `https://bible-api.com/${book}+${chapter}?translation=${version}`;
+    // Use a reliable Spanish Bible API with Reina Valera 1960
+    const apiBookName = bookNameMap[book];
+    if (!apiBookName) {
+      throw new Error(`Libro no encontrado: ${book}`);
+    }
+
+    // Using Biblia API which has reliable Spanish translations
+    const url = `https://api.biblia.com/v1/bible/content/RVR1960.txt.json?passage=${apiBookName}${chapter}&key=fd37d8f28b95ae3b38a40a2b9ef6c5e4`;
+    
+    console.log("Fetching from:", url);
     
     const response = await fetch(url);
     
@@ -18,15 +95,28 @@ export default defineHandler(async (event) => {
     
     const data = await response.json();
     
+    if (!data.text) {
+      throw new Error("No se encontró texto bíblico");
+    }
+    
+    // Parse the text into verses
+    const verses: Array<{number: number; text: string}> = [];
+    const verseRegex = /(\d+)\s+(.+?)(?=\d+\s+|$)/gs;
+    let match;
+    
+    while ((match = verseRegex.exec(data.text)) !== null) {
+      verses.push({
+        number: parseInt(match[1]),
+        text: match[2].trim()
+      });
+    }
+    
     return {
       success: true,
       data: {
-        reference: data.reference,
+        reference: `${bookNameMap[book]} ${chapter}`,
         chapterNumber: parseInt(chapter),
-        verses: data.verses.map((verse: any) => ({
-          number: verse.verse,
-          text: verse.text
-        }))
+        verses: verses
       }
     };
   } catch (error) {
