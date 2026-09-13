@@ -28,8 +28,8 @@ export type BibleChapter = {
   verses: BibleVerse[];
 };
 
-const API_BASE = "https://api.getbible.net/v2";
-const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+// Use a more reliable Bible API
+const API_BASE = "https://bible-api.com";
 const CACHE_KEY_PREFIX = "inv:bible";
 const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 días
 
@@ -59,38 +59,44 @@ function writeCache<T>(key: string, data: T) {
   }
 }
 
-async function fetchJson(url: string): Promise<unknown> {
-  let response: Response;
-  try {
-    response = await fetch(url);
-  } catch {
-    // Intenta usando un proxy CORS (para entornos donde el acceso directo está bloqueado)
-    const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(url)}`;
-    response = await fetch(proxiedUrl);
-  }
-
-  if (!response.ok) {
-    throw new Error(`Error HTTP ${response.status}`);
-  }
-  return await response.json();
-}
-
 async function fetchChapter(
   translation: string,
   book: string,
   chapter: number
 ): Promise<BibleChapter> {
-  const url = `${API_BASE}/${translation.toLowerCase()}/${book}/${chapter}.json`;
-  const data = await fetchJson(url) as Record<string, unknown>;
-  const rawVerses = (data?.chapter as Record<string, unknown> | undefined)?.verses ?? [];
-  const verses = (rawVerses as Array<{ number?: unknown; text?: unknown }>).map((entry) => ({
-    number: Number(entry?.number ?? 0),
-    text: String(entry?.text ?? ""),
-  }));
+  // Map translation codes to bible-api.com format
+  const translationMap: Record<string, string> = {
+    "RVR1960": "rv1960",
+    "LBLA": "lbla",
+    "NTV": "ntv",
+    "KJV": "kjv",
+    "WEB": "web"
+  };
+
+  const apiTranslation = translationMap[translation] || translation.toLowerCase();
+  const url = `${API_BASE}/${book}.${chapter}?translation=${apiTranslation}`;
+  
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error(`Error HTTP ${response.status}`);
+  }
+  
+  const data = await response.json() as {
+    reference: string;
+    verses: Array<{
+      verse: number;
+      text: string;
+    }>;
+  };
+  
   return {
-    reference: String(data?.reference ?? ""),
-    chapterNumber: Number((data?.chapter as Record<string, unknown>)?.number ?? chapter),
-    verses,
+    reference: data.reference,
+    chapterNumber: chapter,
+    verses: data.verses.map(verse => ({
+      number: verse.verse,
+      text: verse.text
+    }))
   };
 }
 
