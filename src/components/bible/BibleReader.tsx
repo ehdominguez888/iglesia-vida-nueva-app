@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Loader2, BookOpenText, Download, RefreshCw } from "lucide-react";
+import { Loader2, BookOpenText, Download, ExternalLink } from "lucide-react";
 import { getChapter, type BibleChapter } from "@/lib/bible";
 import { type BibleBook } from "@/data/books";
 import { showError } from "@/utils/toast";
@@ -44,6 +44,8 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     verseStart: verseStart || undefined
   });
 
+  const bibleGatewayUrl = `https://www.biblegateway.com/passage/?search=${book.name}+${chapter}&version=RVR1960`;
+
   if (loading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center rounded-3xl border border-border bg-card">
@@ -65,9 +67,6 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
         <p className="mt-2 text-sm text-muted-foreground">
           {error || "Error al conectar con la fuente de la Biblia"}
         </p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Verifica tu conexión a internet e intenta de nuevo.
-        </p>
         
         <div className="mt-4 flex flex-col gap-2">
           <Button
@@ -75,23 +74,38 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
             variant="outline"
             className="flex items-center gap-2"
           >
-            <RefreshCw className="h-4 w-4" />
+            <Loader2 className="h-4 w-4" />
             Reintentar
           </Button>
           
-          <a
-            href={blueLetterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-          >
-            <Download className="h-4 w-4" />
-            Abrir en Blue Letter Bible
-          </a>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <a
+              href={blueLetterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Blue Letter Bible
+            </a>
+            
+            <a
+              href={bibleGatewayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Bible Gateway
+            </a>
+          </div>
         </div>
       </div>
     );
   }
+
+  // Check if this is a placeholder chapter
+  const isPlaceholder = chapterData.verses[0]?.text.includes("no está disponible");
 
   // Filter verses if a range is selected
   const filteredVerses = chapterData.verses.filter((verse) => {
@@ -109,6 +123,14 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
           {chapterData.reference}
         </h2>
         <p className="text-sm text-muted-foreground">Reina-Valera 1960</p>
+        
+        {isPlaceholder && (
+          <div className="mt-3 rounded-xl bg-yellow-50 p-3 text-yellow-800">
+            <p className="text-sm font-medium">
+              ⚠️ Este capítulo no está disponible en la base de datos local
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -121,6 +143,36 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
           </div>
         ))}
       </div>
+
+      {isPlaceholder && (
+        <div className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <h3 className="font-semibold text-primary mb-2">¿Quieres leer este capítulo completo?</h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            Visita estos sitios para leer {book.name} {chapter} completo:
+          </p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <a
+              href={blueLetterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Blue Letter Bible
+            </a>
+            
+            <a
+              href={bibleGatewayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Bible Gateway
+            </a>
+          </div>
+        </div>
+      )}
 
       {verseStart && verseEnd && verseEnd > verseStart && (
         <p className="mt-6 text-center text-sm text-muted-foreground">

@@ -1,4 +1,5 @@
 import { BIBLE_BOOKS, type BibleBook } from "@/data/books";
+import { getSpanishBibleChapter, type BibleChapter as SpanishBibleChapter } from "@/data/spanish-bible";
 
 export type BibleVerse = {
   number: number;
@@ -40,8 +41,15 @@ function writeCache<T>(key: string, data: T) {
   }
 }
 
-// Use our server-side API proxy
+// Use local Spanish Bible database
 async function fetchChapter(bookCode: string, chapter: number): Promise<BibleChapter> {
+  // First try local database
+  const localChapter = getSpanishBibleChapter(bookCode, chapter);
+  if (localChapter) {
+    return localChapter;
+  }
+
+  // If not in local database, try server API
   try {
     const response = await fetch(`/api/bible/${bookCode}/${chapter}`);
     
@@ -58,51 +66,22 @@ async function fetchChapter(bookCode: string, chapter: number): Promise<BibleCha
     return result.data;
   } catch (error) {
     console.error("Error fetching chapter:", error);
-    // Fallback: Use a simple local data structure for common chapters
-    const fallback = getFallbackChapter(bookCode, chapter);
-    if (fallback) {
-      return fallback;
-    }
     
-    throw new Error("No se pudo cargar el capítulo. Verifica tu conexión a internet e intenta de nuevo.");
+    // Create a placeholder chapter for unavailable chapters
+    const book = BIBLE_BOOKS.find(b => b.code === bookCode);
+    const bookName = book?.name || bookCode;
+    
+    return {
+      reference: `${bookName} ${chapter}`,
+      chapterNumber: chapter,
+      verses: [
+        {
+          number: 1,
+          text: `Este capítulo no está disponible en la base de datos local. Para leer ${bookName} ${chapter}, por favor visita Blue Letter Bible o Bible Gateway.`
+        }
+      ]
+    };
   }
-}
-
-// Simple fallback for some common chapters
-function getFallbackChapter(bookCode: string, chapter: number): BibleChapter | null {
-  const fallbacks: Record<string, Record<number, BibleChapter>> = {
-    "psa": {
-      1: {
-        reference: "Salmos 1",
-        chapterNumber: 1,
-        verses: [
-          { number: 1, text: "Bienaventurado el varón que no anduvo en consejo de malos, Ni estuvo en camino de pecadores, Ni en silla de escarnecedores se ha sentado;" },
-          { number: 2, text: "Sino que en la ley de Jehová está su delicia, Y en su ley medita de día y de noche." },
-          { number: 3, text: "Será como árbol plantado junto a corrientes de aguas, Que da su fruto en su tiempo, Y su hoja no cae; Y todo lo que hace, prosperará." }
-        ]
-      },
-      23: {
-        reference: "Salmos 23",
-        chapterNumber: 23,
-        verses: [
-          { number: 1, text: "Jehová es mi pastor; nada me faltará." },
-          { number: 2, text: "En lugares de delicados pastos me hará descansar; Junto a aguas de reposo me pastoreará." },
-          { number: 3, text: "Confortará mi alma; Me guiará por sendas de justicia por amor de su nombre." }
-        ]
-      }
-    },
-    "jhn": {
-      3: {
-        reference: "Juan 3",
-        chapterNumber: 3,
-        verses: [
-          { number: 16, text: "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna." }
-        ]
-      }
-    }
-  };
-
-  return fallbacks[bookCode]?.[chapter] || null;
 }
 
 /**

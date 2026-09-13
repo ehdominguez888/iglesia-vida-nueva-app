@@ -1,124 +1,61 @@
 import { defineHandler } from "nitro";
 import { getQuery } from "nitro/h3";
 
-// Map our book codes to API book names
-const bookNameMap: Record<string, string> = {
-  "gen": "genesis",
-  "exo": "exodo",
-  "lev": "levitico",
-  "num": "numeros",
-  "deu": "deuteronomio",
-  "jos": "josue",
-  "jdg": "jueces",
-  "rut": "rut",
-  "1sa": "1-samuel",
-  "2sa": "2-samuel",
-  "1ki": "1-reyes",
-  "2ki": "2-reyes",
-  "1ch": "1-cronicas",
-  "2ch": "2-cronicas",
-  "ezr": "esdras",
-  "neh": "nehemias",
-  "est": "ester",
-  "job": "job",
-  "psa": "salmos",
-  "pro": "proverbios",
-  "ecc": "eclesiastes",
-  "sng": "cantares",
-  "isa": "isaias",
-  "jer": "jeremias",
-  "lam": "lamentaciones",
-  "ezk": "ezequiel",
-  "dan": "daniel",
-  "hos": "oseas",
-  "jol": "joel",
-  "amo": "amos",
-  "oba": "abdias",
-  "jon": "jonas",
-  "mic": "miqueas",
-  "nam": "nahum",
-  "hab": "habacuc",
-  "zep": "sofonias",
-  "hag": "hageo",
-  "zec": "zacarias",
-  "mal": "malaquias",
-  "mat": "mateo",
-  "mrk": "marcos",
-  "luk": "lucas",
-  "jhn": "juan",
-  "act": "hechos",
-  "rom": "romanos",
-  "1co": "1-corintios",
-  "2co": "2-corintios",
-  "gal": "galatas",
-  "eph": "efesios",
-  "php": "filipenses",
-  "col": "colosenses",
-  "1th": "1-tesalonicenses",
-  "2th": "2-tesalonicenses",
-  "1ti": "1-timoteo",
-  "2ti": "2-timoteo",
-  "tit": "tito",
-  "phm": "filemon",
-  "heb": "hebreos",
-  "jas": "santiago",
-  "1pe": "1-pedro",
-  "2pe": "2-pedro",
-  "1jn": "1-juan",
-  "2jn": "2-juan",
-  "3jn": "3-juan",
-  "jud": "judas",
-  "rev": "apocalipsis"
-};
-
 export default defineHandler(async (event) => {
   const { book, chapter } = event.context.params;
   const query = getQuery(event);
   
   try {
-    // Use a reliable Spanish Bible API with Reina Valera 1960
-    const apiBookName = bookNameMap[book];
-    if (!apiBookName) {
-      throw new Error(`Libro no encontrado: ${book}`);
-    }
-
-    // Using Biblia API which has reliable Spanish translations
-    const url = `https://api.biblia.com/v1/bible/content/RVR1960.txt.json?passage=${apiBookName}${chapter}&key=fd37d8f28b95ae3b38a40a2b9ef6c5e4`;
+    // Import the local database
+    const { getSpanishBibleChapter } = await import("@/data/spanish-bible");
     
-    console.log("Fetching from:", url);
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // First try local database
+    const localChapter = getSpanishBibleChapter(book, parseInt(chapter));
+    if (localChapter) {
+      return {
+        success: true,
+        data: localChapter,
+        source: "local_database"
+      };
     }
     
-    const data = await response.json();
+    // If not in local database, provide a helpful message
+    const bookNames: Record<string, string> = {
+      "gen": "Génesis", "exo": "Éxodo", "lev": "Levítico", "num": "Números", "deu": "Deuteronomio",
+      "jos": "Josué", "jdg": "Jueces", "rut": "Rut", "1sa": "1 Samuel", "2sa": "2 Samuel",
+      "1ki": "1 Reyes", "2ki": "2 Reyes", "1ch": "1 Crónicas", "2ch": "2 Crónicas",
+      "ezr": "Esdras", "neh": "Nehemías", "est": "Ester", "job": "Job", "psa": "Salmos",
+      "pro": "Proverbios", "ecc": "Eclesiastés", "sng": "Cantares", "isa": "Isaías",
+      "jer": "Jeremías", "lam": "Lamentaciones", "ezk": "Ezequiel", "dan": "Daniel",
+      "hos": "Oseas", "jol": "Joel", "amo": "Amós", "oba": "Abdías", "jon": "Jonás",
+      "mic": "Miqueas", "nam": "Nahúm", "hab": "Habacuc", "zep": "Sofonías", "hag": "Hageo",
+      "zec": "Zacarías", "mal": "Malaquías", "mat": "Mateo", "mrk": "Marcos", "luk": "Lucas",
+      "jhn": "Juan", "act": "Hechos", "rom": "Romanos", "1co": "1 Corintios", "2co": "2 Corintios",
+      "gal": "Gálatas", "eph": "Efesios", "php": "Filipenses", "col": "Colosenses",
+      "1th": "1 Tesalonicenses", "2th": "2 Tesalonicenses", "1ti": "1 Timoteo", "2ti": "2 Timoteo",
+      "tit": "Tito", "phm": "Filemón", "heb": "Hebreos", "jas": "Santiago", "1pe": "1 Pedro",
+      "2pe": "2 Pedro", "1jn": "1 Juan", "2jn": "2 Juan", "3jn": "3 Juan", "jud": "Judas",
+      "rev": "Apocalipsis"
+    };
     
-    if (!data.text) {
-      throw new Error("No se encontró texto bíblico");
-    }
-    
-    // Parse the text into verses
-    const verses: Array<{number: number; text: string}> = [];
-    const verseRegex = /(\d+)\s+(.+?)(?=\d+\s+|$)/gs;
-    let match;
-    
-    while ((match = verseRegex.exec(data.text)) !== null) {
-      verses.push({
-        number: parseInt(match[1]),
-        text: match[2].trim()
-      });
-    }
+    const bookName = bookNames[book] || book;
     
     return {
       success: true,
       data: {
-        reference: `${bookNameMap[book]} ${chapter}`,
+        reference: `${bookName} ${chapter}`,
         chapterNumber: parseInt(chapter),
-        verses: verses
-      }
+        verses: [
+          {
+            number: 1,
+            text: `Este capítulo no está disponible en la base de datos local. Para leer ${bookName} ${chapter}, por favor visita Blue Letter Bible o Bible Gateway.`
+          }
+        ]
+      },
+      source: "placeholder",
+      note: "Capítulo no disponible localmente"
     };
+    
   } catch (error) {
     console.error("Bible API error:", error);
     return {
