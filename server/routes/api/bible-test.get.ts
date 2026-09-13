@@ -2,25 +2,25 @@ import { defineHandler } from "nitro";
 
 export default defineHandler(async () => {
   const tests = [
-    { label: "Juan 3:16", url: "https://bible-api.com/John+3:16?translation=rvr" },
-    { label: "Levítico 1 (Leviticus)", url: "https://bible-api.com/Leviticus+1?translation=rvr" },
-    { label: "Salmos 23 (Psalms)", url: "https://bible-api.com/Psalms+23?translation=rvr" },
+    { label: "Génesis 1", book: "genesis", chapter: 1 },
+    { label: "Salmos 23", book: "salmos", chapter: 23 },
+    { label: "Juan 3", book: "juan", chapter: 3 },
   ];
 
   const results = [];
 
   for (const test of tests) {
     try {
-      console.log(`[Bible Test] Fetching: ${test.url}`);
-      const response = await fetch(test.url, {
-        headers: { Accept: "application/json" },
-      });
-
+      const url = `/api/bible/${test.book}/${test.chapter}`;
+      console.log(`[Bible Test] Fetching: ${url}`);
+      
+      const response = await fetch(`http://localhost:8080${url}`);
+      
       if (!response.ok) {
         const body = await response.text();
         results.push({
           label: test.label,
-          url: test.url,
+          url: url,
           status: response.status,
           ok: false,
           error: body.substring(0, 200),
@@ -31,17 +31,17 @@ export default defineHandler(async () => {
       const data = await response.json();
       results.push({
         label: test.label,
-        url: test.url,
+        url: url,
         status: response.status,
         ok: true,
-        versesCount: data.verses?.length ?? 0,
-        firstVerse: data.verses?.[0]?.text?.substring(0, 80) ?? "—",
-        reference: data.reference,
+        versesCount: data.data?.verses?.length ?? 0,
+        firstVerse: data.data?.verses?.[0]?.text?.substring(0, 80) ?? "—",
+        book: data.data?.book,
       });
     } catch (err) {
       results.push({
         label: test.label,
-        url: test.url,
+        url: `/api/bible/${test.book}/${test.chapter}`,
         ok: false,
         error: err instanceof Error ? err.message : "Unknown error",
       });

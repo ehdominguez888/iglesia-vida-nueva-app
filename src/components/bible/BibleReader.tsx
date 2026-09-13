@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Loader2, BookOpenText, RefreshCw } from "lucide-react";
+import { Loader2, BookOpenText, RefreshCw, AlertCircle } from "lucide-react";
 import { getChapter, clearBibleCache, type BibleChapter } from "@/lib/bible";
 import { type BibleBook } from "@/data/books";
-import { showError, showSuccess } from "@/utils/toast";
+import { showError } from "@/utils/toast";
 import { Button } from "@/components/ui/button";
 
 type BibleReaderProps = {
@@ -26,10 +26,13 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     }
 
     try {
+      console.log(`Loading chapter: ${book.code} ${chapter}`);
       const data = await getChapter("RVR1960", book.code, chapter);
+      console.log(`Chapter loaded:`, data);
       setChapterData(data);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al cargar el capítulo";
+      console.error(`Error loading chapter:`, err);
       setError(msg);
       showError(msg);
     } finally {
@@ -57,11 +60,16 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
   if (error || !chapterData) {
     return (
       <div className="rounded-3xl border border-destructive/20 bg-destructive/5 p-6 text-center">
-        <BookOpenText className="mx-auto h-12 w-12 text-destructive/70" />
+        <AlertCircle className="mx-auto h-12 w-12 text-destructive/70" />
         <h3 className="mt-3 font-display text-lg font-semibold text-destructive">
           Error al cargar el capítulo
         </h3>
-        <p className="mt-2 text-sm text-muted-foreground">{error}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {error || "No se pudo cargar el capítulo solicitado."}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Libro: {book.code}, Capítulo: {chapter}
+        </p>
 
         <Button
           onClick={() => loadChapter(true)}
@@ -71,6 +79,10 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
           <RefreshCw className="mr-2 h-4 w-4" />
           Reintentar
         </Button>
+        
+        <div className="mt-4 text-xs text-muted-foreground">
+          <p>Si el problema persiste, prueba con un libro o capítulo diferente.</p>
+        </div>
       </div>
     );
   }
@@ -92,6 +104,9 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
           {book.name} {chapter}
         </h2>
         <p className="text-sm text-muted-foreground">Reina-Valera 1960</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {filteredVerses.length} de {chapterData.verses.length} versículos mostrados
+        </p>
       </div>
 
       {/* Verses */}
