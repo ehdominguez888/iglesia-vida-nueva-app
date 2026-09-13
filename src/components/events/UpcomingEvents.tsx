@@ -8,7 +8,7 @@ import { es } from "date-fns/locale";
 // Extract the calendar ID from the iCal URL
 const ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
 const CALENDAR_ID = "4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com";
-const API_KEY = "AIzaSyBKrdFMcIXY6oKMFEZw14OygjXv0vFh2GU";
+const API_KEY = "AIzaSyDeiji5_OBa_J2xzAfZhXyulI94U-y73KI";
 
 interface CalendarEvent {
   id: string;
