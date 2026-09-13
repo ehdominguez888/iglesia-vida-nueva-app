@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Loader2, BookOpenText } from "lucide-react";
+import { Loader2, BookOpenText, Download } from "lucide-react";
 import { getChapter, type BibleChapter } from "@/lib/bible";
 import { type BibleBook } from "@/data/books";
 import { showError } from "@/utils/toast";
+import { buildBibleUrl } from "@/lib/bible-link";
 
 type BibleReaderProps = {
   book: BibleBook;
@@ -35,6 +36,13 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     loadChapter();
   }, [book.code, chapter]);
 
+  const blueLetterUrl = buildBibleUrl({
+    versionCode: "rvr1960",
+    bookCode: book.code,
+    chapter,
+    verseStart: verseStart || undefined
+  });
+
   if (loading) {
     return (
       <div className="flex min-h-[200px] items-center justify-center rounded-3xl border border-border bg-card">
@@ -50,9 +58,21 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     return (
       <div className="rounded-3xl border border-border bg-card p-6 text-center">
         <BookOpenText className="mx-auto h-12 w-12 text-muted-foreground" />
-        <p className="mt-3 text-sm text-muted-foreground">
-          {error || "No se pudo cargar el capítulo"}
+        <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
+          No se pudo cargar el capítulo
+        </h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {error || "Error al conectar con la fuente de la Biblia"}
         </p>
+        <a
+          href={blueLetterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          <Download className="h-4 w-4" />
+          Abrir en Blue Letter Bible
+        </a>
       </div>
     );
   }
