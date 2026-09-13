@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Loader2, BookOpenText, Download } from "lucide-react";
+import { Loader2, BookOpenText, Download, RefreshCw } from "lucide-react";
 import { getChapter, type BibleChapter } from "@/lib/bible";
 import { type BibleBook } from "@/data/books";
 import { showError } from "@/utils/toast";
 import { buildBibleUrl } from "@/lib/bible-link";
+import { Button } from "@/components/ui/button";
 
 type BibleReaderProps = {
   book: BibleBook;
@@ -17,22 +18,22 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadChapter = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getChapter("RVR1960", book.code, chapter);
-        setChapterData(data);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Error al cargar el capítulo";
-        setError(errorMessage);
-        showError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadChapter = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getChapter("RVR1960", book.code, chapter);
+      setChapterData(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Error al cargar el capítulo";
+      setError(errorMessage);
+      showError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadChapter();
   }, [book.code, chapter]);
 
@@ -64,15 +65,30 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
         <p className="mt-2 text-sm text-muted-foreground">
           {error || "Error al conectar con la fuente de la Biblia"}
         </p>
-        <a
-          href={blueLetterUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-        >
-          <Download className="h-4 w-4" />
-          Abrir en Blue Letter Bible
-        </a>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Verifica tu conexión a internet e intenta de nuevo.
+        </p>
+        
+        <div className="mt-4 flex flex-col gap-2">
+          <Button
+            onClick={loadChapter}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Reintentar
+          </Button>
+          
+          <a
+            href={blueLetterUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          >
+            <Download className="h-4 w-4" />
+            Abrir en Blue Letter Bible
+          </a>
+        </div>
       </div>
     );
   }
