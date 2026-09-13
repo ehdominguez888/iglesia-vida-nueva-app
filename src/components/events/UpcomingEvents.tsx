@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
+// Extract the calendar ID from the iCal URL
+const ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
 const CALENDAR_ID = "4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com";
 const API_KEY = "AIzaSyBKrdFMcIXY6oKMFEZw14OygjXv0vFh2GU";
 
@@ -39,8 +41,6 @@ const EventCard = ({ event }: EventCardProps) => {
     : parseISO(event.end.date!);
   
   const isAllDay = !event.start.dateTime;
-  const dateFormat = isAllDay ? "EEE, MMM d" : "EEE, h:mm a";
-  const timeFormat = isAllDay ? "" : "h:mm a";
   
   const formatDateRange = () => {
     if (isAllDay) {
@@ -139,17 +139,22 @@ const UpcomingEvents = () => {
       const timeMin = new Date().toISOString();
       const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=10`;
       
+      console.log("Fetching events from:", url);
+      
       const response = await fetch(url);
       
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error("API Error:", response.status, response.statusText, errorData);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log("Events data:", data);
       setEvents(data.items || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al cargar eventos");
       console.error("Error fetching events:", err);
+      setError(err instanceof Error ? err.message : "Error al cargar eventos");
     } finally {
       setLoading(false);
     }
