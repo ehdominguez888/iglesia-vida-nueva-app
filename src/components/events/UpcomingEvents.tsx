@@ -5,16 +5,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
-const ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
+const CALENDAR_ID = "4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com";
 
 interface CalendarEvent {
   id: string;
   summary: string;
-  start: string;
-  end: string;
+  start: {
+    dateTime?: string;
+    date?: string;
+  };
+  end: {
+    dateTime?: string;
+    date?: string;
+  };
   location?: string;
   description?: string;
-  isAllDay: boolean;
 }
 
 interface EventCardProps {
@@ -24,11 +29,18 @@ interface EventCardProps {
 const EventCard = ({ event }: EventCardProps) => {
   const [expanded, setExpanded] = useState(false);
   
-  const startDate = parseISO(event.start);
-  const endDate = parseISO(event.end);
+  const startDate = event.start.dateTime 
+    ? parseISO(event.start.dateTime)
+    : parseISO(event.start.date!);
+  
+  const endDate = event.end.dateTime 
+    ? parseISO(event.end.dateTime)
+    : parseISO(event.end.date!);
+  
+  const isAllDay = !event.start.dateTime;
   
   const formatDateRange = () => {
-    if (event.isAllDay) {
+    if (isAllDay) {
       return format(startDate, "EEE, MMM d", { locale: es });
     }
     
@@ -111,73 +123,6 @@ const EventSkeleton = () => (
   </div>
 );
 
-// Simple iCal parser for basic events
-const parseICalEvents = (icalData: string): CalendarEvent[] => {
-  const events: CalendarEvent[] = [];
-  const lines = icalData.split('\n');
-  
-  let currentEvent: Partial<CalendarEvent> = {};
-  let inEvent = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    
-    if (line === 'BEGIN:VEVENT') {
-      inEvent = true;
-      currentEvent = {};
-      continue;
-    }
-    
-    if (line === 'END:VEVENT') {
-      if (inEvent && currentEvent.summary && currentEvent.start && currentEvent.end) {
-        events.push({
-          id: currentEvent.id || Math.random().toString(),
-          summary: currentEvent.summary,
-          start: currentEvent.start,
-          end: currentEvent.end,
-          location: currentEvent.location,
-          description: currentEvent.description,
-          isAllDay: currentEvent.isAllDay || false
-        });
-      }
-      inEvent = false;
-      continue;
-    }
-    
-    if (inEvent) {
-      if (line.startsWith('SUMMARY:')) {
-        currentEvent.summary = line.substring(8).trim();
-      } else if (line.startsWith('DTSTART;VALUE=DATE:')) {
-        const dateStr = line.substring(19).trim();
-        currentEvent.start = `${dateStr}T00:00:00`;
-        currentEvent.isAllDay = true;
-      } else if (line.startsWith('DTSTART:')) {
-        const dateStr = line.substring(8).trim();
-        currentEvent.start = dateStr.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6');
-      } else if (line.startsWith('DTEND;VALUE=DATE:')) {
-        const dateStr = line.substring(17).trim();
-        currentEvent.end = `${dateStr}T00:00:00`;
-      } else if (line.startsWith('DTEND:')) {
-        const dateStr = line.substring(6).trim();
-        currentEvent.end = dateStr.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6');
-      } else if (line.startsWith('LOCATION:')) {
-        currentEvent.location = line.substring(9).trim();
-      } else if (line.startsWith('DESCRIPTION:')) {
-        currentEvent.description = line.substring(12).trim();
-      } else if (line.startsWith('UID:')) {
-        currentEvent.id = line.substring(4).trim();
-      }
-    }
-  }
-  
-  return events.filter(event => {
-    const eventDate = parseISO(event.start);
-    return eventDate >= new Date();
-  }).sort((a, b) => {
-    return new Date(a.start).getTime() - new Date(b.start).getTime();
-  });
-};
-
 const UpcomingEvents = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,21 +133,19 @@ const UpcomingEvents = () => {
     setError(null);
     
     try {
-      console.log("Fetching iCal data from:", ICAL_URL);
+      console.log("Fetching events via server API");
       
-      const response = await fetch(ICAL_URL);
+      const response = await fetch(`/api/calendar-events?calendarId=${encodeURIComponent(CALENDAR_ID)}`);
       
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        const errorData = await response.json();
+        console.error("Server API Error:", response.status, errorData);
+        throw new Error(`Error ${response.status}: ${errorData.error || response.statusText}`);
       }
       
-      const icalData = await response.text();
-      console.log("iCal data received");
-      
-      const parsedEvents = parseICalEvents(icalData);
-      console.log("Parsed events:", parsedEvents);
-      
-      setEvents(parsedEvents);
+      const data = await response.json();
+      console.log("Events data:", data);
+      setEvents(data.events || []);
     } catch (err) {
       console.error("Error fetching events:", err);
       setError(err instanceof Error ? err.message : "Error al cargar eventos");
