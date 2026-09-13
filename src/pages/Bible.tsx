@@ -3,6 +3,7 @@ import { BookOpenText, ExternalLink } from "lucide-react";
 import BookSelect from "@/components/bible/BookSelect";
 import ChapterSelect from "@/components/bible/ChapterSelect";
 import VerseSelect from "@/components/bible/VerseSelect";
+import BibleReader from "@/components/bible/BibleReader";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { BIBLE_BOOKS, type BibleBook } from "@/data/books";
@@ -27,8 +28,11 @@ const Bible = () => {
   const book = BIBLE_BOOKS[bookIndex];
   const rangeInvalid = startVerse !== null && endVerse !== null && endVerse < startVerse;
 
+  // Get the RVR1960 version safely
+  const rvr1960Version = BIBLE_VERSIONS.find(v => v.id === "rvr1960") || null;
+
   const reference = formatReference({
-    version: BIBLE_VERSIONS.find(v => v.id === "rvr1960")!,
+    version: rvr1960Version,
     book,
     chapter,
     verseStart: startVerse,
@@ -47,6 +51,8 @@ const Bible = () => {
     const nextIndex = BIBLE_BOOKS.findIndex((candidate) => candidate.code === nextBook.code);
     if (nextIndex >= 0) setBookIndex(nextIndex);
     setChapter(1);
+    setStartVerse(null);
+    setEndVerse(null);
   };
 
   const handleTranslationChange = (translation: "rvr1960" | "more") => {
@@ -133,32 +139,42 @@ const Bible = () => {
         rangeInvalid={rangeInvalid}
       />
 
-      {/* Acción principal */}
-      <div className="space-y-3 pt-1">
-        {rangeInvalid ? (
-          <button
-            type="button"
-            disabled
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-muted text-base font-semibold text-muted-foreground"
-          >
-            Abrir pasaje
-            <ExternalLink className="h-5 w-5" />
-          </button>
-        ) : (
+      {/* Mostrar el lector de Biblia nativo para RVR1960 */}
+      {selectedTranslation === "rvr1960" && (
+        <BibleReader
+          book={book}
+          chapter={chapter}
+          verseStart={startVerse}
+          verseEnd={endVerse}
+        />
+      )}
+
+      {/* Botón para otras traducciones (solo visible cuando no hay rango inválido) */}
+      {selectedTranslation === "more" && !rangeInvalid && (
+        <div className="space-y-3 pt-1">
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-sm transition-transform active:scale-[0.99]"
           >
-            Abrir pasaje
+            Abrir en Blue Letter Bible
             <ExternalLink className="h-5 w-5" />
           </a>
-        )}
-        <p className="text-center text-xs leading-relaxed text-muted-foreground">
-          Se abrirá el pasaje en Blue Letter Bible en una pestaña nueva.
-        </p>
-      </div>
+          <p className="text-center text-xs leading-relaxed text-muted-foreground">
+            Se abrirá el pasaje en Blue Letter Bible en una pestaña nueva.
+          </p>
+        </div>
+      )}
+
+      {/* Mensaje de error para rango inválido */}
+      {rangeInvalid && (
+        <div className="rounded-3xl border border-destructive/20 bg-destructive/10 p-5 text-center">
+          <p className="text-sm font-medium text-destructive">
+            El versículo final no puede ser menor que el inicial.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
