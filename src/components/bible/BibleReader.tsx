@@ -89,7 +89,7 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
       {/* Header */}
       <div className="mb-6 text-center">
         <h2 className="font-display text-xl font-semibold text-foreground">
-          {chapterData.reference}
+          {book.name} {chapter}
         </h2>
         <p className="text-sm text-muted-foreground">Reina-Valera 1960</p>
       </div>

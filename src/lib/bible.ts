@@ -6,7 +6,7 @@ export type BibleVerse = {
 };
 
 export type BibleChapter = {
-  reference: string;
+  book: string;
   chapterNumber: number;
   verses: BibleVerse[];
 };
