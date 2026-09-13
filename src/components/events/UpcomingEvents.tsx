@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, MapPin, Calendar, Clock } from "lucide-react";
+import { RefreshCw, MapPin, Calendar, Clock, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
@@ -21,6 +21,8 @@ interface CalendarEvent {
   };
   location?: string;
   description?: string;
+  isRecurring?: boolean;
+  totalInstances?: number;
 }
 
 interface EventCardProps {
@@ -71,9 +73,17 @@ const EventCard = ({ event }: EventCardProps) => {
         
         {/* Event Details */}
         <div className="min-w-0 flex-1">
-          <h3 className="font-display text-lg font-semibold text-foreground">
-            {event.summary}
-          </h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              {event.summary}
+            </h3>
+            {event.isRecurring && (
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+                <Repeat className="h-3 w-3" />
+                Recurrente
+              </span>
+            )}
+          </div>
           
           {/* Time */}
           <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
@@ -103,6 +113,15 @@ const EventCard = ({ event }: EventCardProps) => {
                   {event.description}
                 </p>
               )}
+            </div>
+          )}
+          
+          {/* Recurring event note */}
+          {event.isRecurring && event.totalInstances && event.totalInstances > 1 && (
+            <div className="mt-3 rounded-lg bg-secondary/30 p-2">
+              <p className="text-xs text-muted-foreground">
+                Este es un evento recurrente. Se muestra solo la próxima fecha de {event.totalInstances} instancias futuras.
+              </p>
             </div>
           )}
         </div>
@@ -212,7 +231,8 @@ const UpcomingEvents = () => {
           </p>
           {debugInfo && (
             <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-muted-foreground">
-              <p>Debug: {debugInfo.itemsCount} eventos encontrados</p>
+              <p>Debug: {debugInfo.originalItemsCount} eventos originales</p>
+              <p>Procesados: {debugInfo.processedItemsCount} eventos</p>
               <p>Calendario: {debugInfo.summary}</p>
               <p>Zona horaria: {debugInfo.timeZone}</p>
               <p>Calendar ID usado: {debugInfo.apiCalendarId}</p>
