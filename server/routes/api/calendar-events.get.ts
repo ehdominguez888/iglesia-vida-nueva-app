@@ -15,7 +15,27 @@ export default defineHandler(async (event) => {
     const API_KEY = "AIzaSyDeiji5_OBa_J2xzAfZhXyulI94U-y73KI";
     const timeMin = new Date().toISOString();
     
-    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=20`;
+    // Extract the actual calendar ID from the iCal URL
+    // The iCal URL format: https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics
+    // The Google Calendar API needs: 4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com
+    
+    // Decode the URL-encoded calendar ID
+    const decodedCalendarId = decodeURIComponent(calendarId);
+    
+    // Extract just the calendar ID part (remove the iCal path)
+    let apiCalendarId = decodedCalendarId;
+    if (decodedCalendarId.includes('/ical/')) {
+      apiCalendarId = decodedCalendarId.split('/ical/')[1].split('/')[0];
+    }
+    
+    // Remove any URL encoding from the @ symbol
+    apiCalendarId = apiCalendarId.replace('%40', '@');
+    
+    console.log("Original calendar ID:", calendarId);
+    console.log("Decoded calendar ID:", decodedCalendarId);
+    console.log("API calendar ID:", apiCalendarId);
+    
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(apiCalendarId)}/events?key=${API_KEY}&singleEvents=true&orderBy=startTime&timeMin=${timeMin}&maxResults=20`;
     
     console.log("Fetching from Google Calendar API:", url);
     
@@ -53,7 +73,8 @@ export default defineHandler(async (event) => {
       debug: {
         itemsCount: data.items?.length || 0,
         timeZone: data.timeZone,
-        summary: data.summary
+        summary: data.summary,
+        apiCalendarId: apiCalendarId
       }
     };
     

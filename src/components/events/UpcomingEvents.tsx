@@ -5,7 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
-const CALENDAR_ID = "4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398@group.calendar.google.com";
+// Use the full iCal URL - the server will extract the correct calendar ID
+const CALENDAR_ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
 
 interface CalendarEvent {
   id: string;
@@ -135,9 +136,9 @@ const UpcomingEvents = () => {
     setDebugInfo(null);
     
     try {
-      console.log("Fetching events via server API");
+      console.log("Fetching events via server API with iCal URL:", CALENDAR_ICAL_URL);
       
-      const response = await fetch(`/api/calendar-events?calendarId=${encodeURIComponent(CALENDAR_ID)}`);
+      const response = await fetch(`/api/calendar-events?calendarId=${encodeURIComponent(CALENDAR_ICAL_URL)}`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -214,6 +215,7 @@ const UpcomingEvents = () => {
               <p>Debug: {debugInfo.itemsCount} eventos encontrados</p>
               <p>Calendario: {debugInfo.summary}</p>
               <p>Zona horaria: {debugInfo.timeZone}</p>
+              <p>Calendar ID usado: {debugInfo.apiCalendarId}</p>
             </div>
           )}
           <Button onClick={fetchEvents} variant="outline" size="sm" className="mt-4">
