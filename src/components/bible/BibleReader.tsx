@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
 import { Loader2, BookOpenText, RefreshCw, AlertCircle } from "lucide-react";
-import { getChapter, clearBibleCache, type BibleChapter } from "@/lib/bible";
 import { type BibleBook } from "@/data/books";
 import { showError } from "@/utils/toast";
 import { Button } from "@/components/ui/button";
+
+type BibleVerse = {
+  number: number;
+  text: string;
+};
+
+type BibleChapter = {
+  reference: string;
+  book: string;
+  chapter: number;
+  translation_name: string;
+  verses: BibleVerse[];
+};
 
 type BibleReaderProps = {
   book: BibleBook;
@@ -11,6 +23,92 @@ type BibleReaderProps = {
   verseStart?: number | null;
   verseEnd?: number | null;
 };
+
+const CACHE_KEY_PREFIX = "inv:bible";
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+const cacheKey = (book: string, chapter: number, verseStart?: number | null, verseEnd?: number | null) => {
+  let key = `${CACHE_KEY_PREFIX}:${book}:${chapter}`;
+  if (verseStart !== null && verseStart !== undefined) {
+    key += `:${verseStart}`;
+    if (verseEnd !== null && verseEnd !== undefined && verseEnd > verseStart) {
+      key += `-${verseEnd}`;
+    }
+  }
+  return key;
+};
+
+function readCache<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { savedAt: number; data: T };
+    if (Date.now() - parsed.savedAt > CACHE_TTL_MS) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache<T>(key: string, data: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data }));
+  } catch {
+    // Storage full — ignore
+  }
+}
+
+async function fetchChapter(
+  book: string, 
+  chapter: number, 
+  verseStart?: number | null, 
+  verseEnd?: number | null
+): Promise<BibleChapter> {
+  const params = new URLSearchParams();
+  if (verseStart !== null && verseStart !== undefined) {
+    params.append("startVerse", verseStart.toString());
+  }
+  if (verseEnd !== null && verseEnd !== undefined) {
+    params.append("endVerse", verseEnd.toString());
+  }
+
+  const queryString = params.toString();
+  const url = `/api/bible/${book}/${chapter}${queryString ? `?${queryString}` : ''}`;
+
+  console.log(`Fetching Bible chapter: ${url}`);
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || `Error HTTP ${response.status}`);
+  }
+
+  const result = await response.json();
+
+  if (!result.success || !result.data) {
+    throw new Error(result.error || result.details || "Error al cargar el capítulo");
+  }
+
+  return result.data;
+}
+
+/** Clears the entire Bible cache so every chapter is re-fetched. */
+export function clearBibleCache() {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k?.startsWith(CACHE_KEY_PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // noop
+  }
+}
 
 const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) => {
   const [chapterData, setChapterData] = useState<BibleChapter | null>(null);
@@ -21,15 +119,25 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     setLoading(true);
     setError(null);
 
-    if (bustCache) {
+    const key = cacheKey(book.code, chapter, verseStart, verseEnd);
+    
+    if (!bustCache) {
+      const cached = readCache<BibleChapter>(key);
+      if (cached) {
+        setChapterData(cached);
+        setLoading(false);
+        return;
+      }
+    } else {
       clearBibleCache();
     }
 
     try {
-      console.log(`Loading chapter: ${book.code} ${chapter}`);
-      const data = await getChapter("RVR1960", book.code, chapter);
+      console.log(`Loading chapter: ${book.code} ${chapter} ${verseStart ? `verses ${verseStart}${verseEnd && verseEnd > verseStart ? `-${verseEnd}` : ''}` : ''}`);
+      const data = await fetchChapter(book.code, chapter, verseStart, verseEnd);
       console.log(`Chapter loaded:`, data);
       setChapterData(data);
+      writeCache(key, data);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al cargar el capítulo";
       console.error(`Error loading chapter:`, err);
@@ -42,7 +150,7 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
 
   useEffect(() => {
     loadChapter();
-  }, [book.code, chapter]);
+  }, [book.code, chapter, verseStart, verseEnd]);
 
   if (loading) {
     return (
@@ -50,7 +158,10 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">
-            Cargando {book.name} {chapter}…
+            Cargando {book.name} {chapter}
+            {verseStart ? `:${verseStart}` : ''}
+            {verseEnd && verseEnd > verseStart ? `-${verseEnd}` : ''}
+            …
           </p>
         </div>
       </div>
@@ -69,6 +180,8 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
           Libro: {book.code}, Capítulo: {chapter}
+          {verseStart ? `, Versículos: ${verseStart}` : ''}
+          {verseEnd && verseEnd > verseStart ? `-${verseEnd}` : ''}
         </p>
 
         <Button
@@ -87,31 +200,22 @@ const BibleReader = ({ book, chapter, verseStart, verseEnd }: BibleReaderProps) 
     );
   }
 
-  // Filter verses when a range is selected
-  const filteredVerses = chapterData.verses.filter((v) => {
-    if (!verseStart) return true;
-    if (verseEnd && verseEnd >= verseStart) {
-      return v.number >= verseStart && v.number <= verseEnd;
-    }
-    return v.number === verseStart;
-  });
-
   return (
     <div className="rounded-3xl border border-border bg-card p-6">
       {/* Header */}
       <div className="mb-6 text-center">
         <h2 className="font-display text-xl font-semibold text-foreground">
-          {book.name} {chapter}
+          {chapterData.reference}
         </h2>
-        <p className="text-sm text-muted-foreground">Reina-Valera 1960</p>
+        <p className="text-sm text-muted-foreground">{chapterData.translation_name}</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          {filteredVerses.length} de {chapterData.verses.length} versículos mostrados
+          {chapterData.verses.length} versículo{chapterData.verses.length !== 1 ? 's' : ''}
         </p>
       </div>
 
       {/* Verses */}
       <div className="space-y-4">
-        {filteredVerses.map((verse) => (
+        {chapterData.verses.map((verse) => (
           <div key={verse.number} className="leading-relaxed">
             <span className="mr-2 align-super text-xs font-semibold text-primary">
               {verse.number}
