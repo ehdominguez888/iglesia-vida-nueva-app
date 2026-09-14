@@ -131,19 +131,19 @@ export default defineHandler(async (event) => {
     const resolvedBook = BOOK_NAME_MAPPING[normalizedBookName] || normalizedBookName;
 
     // Construct passage string for bible-api.com
-    let passageString = `${resolvedBook} ${chapterNum}`;
+    let passageString = `${resolvedBook}+${chapterNum}`;
     if (startVerse !== null) {
       if (endVerse !== null && endVerse > startVerse) {
-        passageString = `${resolvedBook} ${chapterNum}:${startVerse}-${endVerse}`;
+        passageString = `${resolvedBook}+${chapterNum}:${startVerse}-${endVerse}`;
       } else {
-        passageString = `${resolvedBook} ${chapterNum}:${startVerse}`;
+        passageString = `${resolvedBook}+${chapterNum}:${startVerse}`;
       }
     }
 
     console.log(`[Bible API] Requesting: ${book} -> ${resolvedBook} ${passageString}`);
 
     // Fetch from bible-api.com
-    const apiUrl = `https://bible-api.com/${encodeURIComponent(passageString)}?translation=rvr`;
+    const apiUrl = `https://bible-api.com/${passageString}?translation=rvr`;
     console.log(`[Bible API] Fetching from: ${apiUrl}`);
 
     const response = await fetch(apiUrl);
