@@ -12,6 +12,7 @@ import {
   Phone,
   UserRound,
   Youtube,
+  Heart,
 } from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
 import SectionHeading from "@/components/layout/SectionHeading";
@@ -154,6 +155,48 @@ const Index = () => {
             </span>
             <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
           </Link>
+        </div>
+      </section>
+
+      {/* Welcome Section for New Visitors */}
+      <section className="animate-rise" style={{ animationDelay: "260ms" }}>
+        <div className="rounded-3xl bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8">
+          <div className="flex items-center gap-4">
+            <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground">
+              <Heart className="h-8 w-8" />
+            </span>
+            <div>
+              <h2 className="font-display text-2xl font-semibold text-foreground">
+                ¡Nos alegra que estés aquí!
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Si es tu primera vez, queremos conocerte mejor
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6 space-y-4">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Nos emociona que hayas decidido visitarnos. Ya sea que estés buscando una comunidad 
+              espiritual, respuestas a tus preguntas, o simplemente quieras conocer más sobre 
+              nuestra fe, estamos aquí para acompañarte en tu camino.
+            </p>
+            
+            <Link
+              to="/conectar/visita"
+              className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
+            >
+              <UserRound className="h-5 w-5" />
+              Soy nuevo visitante
+            </Link>
+            
+            <div className="rounded-2xl bg-background/50 p-4">
+              <p className="text-xs text-muted-foreground">
+                Al completar nuestro formulario de nuevo visitante, podremos darte una 
+                bienvenida más personalizada y mantenerte informado sobre nuestras actividades.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
