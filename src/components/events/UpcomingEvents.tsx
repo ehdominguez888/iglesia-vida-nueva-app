@@ -58,7 +58,7 @@ const extractLinksFromDescription = (description: string) => {
     // Extract display text - look for text on the same line as the URL
     let displayText = "Registro del evento";
     
-    // Get the text around the URL (50 characters before and after)
+    // Get the text around the URL (100 characters before and after)
     const contextStart = Math.max(0, urlIndex - 100);
     const contextEnd = Math.min(description.length, urlIndex + url.length + 100);
     const context = description.substring(contextStart, contextEnd);
@@ -184,7 +184,7 @@ const EventCard = ({ event }: EventCardProps) => {
                 <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {descriptionParts.map((part, index) => 
                     part.url ? (
-                      <div key={index} className="mb-2">
+                      <div key={index} className="mt-2">
                         <a
                           href={part.url}
                           target="_blank"
