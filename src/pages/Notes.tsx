@@ -155,27 +155,20 @@ const Notes = () => {
         ) : null}
       </div>
 
-      {/* Collapse Toggle Button */}
+      {/* Collapse Toggle Button - Simplified with arrow only */}
       {notes.length > 0 && (
-        <div className="flex justify-center mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
+        <div className="flex justify-end mb-6">
+          <button
             onClick={() => setIsHeaderCollapsed(!isHeaderCollapsed)}
-            className="flex items-center gap-2 text-muted-foreground"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+            aria-label={isHeaderCollapsed ? "Mostrar controles" : "Ocultar controles"}
           >
             {isHeaderCollapsed ? (
-              <>
-                <ChevronDown className="h-4 w-4" />
-                Mostrar controles
-              </>
+              <ChevronDown className="h-5 w-5" />
             ) : (
-              <>
-                <ChevronUp className="h-4 w-4" />
-                Ocultar controles
-              </>
+              <ChevronUp className="h-5 w-5" />
             )}
-          </Button>
+          </button>
         </div>
       )}
 
