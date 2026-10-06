@@ -52,10 +52,19 @@ const parseDescription = (description: string) => {
     if (linkStartIndex > lastIndex) {
       const plainText = description.substring(lastIndex, linkStartIndex).trim();
       if (plainText) {
-        // Clean up HTML tags from plain text
+        // Clean up HTML tags from plain text and filter out unwanted text
         const cleanText = plainText.replace(/<[^>]*>/g, '').trim();
-        if (cleanText) {
-          elements.push({ type: 'text', content: cleanText });
+        // Filter out common HTML structure text that shouldn't be displayed
+        const filteredText = cleanText
+          .replace(/&nbsp;/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        // Only add if it's meaningful text (not just HTML structure)
+        if (filteredText && 
+            !filteredText.match(/^(div|span|p|br|style|script|meta|link)$/i) &&
+            filteredText.length > 1) {
+          elements.push({ type: 'text', content: filteredText });
         }
       }
     }
@@ -67,11 +76,27 @@ const parseDescription = (description: string) => {
     
     if (gtIndex !== -1 && ltIndex !== -1) {
       const displayText = description.substring(gtIndex + 1, ltIndex).trim();
-      elements.push({ 
-        type: 'link', 
-        text: displayText || "Registro del evento",
-        url: url
-      });
+      // Filter out any HTML tags or unwanted text from display text
+      const cleanDisplayText = displayText
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      if (cleanDisplayText && cleanDisplayText.length > 1) {
+        elements.push({ 
+          type: 'link', 
+          text: cleanDisplayText,
+          url: url
+        });
+      } else {
+        // Fallback if display text is empty or too short
+        elements.push({ 
+          type: 'link', 
+          text: "Registro del evento",
+          url: url
+        });
+      }
     } else {
       // Fallback if we can't find proper display text
       elements.push({ 
@@ -88,9 +113,17 @@ const parseDescription = (description: string) => {
   if (lastIndex < description.length) {
     const remainingText = description.substring(lastIndex).trim();
     if (remainingText) {
-      // Clean up HTML tags from plain text
-      const cleanText = remainingText.replace(/<[^>]*>/g, '').trim();
-      if (cleanText) {
+      // Clean up HTML tags from plain text and filter out unwanted text
+      const cleanText = remainingText
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      // Only add if it's meaningful text
+      if (cleanText && 
+          !cleanText.match(/^(div|span|p|br|style|script|meta|link)$/i) &&
+          cleanText.length > 1) {
         elements.push({ type: 'text', content: cleanText });
       }
     }
