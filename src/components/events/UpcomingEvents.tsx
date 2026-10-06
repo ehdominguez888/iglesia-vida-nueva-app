@@ -29,74 +29,49 @@ interface EventCardProps {
   event: CalendarEvent;
 }
 
-// Function to extract display text and URL from event description
-const extractLinksFromDescription = (description: string) => {
-  if (!description) return null;
+// Function to extract registration links with their display text from event description
+const extractRegistrationLinks = (description: string) => {
+  if (!description) return [];
   
-  // Regular expression to match URLs
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const matches = description.match(urlRegex);
+  // Split description into lines
+  const lines = description.split('\n');
+  const registrationLinks = [];
   
-  if (!matches || matches.length === 0) {
-    return [{ text: description, url: null }];
-  }
-  
-  const parts = [];
-  let lastIndex = 0;
-  
-  matches.forEach((url) => {
-    const urlIndex = description.indexOf(url, lastIndex);
+  // Process each line to find URLs with their preceding text
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
     
-    // Add text before the URL
-    if (urlIndex > lastIndex) {
-      const textBefore = description.substring(lastIndex, urlIndex).trim();
-      if (textBefore) {
-        parts.push({ text: textBefore, url: null });
+    // Skip empty lines
+    if (!line) continue;
+    
+    // Check if this line contains a URL
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = line.match(urlRegex);
+    
+    if (urls && urls.length > 0) {
+      // Extract the URL
+      const url = urls[0];
+      
+      // Extract the display text (text before the URL)
+      const urlIndex = line.indexOf(url);
+      let displayText = line.substring(0, urlIndex).trim();
+      
+      // If there's no text before the URL, use a default
+      if (!displayText) {
+        displayText = "Registro del evento";
       }
-    }
-    
-    // Extract display text - look for text on the same line as the URL
-    let displayText = "Registro del evento";
-    
-    // Get the text around the URL (100 characters before and after)
-    const contextStart = Math.max(0, urlIndex - 100);
-    const contextEnd = Math.min(description.length, urlIndex + url.length + 100);
-    const context = description.substring(contextStart, contextEnd);
-    
-    // Look for text on the same line as the URL
-    const lines = context.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(url)) {
-        // Remove the URL from the line to get just the text
-        const lineWithoutUrl = lines[i].replace(url, '').trim();
-        if (lineWithoutUrl) {
-          displayText = lineWithoutUrl;
-          break;
-        }
-      }
-    }
-    
-    // If we didn't find good text, look for text immediately before the URL
-    if (displayText === "Registro del evento") {
-      const textBeforeUrl = description.substring(Math.max(0, urlIndex - 30), urlIndex).trim();
-      if (textBeforeUrl) {
-        displayText = textBeforeUrl;
-      }
-    }
-    
-    parts.push({ text: displayText, url });
-    lastIndex = urlIndex + url.length;
-  });
-  
-  // Add remaining text after the last URL
-  if (lastIndex < description.length) {
-    const remainingText = description.substring(lastIndex).trim();
-    if (remainingText) {
-      parts.push({ text: remainingText, url: null });
+      
+      // Clean up the display text (remove trailing punctuation)
+      displayText = displayText.replace(/[:\-\u2013\u2014]+$/, '').trim();
+      
+      registrationLinks.push({
+        text: displayText || "Registro del evento",
+        url: url
+      });
     }
   }
   
-  return parts;
+  return registrationLinks;
 };
 
 const EventCard = ({ event }: EventCardProps) => {
@@ -130,7 +105,7 @@ const EventCard = ({ event }: EventCardProps) => {
     return format(startDate, "MMM d", { locale: es }).toUpperCase();
   };
 
-  const descriptionParts = event.description ? extractLinksFromDescription(event.description) : null;
+  const registrationLinks = event.description ? extractRegistrationLinks(event.description) : [];
 
   return (
     <article className="rounded-3xl border border-border bg-card p-5">
@@ -171,8 +146,8 @@ const EventCard = ({ event }: EventCardProps) => {
             </div>
           )}
           
-          {/* Description */}
-          {descriptionParts && (
+          {/* Registration Links */}
+          {registrationLinks.length > 0 && (
             <div className="mt-3">
               <button
                 onClick={() => setExpanded(!expanded)}
@@ -181,25 +156,20 @@ const EventCard = ({ event }: EventCardProps) => {
                 {expanded ? "Ver menos" : "Ver más"}
               </button>
               {expanded && (
-                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {descriptionParts.map((part, index) => 
-                    part.url ? (
-                      <div key={index} className="mt-2">
-                        <a
-                          href={part.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <span className="font-medium">{part.text}</span>
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      </div>
-                    ) : (
-                      <p key={index} className="mb-2">{part.text}</p>
-                    )
-                  )}
+                <div className="mt-2">
+                  {registrationLinks.map((link, index) => (
+                    <a
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mb-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span className="font-medium">{link.text}</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  ))}
                 </div>
               )}
             </div>
