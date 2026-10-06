@@ -29,67 +29,70 @@ interface EventCardProps {
   event: CalendarEvent;
 }
 
-// Function to parse event description into plain text and links
+// Function to parse HTML-like event description to extract links and plain text
 const parseDescription = (description: string) => {
   if (!description) return [];
   
-  const lines = description.split('\n');
   const elements = [];
+  let currentIndex = 0;
   
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
+  // Look for all href patterns in the description
+  const hrefRegex = /href="(https?:\/\/[^"]+)"/g;
+  let match;
+  
+  // Keep track of the last processed index to capture plain text
+  let lastIndex = 0;
+  
+  // Find all links with their display text
+  while ((match = hrefRegex.exec(description)) !== null) {
+    const url = match[1];
+    const linkStartIndex = match.index;
     
-    // Skip empty lines
-    if (!line) continue;
-    
-    // Check if this line contains a URL
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urls = line.match(urlRegex);
-    
-    if (urls && urls.length > 0) {
-      // Handle line with URL
-      const url = urls[0];
-      const urlIndex = line.indexOf(url);
-      
-      // Get text before and after URL
-      const beforeUrl = line.substring(0, urlIndex).trim();
-      const afterUrl = line.substring(urlIndex + url.length).trim();
-      
-      // Determine which text to use as display text
-      let displayText = "Registro del evento";
-      
-      // Prefer text after URL, then before URL, then default
-      if (afterUrl) {
-        displayText = afterUrl.replace(/^[\]:\-—\s]+/, '').trim(); // Remove leading punctuation
-      } else if (beforeUrl) {
-        displayText = beforeUrl.replace(/[:\-—\s]+$/, '').trim(); // Remove trailing punctuation
-      }
-      
-      // Add any plain text before the URL
-      if (beforeUrl && !afterUrl) {
-        const textWithoutUrl = beforeUrl.replace(/[:\-—\s]*$/, '').trim();
-        if (textWithoutUrl) {
-          elements.push({ type: 'text', content: textWithoutUrl });
+    // Capture any plain text before this link
+    if (linkStartIndex > lastIndex) {
+      const plainText = description.substring(lastIndex, linkStartIndex).trim();
+      if (plainText) {
+        // Clean up HTML tags from plain text
+        const cleanText = plainText.replace(/<[^>]*>/g, '').trim();
+        if (cleanText) {
+          elements.push({ type: 'text', content: cleanText });
         }
       }
-      
-      // Add the link
+    }
+    
+    // Extract display text which comes after the href and is between > and <
+    const hrefEndIndex = linkStartIndex + match[0].length;
+    const gtIndex = description.indexOf('>', hrefEndIndex);
+    const ltIndex = description.indexOf('<', gtIndex + 1);
+    
+    if (gtIndex !== -1 && ltIndex !== -1) {
+      const displayText = description.substring(gtIndex + 1, ltIndex).trim();
       elements.push({ 
         type: 'link', 
         text: displayText || "Registro del evento",
         url: url
       });
-      
-      // Add any plain text after the URL
-      if (afterUrl && !beforeUrl) {
-        const textWithoutUrl = afterUrl.replace(/^[\]:\-—\s]+/, '').trim();
-        if (textWithoutUrl) {
-          elements.push({ type: 'text', content: textWithoutUrl });
-        }
-      }
     } else {
-      // Plain text line
-      elements.push({ type: 'text', content: line });
+      // Fallback if we can't find proper display text
+      elements.push({ 
+        type: 'link', 
+        text: "Registro del evento",
+        url: url
+      });
+    }
+    
+    lastIndex = ltIndex !== -1 ? ltIndex + 1 : hrefEndIndex;
+  }
+  
+  // Capture any remaining plain text after the last link
+  if (lastIndex < description.length) {
+    const remainingText = description.substring(lastIndex).trim();
+    if (remainingText) {
+      // Clean up HTML tags from plain text
+      const cleanText = remainingText.replace(/<[^>]*>/g, '').trim();
+      if (cleanText) {
+        elements.push({ type: 'text', content: cleanText });
+      }
     }
   }
   
