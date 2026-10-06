@@ -213,8 +213,8 @@ const Notes = () => {
       {/* Notes List Section */}
       {notes.length > 0 && filteredNotes.length > 0 && (
         <div className="space-y-8">
-          {/* Section Title */}
-          <div className="border-b border-border/50 pb-4">
+          {/* Section Title with Background */}
+          <div className="rounded-3xl bg-secondary/30 p-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">
               Tus notas
             </h2>
