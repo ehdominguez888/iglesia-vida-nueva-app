@@ -49,7 +49,7 @@ const NoteCard = ({ note, onOpen, onShare, onUpdateIcon }: NoteCardProps) => {
   const [showIconSelector, setShowIconSelector] = useState(false);
   const photos = note.photos ?? [];
 
-  const handleIconDoubleClick = (e: React.MouseEvent) => {
+  const handleIconClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowIconSelector(true);
   };
@@ -76,8 +76,8 @@ const NoteCard = ({ note, onOpen, onShare, onUpdateIcon }: NoteCardProps) => {
           </span>
           <div className="flex items-center gap-2">
             <div 
-              onDoubleClick={handleIconDoubleClick}
-              className={`flex h-8 w-8 items-center justify-center rounded-full ${iconColor === "red" ? "bg-red-500" : 
+              onClick={handleIconClick}
+              className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full ${iconColor === "red" ? "bg-red-500" : 
                 iconColor === "orange" ? "bg-orange-500" : 
                 iconColor === "amber" ? "bg-amber-500" : 
                 iconColor === "yellow" ? "bg-yellow-500" : 

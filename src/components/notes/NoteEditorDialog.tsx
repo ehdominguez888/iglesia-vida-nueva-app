@@ -12,40 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { fileToNotePhoto } from "@/utils/image";
 import type { SermonNote } from "@/hooks/use-sermon-notes";
 import { todayISO } from "@/hooks/use-sermon-notes";
-import NoteIconSelector from "./NoteIconSelector";
-import { 
-  Heart, 
-  Home, 
-  BookOpen, 
-  Crosshair, 
-  User, 
-  Star, 
-  Sun, 
-  Moon, 
-  Cloud, 
-  TreePine,
-  Mountain,
-  Waves,
-  Zap,
-  Shield
-} from "lucide-react";
-
-const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }>> = {
-  heart: Heart,
-  home: Home,
-  book: BookOpen,
-  cross: Crosshair,
-  user: User,
-  star: Star,
-  sun: Sun,
-  moon: Moon,
-  cloud: Cloud,
-  tree: TreePine,
-  mountain: Mountain,
-  waves: Waves,
-  zap: Zap,
-  shield: Shield
-};
 
 export type NoteDraft = {
   title: string;
@@ -72,9 +38,6 @@ const NoteEditorDialog = ({ open, onOpenChange, note, onSave, onDelete }: NoteEd
   const [photos, setPhotos] = useState<string[]>(note?.photos ?? []);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [icon, setIcon] = useState<string | undefined>(note?.icon);
-  const [color, setColor] = useState<string | undefined>(note?.color);
-  const [showIconSelector, setShowIconSelector] = useState(false);
   const galleryInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
 
@@ -85,8 +48,6 @@ const NoteEditorDialog = ({ open, onOpenChange, note, onSave, onDelete }: NoteEd
       setDate(note?.date ?? todayISO());
       setContent(note?.content ?? "");
       setPhotos(note?.photos ?? []);
-      setIcon(note?.icon);
-      setColor(note?.color);
       setConfirmDelete(false);
     }
   }, [open, note]);
@@ -109,18 +70,9 @@ const NoteEditorDialog = ({ open, onOpenChange, note, onSave, onDelete }: NoteEd
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onSave({ title, date, content, photos, icon, color });
+    onSave({ title, date, content, photos, icon: note?.icon, color: note?.color });
     onOpenChange(false);
   };
-
-  const handleIconSelect = (selectedIcon: string, selectedColor: string) => {
-    setIcon(selectedIcon);
-    setColor(selectedColor);
-  };
-
-  const IconComponent = icon && ICON_COMPONENTS[icon] 
-    ? ICON_COMPONENTS[icon] 
-    : Heart;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,40 +84,6 @@ const NoteEditorDialog = ({ open, onOpenChange, note, onSave, onDelete }: NoteEd
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Icon selector */}
-          <div className="flex items-center justify-between">
-            <div 
-              onClick={() => setShowIconSelector(true)}
-              className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-2xl ${
-                color === "red" ? "bg-red-500" : 
-                color === "orange" ? "bg-orange-500" : 
-                color === "amber" ? "bg-amber-500" : 
-                color === "yellow" ? "bg-yellow-500" : 
-                color === "lime" ? "bg-lime-500" : 
-                color === "green" ? "bg-green-500" : 
-                color === "emerald" ? "bg-emerald-500" : 
-                color === "teal" ? "bg-teal-500" : 
-                color === "cyan" ? "bg-cyan-500" : 
-                color === "sky" ? "bg-sky-500" : 
-                color === "blue" ? "bg-blue-500" : 
-                color === "indigo" ? "bg-indigo-500" : 
-                color === "violet" ? "bg-violet-500" : 
-                color === "purple" ? "bg-purple-500" : 
-                color === "fuchsia" ? "bg-fuchsia-500" : 
-                color === "pink" ? "bg-pink-500" : 
-                color === "rose" ? "bg-rose-500" : "bg-blue-500"
-              } text-white`}
-            >
-              <IconComponent className="h-6 w-6" />
-            </div>
-            <span 
-              onClick={() => setShowIconSelector(true)}
-              className="cursor-pointer text-sm font-medium text-primary hover:underline"
-            >
-              Personalizar ícono
-            </span>
-          </div>
-
           <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
@@ -309,16 +227,6 @@ const NoteEditorDialog = ({ open, onOpenChange, note, onSave, onDelete }: NoteEd
           </div>
         </form>
       </DialogContent>
-
-      {/* Icon selector modal */}
-      {showIconSelector && (
-        <NoteIconSelector
-          icon={icon}
-          color={color}
-          onSelect={handleIconSelect}
-          onClose={() => setShowIconSelector(false)}
-        />
-      )}
     </Dialog>
   );
 };
