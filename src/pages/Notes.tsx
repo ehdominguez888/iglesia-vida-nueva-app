@@ -55,7 +55,7 @@ const Notes = () => {
       updateNote(editingNote.id, { ...draft, photos });
       toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
     } else {
-      addNote(draft.title, draft.date, draft.content, photos);
+      addNote(draft.title, draft.date, draft.content, photos, draft.icon, draft.color);
       toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
     }
   };
@@ -91,6 +91,11 @@ const Notes = () => {
   const handleSearch = (filtered: SermonNote[], term: string) => {
     setFilteredNotes(filtered);
     setSearchTerm(term);
+  };
+
+  const handleUpdateIcon = (id: string, icon: string, color: string) => {
+    updateNote(id, { icon, color });
+    toast("Ícono actualizado");
   };
 
   return (
@@ -151,6 +156,7 @@ const Notes = () => {
                     note={note}
                     onOpen={() => openEdit(note)}
                     onShare={() => handleShare(note)}
+                    onUpdateIcon={handleUpdateIcon}
                   />
                 ))}
               </div>

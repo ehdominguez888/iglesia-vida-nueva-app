@@ -10,6 +10,10 @@ export type SermonNote = {
   photos: string[];
   createdAt: number;
   updatedAt: number;
+  /** Icon identifier for the note */
+  icon?: string;
+  /** Color identifier for the note icon */
+  color?: string;
 };
 
 /** Aproximadamente 80% de la capacidad típica de localStorage (5 MB). */
@@ -58,7 +62,7 @@ export function useSermonNotes() {
   }, [notes]);
 
   const addNote = useCallback(
-    (title: string, date: string, content: string, photos: string[] = []): SermonNote => {
+    (title: string, date: string, content: string, photos: string[] = [], icon?: string, color?: string): SermonNote => {
       const now = Date.now();
       const note: SermonNote = {
         id:
@@ -69,6 +73,8 @@ export function useSermonNotes() {
         date,
         content: content.trim(),
         photos,
+        icon,
+        color,
         createdAt: now,
         updatedAt: now,
       };

@@ -2,16 +2,67 @@ import { useState } from "react";
 import { Share2, X } from "lucide-react";
 import type { SermonNote } from "@/hooks/use-sermon-notes";
 import { formatShortDate } from "@/utils/dates";
+import NoteIconSelector from "./NoteIconSelector";
+import { 
+  Heart, 
+  Home, 
+  BookOpen, 
+  Crosshair, 
+  User, 
+  Star, 
+  Sun, 
+  Moon, 
+  Cloud, 
+  TreePine,
+  Mountain,
+  Waves,
+  Zap,
+  Shield
+} from "lucide-react";
+
+const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }>> = {
+  heart: Heart,
+  home: Home,
+  book: BookOpen,
+  cross: Crosshair,
+  user: User,
+  star: Star,
+  sun: Sun,
+  moon: Moon,
+  cloud: Cloud,
+  tree: TreePine,
+  mountain: Mountain,
+  waves: Waves,
+  zap: Zap,
+  shield: Shield
+};
 
 type NoteCardProps = {
   note: SermonNote;
   onOpen: () => void;
   onShare: () => void;
+  onUpdateIcon: (id: string, icon: string, color: string) => void;
 };
 
-const NoteCard = ({ note, onOpen, onShare }: NoteCardProps) => {
+const NoteCard = ({ note, onOpen, onShare, onUpdateIcon }: NoteCardProps) => {
   const [viewIndex, setViewIndex] = useState<number | null>(null);
+  const [showIconSelector, setShowIconSelector] = useState(false);
   const photos = note.photos ?? [];
+
+  const handleIconDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowIconSelector(true);
+  };
+
+  const handleIconSelect = (icon: string, color: string) => {
+    onUpdateIcon(note.id, icon, color);
+  };
+
+  const IconComponent = note.icon && ICON_COMPONENTS[note.icon] 
+    ? ICON_COMPONENTS[note.icon] 
+    : Heart;
+
+  const iconColor = note.color || "blue";
 
   return (
     <>
@@ -23,17 +74,41 @@ const NoteCard = ({ note, onOpen, onShare }: NoteCardProps) => {
           <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
             {formatShortDate(note.date)}
           </span>
-          <button
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              onShare();
-            }}
-            aria-label="Compartir nota"
-            className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95"
-          >
-            <Share2 className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <div 
+              onDoubleClick={handleIconDoubleClick}
+              className={`flex h-8 w-8 items-center justify-center rounded-full ${iconColor === "red" ? "bg-red-500" : 
+                iconColor === "orange" ? "bg-orange-500" : 
+                iconColor === "amber" ? "bg-amber-500" : 
+                iconColor === "yellow" ? "bg-yellow-500" : 
+                iconColor === "lime" ? "bg-lime-500" : 
+                iconColor === "green" ? "bg-green-500" : 
+                iconColor === "emerald" ? "bg-emerald-500" : 
+                iconColor === "teal" ? "bg-teal-500" : 
+                iconColor === "cyan" ? "bg-cyan-500" : 
+                iconColor === "sky" ? "bg-sky-500" : 
+                iconColor === "blue" ? "bg-blue-500" : 
+                iconColor === "indigo" ? "bg-indigo-500" : 
+                iconColor === "violet" ? "bg-violet-500" : 
+                iconColor === "purple" ? "bg-purple-500" : 
+                iconColor === "fuchsia" ? "bg-fuchsia-500" : 
+                iconColor === "pink" ? "bg-pink-500" : 
+                iconColor === "rose" ? "bg-rose-500" : "bg-blue-500"} text-white`}
+            >
+              <IconComponent className="h-4 w-4" />
+            </div>
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onShare();
+              }}
+              aria-label="Compartir nota"
+              className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         <h3 className="mt-3 truncate font-display text-lg font-semibold text-foreground">
           {note.title.trim() || "Nota sin título"}
@@ -101,6 +176,16 @@ const NoteCard = ({ note, onOpen, onShare }: NoteCardProps) => {
           />
         </div>
       ) : null}
+
+      {/* Selector de ícono */}
+      {showIconSelector && (
+        <NoteIconSelector
+          icon={note.icon}
+          color={note.color}
+          onSelect={handleIconSelect}
+          onClose={() => setShowIconSelector(false)}
+        />
+      )}
     </>
   );
 };
