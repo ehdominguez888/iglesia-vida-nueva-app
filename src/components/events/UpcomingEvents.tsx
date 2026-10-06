@@ -29,15 +29,13 @@ interface EventCardProps {
   event: CalendarEvent;
 }
 
-// Function to extract registration links with their display text from event description
-const extractRegistrationLinks = (description: string) => {
+// Function to parse event description into plain text and links
+const parseDescription = (description: string) => {
   if (!description) return [];
   
-  // Split description into lines
   const lines = description.split('\n');
-  const registrationLinks = [];
+  const elements = [];
   
-  // Process each line to find URLs with their preceding text
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
@@ -49,29 +47,53 @@ const extractRegistrationLinks = (description: string) => {
     const urls = line.match(urlRegex);
     
     if (urls && urls.length > 0) {
-      // Extract the URL
+      // Handle line with URL
       const url = urls[0];
-      
-      // Extract the display text (text before the URL)
       const urlIndex = line.indexOf(url);
-      let displayText = line.substring(0, urlIndex).trim();
       
-      // If there's no text before the URL, use a default
-      if (!displayText) {
-        displayText = "Registro del evento";
+      // Get text before and after URL
+      const beforeUrl = line.substring(0, urlIndex).trim();
+      const afterUrl = line.substring(urlIndex + url.length).trim();
+      
+      // Determine which text to use as display text
+      let displayText = "Registro del evento";
+      
+      // Prefer text after URL, then before URL, then default
+      if (afterUrl) {
+        displayText = afterUrl.replace(/^[\]:\-—\s]+/, '').trim(); // Remove leading punctuation
+      } else if (beforeUrl) {
+        displayText = beforeUrl.replace(/[:\-—\s]+$/, '').trim(); // Remove trailing punctuation
       }
       
-      // Clean up the display text (remove trailing punctuation)
-      displayText = displayText.replace(/[:\-\u2013\u2014]+$/, '').trim();
+      // Add any plain text before the URL
+      if (beforeUrl && !afterUrl) {
+        const textWithoutUrl = beforeUrl.replace(/[:\-—\s]*$/, '').trim();
+        if (textWithoutUrl) {
+          elements.push({ type: 'text', content: textWithoutUrl });
+        }
+      }
       
-      registrationLinks.push({
+      // Add the link
+      elements.push({ 
+        type: 'link', 
         text: displayText || "Registro del evento",
         url: url
       });
+      
+      // Add any plain text after the URL
+      if (afterUrl && !beforeUrl) {
+        const textWithoutUrl = afterUrl.replace(/^[\]:\-—\s]+/, '').trim();
+        if (textWithoutUrl) {
+          elements.push({ type: 'text', content: textWithoutUrl });
+        }
+      }
+    } else {
+      // Plain text line
+      elements.push({ type: 'text', content: line });
     }
   }
   
-  return registrationLinks;
+  return elements;
 };
 
 const EventCard = ({ event }: EventCardProps) => {
@@ -105,7 +127,7 @@ const EventCard = ({ event }: EventCardProps) => {
     return format(startDate, "MMM d", { locale: es }).toUpperCase();
   };
 
-  const registrationLinks = event.description ? extractRegistrationLinks(event.description) : [];
+  const descriptionElements = event.description ? parseDescription(event.description) : [];
 
   return (
     <article className="rounded-3xl border border-border bg-card p-5">
@@ -146,8 +168,8 @@ const EventCard = ({ event }: EventCardProps) => {
             </div>
           )}
           
-          {/* Registration Links */}
-          {registrationLinks.length > 0 && (
+          {/* Description */}
+          {descriptionElements.length > 0 && (
             <div className="mt-3">
               <button
                 onClick={() => setExpanded(!expanded)}
@@ -156,20 +178,30 @@ const EventCard = ({ event }: EventCardProps) => {
                 {expanded ? "Ver menos" : "Ver más"}
               </button>
               {expanded && (
-                <div className="mt-2">
-                  {registrationLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mb-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <span className="font-medium">{link.text}</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ))}
+                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {descriptionElements.map((element, index) => {
+                    if (element.type === 'link') {
+                      return (
+                        <a
+                          key={index}
+                          href={element.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mb-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className="font-medium">{element.text}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      );
+                    } else {
+                      return (
+                        <p key={index} className="mb-2">
+                          {element.content}
+                        </p>
+                      );
+                    }
+                  })}
                 </div>
               )}
             </div>
