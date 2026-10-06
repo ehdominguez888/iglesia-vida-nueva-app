@@ -93,8 +93,11 @@ export default function NotesPage() {
         </Button>
       </header>
 
-      <NoteSearch notes={notes} onSearch={handleSearch} />
-      <NoteFilters onFilter={handleFilter} activeFilters={filters} />
+      {/* Search and Filter Section */}
+      <div className="mb-6 space-y-4">
+        <NoteSearch notes={notes} onSearch={handleSearch} />
+        <NoteFilters onFilter={handleFilter} activeFilters={filters} />
+      </div>
 
       {filteredNotes.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
