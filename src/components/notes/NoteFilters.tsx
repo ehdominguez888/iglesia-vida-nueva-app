@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 const ICONS = [
-  { id: "heart", name: "极Corazón", component: Heart },
+  { id: "heart", name: "Corazón", component: Heart },
   { id: "home", name: "Casa", component: Home },
   { id: "book", name: "Biblia", component: BookOpen },
   { id: "cross", name: "Cruz", component: Crosshair },
@@ -30,7 +30,7 @@ const ICONS = [
   { id: "cloud", name: "Nube", component: Cloud },
   { id: "tree", name: "Árbol", component: TreePine },
   { id: "mountain", name: "Montaña", component: Mountain },
-  {极 id: "waves", name: "Olas", component: Waves },
+  { id: "waves", name: "Olas", component: Waves },
   { id: "zap", name: "Rayo", component: Zap },
   { id: "shield", name: "Escudo", component: Shield }
 ];
@@ -48,7 +48,7 @@ const COLORS = [
   { id: "sky", name: "Celeste", class: "bg-sky-500" },
   { id: "blue", name: "Azul", class: "bg-blue-500" },
   { id: "indigo", name: "Índigo", class: "bg-indigo-500" },
-  { id: "violet", name: "Violeta", class: "bg-violet-500极" },
+  { id: "violet", name: "Violeta", class: "bg-violet-500" },
   { id: "purple", name: "Púrpura", class: "bg-purple-500" },
   { id: "fuchsia", name: "Fucsia", class: "bg-fuchsia-500" },
   { id: "pink", name: "Rosa", class: "bg-pink-500" },
@@ -75,7 +75,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleIcon = (icon极Id: string) => {
+  const toggleIcon = (iconId: string) => {
     const newIcons = activeFilters.icons.includes(iconId)
       ? activeFilters.icons.filter(id => id !== iconId)
       : [...activeFilters.icons, iconId];
@@ -108,7 +108,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
           <Filter className="mr-2 h-4 w-4" />
           Filtros
           {hasActiveFilters && (
-            <span className="ml-2极 h-2 w-2 rounded-full bg-primary"></span>
+            <span className="ml-2 h-2 w-2 rounded-full bg-primary"></span>
           )}
         </Button>
         
@@ -119,7 +119,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
             onClick={clearFilters}
             className="h-10 rounded-full text-muted-foreground hover:text-foreground"
           >
-            <极X className="mr-1 h-4 w-4" />
+            <X className="mr-1 h-4 w-4" />
             Limpiar
           </Button>
         )}
@@ -156,7 +156,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                         icon.id === "cross" ? "bg-yellow-500" :
                         icon.id === "user" ? "bg-lime-500" :
                         icon.id === "star" ? "bg-green-500" :
-                        icon.id === "sun极" ? "bg-emerald-500" :
+                        icon.id === "sun" ? "bg-emerald-500" :
                         icon.id === "moon" ? "bg-teal-500" :
                         icon.id === "cloud" ? "bg-cyan-500" :
                         icon.id === "tree" ? "bg-sky-500" :
@@ -166,7 +166,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                         icon.id === "shield" ? "bg-purple-500" : "bg-blue-500"
                       }`}>
                         <IconComponent className="h-4 w-4" />
-                      </极div>
+                      </div>
                       <span className="flex-1 truncate">{icon.name}</span>
                       {isSelected && <Check className="h-4 w-4 text-primary" />}
                     </button>
@@ -186,10 +186,10 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                       key={color.id}
                       type="button"
                       onClick={() => toggleColor(color.id)}
-                      className={`极flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition-colors ${
+                      className={`flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition-colors ${
                         isSelected 
                           ? "bg-primary/10 text-primary" 
-                          : "hover:极bg-muted"
+                          : "hover:bg-muted"
                       }`}
                     >
                       <div className={`h-4 w-4 flex-shrink-0 rounded-full ${color.class}`}></div>
@@ -203,7 +203,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
           </div>
         </div>
       )}
-    </极div>
+    </div>
   );
 };
 
