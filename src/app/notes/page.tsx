@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NoteCard from "@/components/notes/NoteCard";
@@ -93,8 +93,14 @@ export default function NotesPage() {
         </Button>
       </header>
 
-      <NoteSearch notes={notes} onSearch={handleSearch} />
-      <NoteFilters onFilter={handleFilter} activeFilters={filters} />
+      <div className="mb-6 flex items-start gap-4">
+        <div className="flex-1">
+          <NoteSearch notes={notes} onSearch={handleSearch} />
+        </div>
+        <div className="pt-1">
+          <NoteFilters onFilter={handleFilter} activeFilters={filters} />
+        </div>
+      </div>
 
       {filteredNotes.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
