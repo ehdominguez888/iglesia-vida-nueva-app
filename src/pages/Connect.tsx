@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, HandHeart, Heart, UsersRound, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, HandHeart, Heart, UsersRound, UserRound, Share2, QrCode, Copy } from "lucide-react";
 import CHURCH_CONFIG, { ConnectKind } from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
   visitor: UserRound,
@@ -13,6 +15,32 @@ const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
 
 const Connect = () => {
   usePageTitle("Conectar");
+  const [showQRCode, setShowQRCode] = useState(false);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.origin);
+      toast.success("Enlace copiado al portapapeles");
+    } catch (error) {
+      toast.error("No se pudo copiar el enlace");
+    }
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: CHURCH_CONFIG.name,
+          text: '¡Descarga la app de nuestra iglesia!',
+          url: window.location.origin,
+        });
+      } catch (error) {
+        // User canceled the share
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
 
   return (
     <div className="animate-rise">
@@ -56,6 +84,93 @@ const Connect = () => {
             : "Pronto encontrarás aquí todas las formas de conectarte con nosotros."}
         </p>
       </section>
+
+      {/* Share App Section */}
+      <section className="rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8 mt-6">
+        <div className="flex items-center gap-4">
+          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground">
+            <Share2 className="h-8 w-8" />
+          </span>
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">
+              Comparte nuestra app
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Invita a amigos y familiares a unirse a nuestra comunidad
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-4">
+          {/* Share via Link */}
+          <button
+            onClick={handleShare}
+            className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
+          >
+            <Share2 className="h-5 w-5" />
+            Compartir enlace
+          </button>
+
+          {/* Show QR Code */}
+          <button
+            onClick={() => setShowQRCode(true)}
+            className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl border-2 border-primary/20 bg-background text-base font-semibold text-primary transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <QrCode className="h-5 w-5" />
+            Mostrar código QR
+          </button>
+        </div>
+
+        <div className="mt-4 rounded-2xl bg-background/50 p-4">
+          <p className="text-xs text-muted-foreground">
+            Comparte el enlace de nuestra app para que otros puedan descargarla y mantenerse 
+            conectados con nuestra comunidad desde cualquier lugar.
+          </p>
+        </div>
+      </section>
+
+      {/* QR Code Modal */}
+      {showQRCode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-card p-6">
+            <div className="text-center">
+              <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+                Escanea para descargar
+              </h3>
+              
+              {/* QR Code Placeholder - In a real app, you'd generate a QR code here */}
+              <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-4">
+                <div className="text-center">
+                  <QrCode className="mx-auto h-24 w-24 text-foreground" />
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Código QR de la app
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                Escanea este código con la cámara de tu teléfono para abrir nuestra app
+              </p>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCopyLink}
+                  className="flex-1 rounded-2xl border border-border bg-muted py-3 font-medium text-foreground flex items-center justify-center gap-2"
+                >
+                  <Copy className="h-4 w-4" />
+                  Copiar enlace
+                </button>
+                <button
+                  onClick={() => setShowQRCode(false)}
+                  className="flex-1 rounded-2xl bg-primary py-3 font-medium text-primary-foreground"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
