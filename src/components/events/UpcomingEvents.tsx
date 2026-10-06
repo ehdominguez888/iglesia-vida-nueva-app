@@ -29,34 +29,55 @@ interface EventCardProps {
   event: CalendarEvent;
 }
 
-// Function to convert URLs in text to clickable links
-const renderDescriptionWithLinks = (description: string) => {
+// Function to extract display text and URL from event description
+const extractLinksFromDescription = (description: string) => {
   if (!description) return null;
   
-  // Regular expression to match URLs
+  // Regular expression to match URLs and potential display text
   const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const matches = description.match(urlRegex);
   
-  // Split the description by URLs and create links
-  const parts = description.split(urlRegex);
+  if (!matches || matches.length === 0) {
+    return [{ text: description, url: null }];
+  }
   
-  return parts.map((part, index) => {
-    if (urlRegex.test(part)) {
-      return (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-primary hover:underline"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {part}
-          <ExternalLink className="h-3 w-3" />
-        </a>
-      );
+  const parts = [];
+  let lastIndex = 0;
+  
+  matches.forEach((url) => {
+    const urlIndex = description.indexOf(url, lastIndex);
+    
+    // Add text before the URL
+    if (urlIndex > lastIndex) {
+      const textBefore = description.substring(lastIndex, urlIndex).trim();
+      if (textBefore) {
+        parts.push({ text: textBefore, url: null });
+      }
     }
-    return part;
+    
+    // Extract display text (text immediately before the URL, or use a default)
+    let displayText = "Registro del evento";
+    const textBeforeUrl = description.substring(Math.max(0, urlIndex - 50), urlIndex).trim();
+    const lines = textBeforeUrl.split('\n');
+    const lastLine = lines[lines.length - 1];
+    
+    if (lastLine && lastLine.length > 0 && lastLine.length < 50) {
+      displayText = lastLine;
+    }
+    
+    parts.push({ text: displayText, url });
+    lastIndex = urlIndex + url.length;
   });
+  
+  // Add remaining text after the last URL
+  if (lastIndex < description.length) {
+    const remainingText = description.substring(lastIndex).trim();
+    if (remainingText) {
+      parts.push({ text: remainingText, url: null });
+    }
+  }
+  
+  return parts;
 };
 
 const EventCard = ({ event }: EventCardProps) => {
@@ -89,6 +110,8 @@ const EventCard = ({ event }: EventCardProps) => {
     if (isThisWeek(startDate)) return format(startDate, "EEE", { locale: es }).toUpperCase();
     return format(startDate, "MMM d", { locale: es }).toUpperCase();
   };
+
+  const descriptionParts = event.description ? extractLinksFromDescription(event.description) : null;
 
   return (
     <article className="rounded-3xl border border-border bg-card p-5">
@@ -130,7 +153,7 @@ const EventCard = ({ event }: EventCardProps) => {
           )}
           
           {/* Description */}
-          {event.description && (
+          {descriptionParts && (
             <div className="mt-3">
               <button
                 onClick={() => setExpanded(!expanded)}
@@ -140,7 +163,24 @@ const EventCard = ({ event }: EventCardProps) => {
               </button>
               {expanded && (
                 <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {renderDescriptionWithLinks(event.description)}
+                  {descriptionParts.map((part, index) => 
+                    part.url ? (
+                      <div key={index} className="mb-2">
+                        <a
+                          href={part.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className="font-medium">{part.text}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    ) : (
+                      <p key={index} className="mb-2">{part.text}</p>
+                    )
+                  )}
                 </div>
               )}
             </div>
