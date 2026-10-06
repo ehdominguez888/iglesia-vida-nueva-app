@@ -70,85 +70,90 @@ const NoteCard = ({ note, onOpen, onShare, onUpdateIcon }: NoteCardProps) => {
         onClick={onOpen}
         className="group cursor-pointer rounded-3xl border border-border bg-card p-5 transition-all hover:border-primary/40 active:scale-[0.99]"
       >
-        <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
-            {formatShortDate(note.date)}
-          </span>
-          <div className="flex items-center gap-2">
-            <div 
-              onClick={handleIconClick}
-              className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full ${iconColor === "red" ? "bg-red-500" : 
-                iconColor === "orange" ? "bg-orange-500" : 
-                iconColor === "amber" ? "bg-amber-500" : 
-                iconColor === "yellow" ? "bg-yellow-500" : 
-                iconColor === "lime" ? "bg-lime-500" : 
-                iconColor === "green" ? "bg-green-500" : 
-                iconColor === "emerald" ? "bg-emerald-500" : 
-                iconColor === "teal" ? "bg-teal-500" : 
-                iconColor === "cyan" ? "bg-cyan-500" : 
-                iconColor === "sky" ? "bg-sky-500" : 
-                iconColor === "blue" ? "bg-blue-500" : 
-                iconColor === "indigo" ? "bg-indigo-500" : 
-                iconColor === "violet" ? "bg-violet-500" : 
-                iconColor === "purple" ? "bg-purple-500" : 
-                iconColor === "fuchsia" ? "bg-fuchsia-500" : 
-                iconColor === "pink" ? "bg-pink-500" : 
-                iconColor === "rose" ? "bg-rose-500" : "bg-blue-500"} text-white`}
-            >
-              <IconComponent className="h-4 w-4" />
-            </div>
-            <button
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                onShare();
-              }}
-              aria-label="Compartir nota"
-              className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95"
-            >
-              <Share2 className="h-4 w-4" />
-            </button>
+        <div className="flex gap-4">
+          {/* Icon on the left side */}
+          <div 
+            onClick={handleIconClick}
+            className={`flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-2xl ${iconColor === "red" ? "bg-red-500" : 
+              iconColor === "orange" ? "bg-orange-500" : 
+              iconColor === "amber" ? "bg-amber-500" : 
+              iconColor === "yellow" ? "bg-yellow-500" : 
+              iconColor === "lime" ? "bg-lime-500" : 
+              iconColor === "green" ? "bg-green-500" : 
+              iconColor === "emerald" ? "bg-emerald-500" : 
+              iconColor === "teal" ? "bg-teal-500" : 
+              iconColor === "cyan" ? "bg-cyan-500" : 
+              iconColor === "sky" ? "bg-sky-500" : 
+              iconColor === "blue" ? "bg-blue-500" : 
+              iconColor === "indigo" ? "bg-indigo-500" : 
+              iconColor === "violet" ? "bg-violet-500" : 
+              iconColor === "purple" ? "bg-purple-500" : 
+              iconColor === "fuchsia" ? "bg-fuchsia-500" : 
+              iconColor === "pink" ? "bg-pink-500" : 
+              iconColor === "rose" ? "bg-rose-500" : "bg-blue-500"} text-white`}
+          >
+            <IconComponent className="h-6 w-6" />
           </div>
-        </div>
-        <h3 className="mt-3 truncate font-display text-lg font-semibold text-foreground">
-          {note.title.trim() || "Nota sin título"}
-        </h3>
-
-        {photos.length > 0 ? (
-          <div className="mt-3 flex gap-2">
-            {photos.map((photo, index) => (
+          
+          {/* Content on the right side */}
+          <div className="flex-1">
+            <div className="flex items-start justify-between gap-3">
+              <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+                {formatShortDate(note.date)}
+              </span>
               <button
-                key={index}
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
-                  setViewIndex(index);
+                  onShare();
                 }}
-                aria-label={`Ver foto ${index + 1}`}
-                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-border bg-muted"
+                aria-label="Compartir nota"
+                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95"
               >
-                <img
-                  src={photo}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                  draggable={false}
-                />
-                {index === 0 && photos.length > 1 ? (
-                  <span className="absolute bottom-1 right-1 rounded-full bg-foreground/85 px-1.5 text-[10px] font-semibold text-white">
-                    +{photos.length - 1}
-                  </span>
-                ) : null}
+                <Share2 className="h-4 w-4" />
               </button>
-            ))}
-          </div>
-        ) : null}
+            </div>
+            <h3 className="mt-2 truncate font-display text-lg font-semibold text-foreground">
+              {note.title.trim() || "Nota sin título"}
+            </h3>
 
-        {note.content ? (
-          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-            {note.content}
-          </p>
-        ) : null}
+            {photos.length > 0 ? (
+              <div className="mt-3 flex gap-2">
+                {photos.map((photo, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setViewIndex(index);
+                    }}
+                    aria-label={`Ver foto ${index + 1}`}
+                    className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-border bg-muted"
+                  >
+                    <img
+                      src={photo}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
+                    {index === 0 && photos.length > 1 ? (
+                      <span className="absolute bottom-1 right-1 rounded-full bg-foreground/85 px-1.5 text-[10px] font-semibold text-white">
+                        +{photos.length - 1}
+                      </span>
+                    ) : null}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {note.content ? (
+              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                {note.content}
+              </p>
+            ) : null}
+          </div>
+        </div>
       </article>
 
       {/* Visor de fotos a pantalla completa */}
