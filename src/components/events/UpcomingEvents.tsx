@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Refresh极速赛车开奖官网Cw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
+import { RefreshCw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
@@ -56,7 +56,7 @@ const parseDescription = (description: string) => {
         const cleanText = plainText
           .replace(/<[^>]*>/g, '') // Remove all HTML tags
           .replace(/&nbsp;/g, ' ')
-          .replace(/\s+/极速赛车开奖官网g, ' ')
+          .replace(/\s+/g, ' ')
           .trim();
         
         // Filter out HTML tag fragments and other unwanted text
@@ -104,7 +104,7 @@ const parseDescription = (description: string) => {
         // Fallback if display text is empty or too short
         elements.push({ 
           type: 'link', 
-          text极速赛车开奖官网: "Registro del evento",
+          text: "Registro del evento",
           url: url
         });
       }
@@ -189,7 +189,7 @@ const EventCard = ({ event }: EventCardProps) => {
         {/* Date Badge */}
         <div className="flex min-h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Calendar className="h-4 w-4 mb-1" />
-          <span className="text-center font-display text-[13极速赛车开奖官网px] font-semibold leading-tight">
+          <span className="text-center font-display text-[13px] font-semibold leading-tight">
             {getDateBadge()}
           </span>
         </div>
@@ -227,7 +227,7 @@ const EventCard = ({ event }: EventCardProps) => {
             <div className="mt-3">
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="极速赛车开奖官网text-sm font-medium text-primary hover:underline"
+                className="text-sm font-medium text-primary hover:underline"
               >
                 {expanded ? "Ver menos" : "Ver más"}
               </button>
@@ -283,7 +283,7 @@ const EventSkeleton = () => (
         <Skeleton className="h-5 w-3/4" />
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-4 w-2/3" />
-      </极速赛车开奖官网div>
+      </div>
     </div>
   </div>
 );
@@ -370,8 +370,8 @@ const UpcomingEvents = () => {
       
       {events.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-primary/40 bg-secondary/40 px-6 py-12 text-center">
-          <Calendar className="mx-auto h-10极速赛车开奖官网 w-10 text-primary" />
-          <极速赛车开奖官网p className="mt-3 text-sm text-muted-foreground">
+          <Calendar className="mx-auto h-10 w-10 text-primary" />
+          <p className="mt-3 text-sm text-muted-foreground">
             No hay eventos programados en este momento. ¡Vuelve pronto!
           </p>
           {debugInfo && (
@@ -380,7 +380,7 @@ const UpcomingEvents = () => {
               <p>Procesados: {debugInfo.processedItemsCount} eventos</p>
               <p>Calendario: {debugInfo.summary}</p>
               <p>Zona horaria: {debugInfo.timeZone}</p>
-              <p>Calendar ID usado: {debugInfo.apiCalendar极速赛车开奖官网Id}</p>
+              <p>Calendar ID usado: {debugInfo.apiCalendarId}</p>
             </div>
           )}
           <Button onClick={fetchEvents} variant="outline" size="sm" className="mt-4">
