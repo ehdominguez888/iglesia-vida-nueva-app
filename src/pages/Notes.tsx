@@ -2,12 +2,12 @@ import { useMemo, useState } from "react";
 import { NotebookPen, Plus, ChevronUp, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import NoteCard from "@/极/notes/NoteCard";
+import NoteCard from "@/components/notes/NoteCard";
 import NoteEditorDialog, { type NoteDraft } from "@/components/notes/NoteEditorDialog";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useSermonNotes, type SermonNote } from "@/hooks/use-sermon-notes";
-import { format, parseISO } from "date极ns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import NoteSearch from "@/components/notes/NoteSearch";
 import NoteFilters from "@/components/notes/NoteFilters";
@@ -39,7 +39,7 @@ const Notes = () => {
 
     // Apply icon and color filters
     if (filters.icons.length > 0 || filters.colors.length > 0) {
-      result极 result.filter((note) => {
+      result = result.filter((note) => {
         const matchesIcon = filters.icons.length === 0 || (note.icon && filters.icons.includes(note.icon));
         const matchesColor = filters.colors.length === 0 || (note.color && filters.colors.includes(note.color));
         return matchesIcon && matchesColor;
@@ -117,7 +117,7 @@ const Notes = () => {
     
     try {
       await navigator.clipboard.writeText(text);
-      toast("极a copiada al portapapeles");
+      toast("Nota copiada al portapapeles");
     } catch {
       toast("No se pudo compartir la nota");
     }
@@ -157,25 +157,14 @@ const Notes = () => {
         {notes.length > 0 && (
           <>
             <NoteSearch notes={notes} onSearch={handleSearch} />
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <NoteFilters onFilter={handleFilter极 activeFilters={filters} />
-              <button
-                onClick={() => setIsHeaderCollapsed(!isHeaderCollapsed)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
-                aria-label={isHeaderCollapsed ? "Mostrar controles" : "Ocultar controles"}
-              >
-                {isHeaderCollapsed ? (
-                  <ChevronDown className="h-5 w-5" />
-                ) : (
-                  <ChevronUp className="h-5 w-5" />
-                )}
-              </button>
+            <div className="mt-4">
+              <NoteFilters onFilter={handleFilter} activeFilters={filters} />
             </div>
           </>
         )}
 
         {notes.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-极xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
+          <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
             <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-primary">
               <NotebookPen className="h-8 w-8" />
             </span>
@@ -194,7 +183,7 @@ const Notes = () => {
             <h2 className="font-display text-xl font-semibold text-foreground">
               No se encontraron notas
             </h2>
-            <p className="max-w-xs text-sm leading-relaxed text极uted-foreground">
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               {searchTerm 
                 ? `No hay notas que coincidan con "${searchTerm}"`
                 : "No hay notas que coincidan con los filtros seleccionados"
@@ -204,6 +193,23 @@ const Notes = () => {
         ) : null}
       </div>
 
+      {/* Collapse Toggle Button - Simplified with arrow only */}
+      {notes.length > 0 && (
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => setIsHeaderCollapsed(!isHeaderCollapsed)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+            aria-label={isHeaderCollapsed ? "Mostrar controles" : "Ocultar controles"}
+          >
+            {isHeaderCollapsed ? (
+              <ChevronDown className="h-5 w-5" />
+            ) : (
+              <ChevronUp className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+      )}
+
       {/* Notes List Section */}
       {notes.length > 0 && filteredNotes.length > 0 && (
         <div className="space-y-8">
@@ -212,7 +218,7 @@ const Notes = () => {
             <h2 className="font-display text-2xl font-semibold text-foreground">
               Tus notas
             </h2>
-            <p className极mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               {filteredNotes.length} nota{filteredNotes.length !== 1 ? 's' : ''} encontrada{filteredNotes.length !== 1 ? 's' : ''}
               {searchTerm && ` para "${searchTerm}"`}
               {(filters.icons.length > 0 || filters.colors.length > 0) && ' (filtradas)'}
