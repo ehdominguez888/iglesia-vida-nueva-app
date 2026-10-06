@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, MapPin, Calendar, Clock, Repeat } from "lucide-react";
+import { RefreshCw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
@@ -28,6 +28,36 @@ interface CalendarEvent {
 interface EventCardProps {
   event: CalendarEvent;
 }
+
+// Function to convert URLs in text to clickable links
+const renderDescriptionWithLinks = (description: string) => {
+  if (!description) return null;
+  
+  // Regular expression to match URLs
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  
+  // Split the description by URLs and create links
+  const parts = description.split(urlRegex);
+  
+  return parts.map((part, index) => {
+    if (urlRegex.test(part)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-primary hover:underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      );
+    }
+    return part;
+  });
+};
 
 const EventCard = ({ event }: EventCardProps) => {
   const [expanded, setExpanded] = useState(false);
@@ -109,9 +139,9 @@ const EventCard = ({ event }: EventCardProps) => {
                 {expanded ? "Ver menos" : "Ver más"}
               </button>
               {expanded && (
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {event.description}
-                </p>
+                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {renderDescriptionWithLinks(event.description)}
+                </div>
               )}
             </div>
           )}
