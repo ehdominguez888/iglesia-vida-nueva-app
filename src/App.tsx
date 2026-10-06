@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Pastor from "./pages/Pastor";
 import Notes from "./pages/Notes";
-import Bible from "./pages/Bible";
 import Offering from "./pages/Offering";
 import Connect from "./pages/Connect";
 import VisitorForm from "./pages/VisitorForm";
@@ -31,14 +30,13 @@ const App = () => (
             <Route path="/acerca-de" element={<About />} />
             <Route path="/pastor" element={<Pastor />} />
             <Route path="/notas" element={<Notes />} />
-            <Route path="/biblia" element={<Bible />} />
             <Route path="/ofrenda" element={<Offering />} />
-                        <Route path="/conectar" element={<Connect />} />
-                        <Route path="/conectar/visita" element={<VisitorForm />} />
-                        <Route path="/conectar/oracion" element={<Prayer />} />
-                        <Route path="/conectar/eventos" element={<Events />} />
-                                    <Route path="/conectar/servir" element={<ServeForm />} />
-                                  </Route>
+            <Route path="/conectar" element={<Connect />} />
+            <Route path="/conectar/visita" element={<VisitorForm />} />
+            <Route path="/conectar/oracion" element={<Prayer />} />
+            <Route path="/conectar/eventos" element={<Events />} />
+            <Route path="/conectar/servir" element={<ServeForm />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

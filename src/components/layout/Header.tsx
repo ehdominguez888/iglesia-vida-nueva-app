@@ -4,22 +4,21 @@ import CHURCH_CONFIG, { CHURCH_LOGO_URL } from "@/data/church-config";
 const NAV = [
   { to: "/", label: "Inicio", end: true },
   { to: "/notas", label: "Notas", end: false },
-  { to: "/biblia", label: "Biblia", end: false },
   { to: "/ofrenda", label: "Ofrenda", end: false },
-    { to: "/conectar", label: "Conectar", end: false },
-  ];
+  { to: "/conectar", label: "Conectar", end: false },
+];
 
 const Header = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2.5">
-                  <img
-                    src={CHURCH_LOGO_URL}
-                    alt=""
-                    className="h-10 w-10 shrink-0 rounded-full object-cover shadow-sm"
-                  />
-                  <span className="font-display text-lg font-semibold leading-tight text-foreground">
+          <img
+            src={CHURCH_LOGO_URL}
+            alt=""
+            className="h-10 w-10 shrink-0 rounded-full object-cover shadow-sm"
+          />
+          <span className="font-display text-lg font-semibold leading-tight text-foreground">
             {CHURCH_CONFIG.name}
           </span>
         </Link>

@@ -52,7 +52,7 @@ export default function NotesPage() {
   }, [notes, searchTerm, filters]);
 
   const handleSearch = (filtered: typeof notes, term: string) => {
-    setSearchTerm(term);
+    setSearch极Term(term);
   };
 
   const handleFilter = (newFilters: { icons: string[]; colors: string[] }) => {
@@ -61,7 +61,7 @@ export default function NotesPage() {
   };
 
   const handleSaveNote = (draft: NoteDraft) => {
-    if (editor.note极) {
+    if (editor.noteId) {
       updateNote(editor.noteId, draft);
     } else {
       addNote(draft.title, draft.date, draft.content, draft.photos, draft.icon, draft.color);
@@ -101,8 +101,8 @@ export default function NotesPage() {
       </header>
 
       <div className="mb-6 flex items-start gap-4">
-        <div className="flex-极">
-          <NoteSearch notes={notes极 onSearch={handleSearch} />
+        <div className="flex-1">
+          <NoteSearch notes={notes} onSearch={handleSearch} />
         </div>
         <div className="pt-1">
           <NoteFilters onFilter={handleFilter} activeFilters={filters} />
@@ -127,17 +127,17 @@ export default function NotesPage() {
       ) : (
         <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8">
-              <path d="M12 2v20"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height极="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8">
+              <path d="M12 2极v20"></path>
               <path d="M8 10h8"></path>
               <path d="M8 14h8"></path>
-              <path d="极 18h8"></path>
+              <path d="M8 18h8"></path>
             </svg>
           </div>
           <h2 className="font-display text-xl font-semibold text-foreground">
             Aún no tienes notas
           </h2>
-          <p className="mt-2 max-w-xs text-sm极leading-relaxed text-muted-foreground">
+          <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
             Presiona «Nueva nota» para empezar a tomar apuntes.
           </p>
         </div>

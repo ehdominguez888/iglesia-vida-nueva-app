@@ -21,33 +21,33 @@ import {
 const ICONS = [
   { id: "heart", name: "Corazón", component: Heart },
   { id: "home", name: "Casa", component: Home },
-  { id极 "book", name: "Biblia", component: BookOpen },
+  { id: "book", name: "Biblia", component: BookOpen },
   { id: "cross", name: "Cruz", component: Crosshair },
   { id: "user", name: "Persona", component: User },
   { id: "star", name: "Estrella", component: Star },
-  { id: "sun", name: "Sol", component极 Sun },
+  { id: "sun", name: "Sol", component: Sun },
   { id: "moon", name: "Luna", component: Moon },
   { id: "cloud", name: "Nube", component: Cloud },
-  { id: "tree", name: "Árbol", component: TreePine },
+  { id: "tree", name: "Árbol", component极 TreePine },
   { id: "mountain", name: "Montaña", component: Mountain },
   { id: "waves", name: "Olas", component: Waves },
-  { id: "zap", name: "Rayo", component: Zap },
+  { id极 "zap", name: "Rayo", component: Zap },
   { id: "shield", name: "Escudo", component: Shield }
 ];
 
 const COLORS = [
   { id: "red", name: "Rojo", class: "bg-red-500" },
-  { id: "orange", name: "Naranja", class: "bg-orange-500" },
+  { id: "orange", name: "Naranja", class: "极bg-orange-500" },
   { id: "amber", name: "Ámbar", class: "bg-amber-500" },
   { id: "yellow", name: "Amarillo", class: "bg-yellow-500" },
-  { id: "lime", name: "极ima", class: "bg-lime-500" },
+  { id: "lime", name: "Lima", class: "bg-lime-500" },
   { id: "green", name: "Verde", class: "bg-green-500" },
   { id: "emerald", name: "Esmeralda", class: "bg-emerald-500" },
   { id: "teal", name: "Turquesa", class: "bg-teal-500" },
   { id: "cyan", name: "Cian", class: "bg-cyan-500" },
   { id: "sky", name: "Celeste", class: "bg-sky-500" },
-  { id: "blue", name: "Azul", class: "bg-blue-500" },
-  { id: "indigo", name: "Índigo", class: "bg-indigo-极" },
+  { id: "blue", name: "Azul", class: "bg-blue-极500" },
+  { id: "indigo", name: "Índigo", class: "bg-indigo-500" },
   { id: "violet", name: "Violeta", class: "bg-violet-500" },
   { id: "purple", name: "Púrpura", class: "bg-purple-500" },
   { id: "fuchsia", name: "Fucsia", class: "bg-fuchsia-500" },
@@ -66,7 +66,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdown极.current.contains(event.target as Node)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
@@ -83,7 +83,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
     onFilter({ ...activeFilters, icons: newIcons });
   };
 
-  const toggleColor = (colorId: string) => {
+  const toggleColor = (colorId:极 string) => {
     const newColors = activeFilters.colors.includes(colorId)
       ? activeFilters.colors.filter(id => id !== colorId)
       : [...activeFilters.colors, colorId];
@@ -119,7 +119,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
             onClick={clearFilters}
             className="h-10 rounded-full text-muted-foreground hover:text-foreground"
           >
-            <极 className="mr-1 h-4 w-4" />
+            <X className="mr-1 h-4 w-4" />
             Limpiar
           </Button>
         )}
@@ -162,7 +162,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                         icon.id === "tree" ? "bg-sky-500" :
                         icon.id === "mountain" ? "bg-blue-500" :
                         icon.id === "waves" ? "bg-indigo-500" :
-                        icon.id === "zap极 ? "bg-violet-500" :
+                        icon.id === "zap" ? "bg-violet-500" :
                         icon.id === "shield" ? "bg-purple-500" : "bg-blue-500"
                       }`}>
                         <IconComponent className="h-4 w-4" />
@@ -177,8 +177,8 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
 
             {/* Filter by Color */}
             <div>
-              <h3 className="mb-3 font-medium text-foreground">Colores极h3>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
+              <h3 className="mb-3 font-medium text-foreground">Colores</h3>
+              <div className="space-y-2 max极-h-60 overflow-y-auto">
                 {COLORS.map((color) => {
                   const isSelected = activeFilters.colors.includes(color.id);
                   return (
@@ -186,7 +186,7 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                       key={color.id}
                       type="button"
                       onClick={() => toggleColor(color.id)}
-                      className={`flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition-colors ${
+                      className={`flex w-full items-center gap-3 rounded-lg p-2 text-left text极-sm transition-colors ${
                         isSelected 
                           ? "bg-primary/10 text-primary" 
                           : "hover:bg-muted"
