@@ -8,17 +8,24 @@ import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useSermonNotes, type SermonNote } from "@/hooks/use-sermon-notes";
 import { formatLongDate } from "@/utils/dates";
+import NoteSearch from "@/components/notes/NoteSearch";
 
 const Notes = () => {
   usePageTitle("Notas del sermón");
   const { notes, addNote, updateNote, deleteNote, photosWithinBudget } = useSermonNotes();
-    const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<SermonNote | null>(null);
+  const [filteredNotes, setFilteredNotes] = useState<SermonNote[]>(notes);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // Group notes by date
   const groups = useMemo(() => {
     const order: string[] = [];
     const map = new Map<string, SermonNote[]>();
-    for (const note of notes) {
+    
+    const notesToUse = searchTerm ? filteredNotes : notes;
+    
+    for (const note of notesToUse) {
       const label = formatLongDate(note.date);
       if (!map.has(label)) {
         map.set(label, []);
@@ -26,8 +33,9 @@ const Notes = () => {
       }
       map.get(label)!.push(note);
     }
+    
     return order.map((label) => ({ label, items: map.get(label)! }));
-  }, [notes]);
+  }, [notes, filteredNotes, searchTerm]);
 
   const openNew = () => {
     setEditingNote(null);
@@ -40,16 +48,17 @@ const Notes = () => {
   };
 
   const handleSave = (draft: NoteDraft) => {
-      const photos = photosWithinBudget(draft.photos);
-      const limited = photos.length < draft.photos.length;
-      if (editingNote) {
-        updateNote(editingNote.id, { ...draft, photos });
-        toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
-      } else {
-        addNote(draft.title, draft.date, draft.content, photos);
-        toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
-      }
-    };
+    const photos = photosWithinBudget(draft.photos);
+    const limited = photos.length < draft.photos.length;
+    
+    if (editingNote) {
+      updateNote(editingNote.id, { ...draft, photos });
+      toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
+    } else {
+      addNote(draft.title, draft.date, draft.content, photos);
+      toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
+    }
+  };
 
   const handleDelete = (id: string) => {
     deleteNote(id);
@@ -57,10 +66,11 @@ const Notes = () => {
   };
 
   const handleShare = async (note: SermonNote) => {
-      const title = note.title.trim() || "Nota del sermón";
-      const photoCount = note.photos?.length ?? 0;
-      const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
-      const text = `${title} · ${formatLongDate(note.date)}\n\n${note.content}${photoNote}`;
+    const title = note.title.trim() || "Nota del sermón";
+    const photoCount = note.photos?.length ?? 0;
+    const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
+    const text = `${title} · ${formatLongDate(note.date)}\n\n${note.content}${photoNote}`;
+    
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({ title, text });
@@ -69,12 +79,18 @@ const Notes = () => {
       }
       return;
     }
+    
     try {
       await navigator.clipboard.writeText(text);
       toast("Nota copiada al portapapeles");
     } catch {
       toast("No se pudo compartir la nota");
     }
+  };
+
+  const handleSearch = (filtered: SermonNote[], term: string) => {
+    setFilteredNotes(filtered);
+    setSearchTerm(term);
   };
 
   return (
@@ -93,6 +109,10 @@ const Notes = () => {
         Nueva nota
       </Button>
 
+      {notes.length > 0 && (
+        <NoteSearch notes={notes} onSearch={handleSearch} />
+      )}
+
       {notes.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-primary">
@@ -103,6 +123,18 @@ const Notes = () => {
           </h2>
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             Presiona «Nueva nota» para empezar a tomar apuntes durante el sermón.
+          </p>
+        </div>
+      ) : filteredNotes.length === 0 && searchTerm ? (
+        <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
+          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-primary">
+            <NotebookPen className="h-8 w-8" />
+          </span>
+          <h2 className="font-display text-xl font-semibold text-foreground">
+            No se encontraron notas
+          </h2>
+          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            No hay notas que coincidan con "{searchTerm}". Intenta con otra búsqueda.
           </p>
         </div>
       ) : (
