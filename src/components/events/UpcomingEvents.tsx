@@ -33,7 +33,7 @@ interface EventCardProps {
 const extractLinksFromDescription = (description: string) => {
   if (!description) return null;
   
-  // Regular expression to match URLs and potential display text
+  // Regular expression to match URLs
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const matches = description.match(urlRegex);
   
@@ -55,14 +55,33 @@ const extractLinksFromDescription = (description: string) => {
       }
     }
     
-    // Extract display text (text immediately before the URL, or use a default)
+    // Extract display text - look for text on the same line as the URL
     let displayText = "Registro del evento";
-    const textBeforeUrl = description.substring(Math.max(0, urlIndex - 50), urlIndex).trim();
-    const lines = textBeforeUrl.split('\n');
-    const lastLine = lines[lines.length - 1];
     
-    if (lastLine && lastLine.length > 0 && lastLine.length < 50) {
-      displayText = lastLine;
+    // Get the text around the URL (50 characters before and after)
+    const contextStart = Math.max(0, urlIndex - 100);
+    const contextEnd = Math.min(description.length, urlIndex + url.length + 100);
+    const context = description.substring(contextStart, contextEnd);
+    
+    // Look for text on the same line as the URL
+    const lines = context.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes(url)) {
+        // Remove the URL from the line to get just the text
+        const lineWithoutUrl = lines[i].replace(url, '').trim();
+        if (lineWithoutUrl) {
+          displayText = lineWithoutUrl;
+          break;
+        }
+      }
+    }
+    
+    // If we didn't find good text, look for text immediately before the URL
+    if (displayText === "Registro del evento") {
+      const textBeforeUrl = description.substring(Math.max(0, urlIndex - 30), urlIndex).trim();
+      if (textBeforeUrl) {
+        displayText = textBeforeUrl;
+      }
     }
     
     parts.push({ text: displayText, url });
