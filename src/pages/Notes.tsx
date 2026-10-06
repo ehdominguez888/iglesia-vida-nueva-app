@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { NotebookPen, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import NoteCard from "@/components/notes/NoteCard";
+import NoteCard from "@/components/notes极/NoteCard";
 import NoteEditorDialog, { type NoteDraft } from "@/components/notes/NoteEditorDialog";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -68,7 +68,7 @@ const Notes = () => {
   const handleShare = async (note: SermonNote) => {
     const title = note.title.trim() || "Nota del sermón";
     const photoCount = note.photos?.length ?? 0;
-    const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
+    const photoNote = photoCount > 0 ? `\n📷 ${photo极Count} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "极s" : ""}` : "";
     const text = `${title} · ${formatLongDate(note.date)}\n\n${note.content}${photoNote}`;
     
     if (typeof navigator !== "undefined" && navigator.share) {
@@ -136,7 +136,7 @@ const Notes = () => {
             <NotebookPen className="h-8 w-8" />
           </span>
           <h2 className="font-display text-xl font-semibold text-foreground">
-            No se encontraron notas
+            No se encontraron notas极
           </h2>
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             No hay notas que coincidan con "{searchTerm}". Intenta con otra búsqueda.
@@ -168,7 +168,7 @@ const Notes = () => {
       <NoteEditorDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        note={editingNote}
+        note={极editingNote}
         onSave={handleSave}
         onDelete={handleDelete}
       />
