@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Filter, X } from "lucide-react";
+import { Filter, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Heart, 
@@ -56,25 +56,41 @@ const COLORS = [
 ];
 
 type NoteFiltersProps = {
-  onFilter: (filters: { icon?: string; color?: string }) => void;
-  activeFilters: { icon?: string; color?: string };
+  onFilter: (filters: { icons: string[]; colors: string[] }) => void;
+  activeFilters: { icons: string[]; colors: string[] };
 };
 
 const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const clearFilters = () => {
-    onFilter({});
+  const toggleIcon = (iconId: string) => {
+    const newIcons = activeFilters.icons.includes(iconId)
+      ? activeFilters.icons.filter(id => id !== iconId)
+      : [...activeFilters.icons, iconId];
+    
+    onFilter({ ...activeFilters, icons: newIcons });
   };
 
-  const hasActiveFilters = activeFilters.icon || activeFilters.color;
+  const toggleColor = (colorId: string) => {
+    const newColors = activeFilters.colors.includes(colorId)
+      ? activeFilters.colors.filter(id => id !== colorId)
+      : [...activeFilters.colors, colorId];
+    
+    onFilter({ ...activeFilters, colors: newColors });
+  };
+
+  const clearFilters = () => {
+    onFilter({ icons: [], colors: [] });
+  };
+
+  const hasActiveFilters = activeFilters.icons.length > 0 || activeFilters.colors.length > 0;
 
   return (
-    <div className="mb-6">
+    <div className="relative mb-6">
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
-          onClick={() => setShowFilters(!showFilters)}
+          onClick={() => setShowDropdown(!showDropdown)}
           className="h-10 rounded-full"
         >
           <Filter className="mr-2 h-4 w-4" />
@@ -92,34 +108,36 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
             className="h-10 rounded-full text-muted-foreground hover:text-foreground"
           >
             <X className="mr-1 h-4 w-4" />
-            Limpiar filtros
+            Limpiar
           </Button>
         )}
       </div>
 
-      {showFilters && (
-        <div className="mt-4 rounded-2xl border border-border bg-card p-4">
-          <div className="space-y-6">
+      {showDropdown && (
+        <div 
+          className="absolute left-0 top-full z-50 mt-2 w-80 rounded-2xl border border-border bg-card p-4 shadow-lg"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="grid grid-cols-2 gap-6">
             {/* Filter by Icon */}
             <div>
-              <h3 className="mb-3 font-medium text-foreground">Ícono</h3>
-              <div className="flex flex-wrap gap-2">
+              <h3 className="mb-3 font-medium text-foreground">Íconos</h3>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
                 {ICONS.map((icon) => {
                   const IconComponent = icon.component;
-                  const isActive = activeFilters.icon === icon.id;
+                  const isSelected = activeFilters.icons.includes(icon.id);
                   return (
                     <button
                       key={icon.id}
                       type="button"
-                      onClick={() => 
-                        onFilter({ 
-                          ...activeFilters, 
-                          icon: isActive ? undefined : icon.id 
-                        })
-                      }
-                      className={`flex h-12 w-12 items-center justify-center rounded-2xl text-white transition-all ${
-                        isActive ? "ring-2 ring-primary ring-offset-2" : "opacity-70 hover:opacity-100"
-                      } ${
+                      onClick={() => toggleIcon(icon.id)}
+                      className={`flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition-colors ${
+                        isSelected 
+                          ? "bg-primary/10 text-primary" 
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-white ${
                         icon.id === "heart" ? "bg-red-500" :
                         icon.id === "home" ? "bg-orange-500" :
                         icon.id === "book" ? "bg-amber-500" :
@@ -134,10 +152,11 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
                         icon.id === "waves" ? "bg-indigo-500" :
                         icon.id === "zap" ? "bg-violet-500" :
                         icon.id === "shield" ? "bg-purple-500" : "bg-blue-500"
-                      }`}
-                      aria-label={icon.name}
-                    >
-                      <IconComponent className="h-6 w-6" />
+                      }`}>
+                        <IconComponent className="h-4 w-4" />
+                      </div>
+                      <span className="flex-1 truncate">{icon.name}</span>
+                      {isSelected && <Check className="h-4 w-4 text-primary" />}
                     </button>
                   );
                 })}
@@ -146,26 +165,24 @@ const NoteFilters = ({ onFilter, activeFilters }: NoteFiltersProps) => {
 
             {/* Filter by Color */}
             <div>
-              <h3 className="mb-3 font-medium text-foreground">Color</h3>
-              <div className="flex flex-wrap gap-2">
+              <h3 className="mb-3 font-medium text-foreground">Colores</h3>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
                 {COLORS.map((color) => {
-                  const isActive = activeFilters.color === color.id;
+                  const isSelected = activeFilters.colors.includes(color.id);
                   return (
                     <button
                       key={color.id}
                       type="button"
-                      onClick={() => 
-                        onFilter({ 
-                          ...activeFilters, 
-                          color: isActive ? undefined : color.id 
-                        })
-                      }
-                      className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${
-                        isActive ? "ring-2 ring-primary ring-offset-2" : "opacity-70 hover:opacity-100"
-                      } ${color.class}`}
-                      aria-label={color.name}
+                      onClick={() => toggleColor(color.id)}
+                      className={`flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm transition-colors ${
+                        isSelected 
+                          ? "bg-primary/10 text-primary" 
+                          : "hover:bg-muted"
+                      }`}
                     >
-                      {isActive && <X className="h-5 w-5 text-white" />}
+                      <div className={`h-4 w-4 flex-shrink-0 rounded-full ${color.class}`}></div>
+                      <span className="flex-1 truncate">{color.name}</span>
+                      {isSelected && <Check className="h-4 w-4 text-primary" />}
                     </button>
                   );
                 })}

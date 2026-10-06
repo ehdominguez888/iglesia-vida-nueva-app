@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NoteCard from "@/components/notes/NoteCard";
@@ -15,21 +15,12 @@ export default function NotesPage() {
     noteId: null,
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState<{ icon?: string; color?: string }>({});
+  const [filters, setFilters] = useState<{ icons: string[]; colors: string[] }>({ icons: [], colors: [] });
   const [filteredNotes, setFilteredNotes] = useState(notes);
 
-  const handleSearch = (filtered: typeof notes, term: string) => {
-    setSearchTerm(term);
-    applyFilters(filtered, filters);
-  };
-
-  const handleFilter = (newFilters: { icon?: string; color?: string }) => {
-    setFilters(newFilters);
-    applyFilters(notes, newFilters);
-  };
-
-  const applyFilters = (notesToFilter: typeof notes, currentFilters: { icon?: string; color?: string }) => {
-    let result = notesToFilter;
+  // Apply filters whenever notes, search term, or filters change
+  useEffect(() => {
+    let result = notes;
     
     // Apply text search filter
     if (searchTerm) {
@@ -41,17 +32,25 @@ export default function NotesPage() {
       );
     }
     
-    // Apply icon filter
-    if (currentFilters.icon) {
-      result = result.filter(note => note.icon === currentFilters.icon);
+    // Apply icon filters
+    if (filters.icons.length > 0) {
+      result = result.filter(note => filters.icons.includes(note.icon || ""));
     }
     
-    // Apply color filter
-    if (currentFilters.color) {
-      result = result.filter(note => note.color === currentFilters.color);
+    // Apply color filters
+    if (filters.colors.length > 0) {
+      result = result.filter(note => filters.colors.includes(note.color || ""));
     }
     
     setFilteredNotes(result);
+  }, [notes, searchTerm, filters]);
+
+  const handleSearch = (filtered: typeof notes, term: string) => {
+    setSearchTerm(term);
+  };
+
+  const handleFilter = (newFilters: { icons: string[]; colors: string[] }) => {
+    setFilters(newFilters);
   };
 
   const handleSaveNote = (draft: NoteDraft) => {
