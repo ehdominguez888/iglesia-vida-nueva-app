@@ -10,24 +10,51 @@ import { useSermonNotes, type SermonNote } from "@/hooks/use-sermon-notes";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import NoteSearch from "@/components/notes/NoteSearch";
+import NoteFilters from "@/components/notes/NoteFilters";
 
 const Notes = () => {
   usePageTitle("Notas del sermón");
   const { notes, addNote, updateNote, deleteNote, photosWithinBudget } = useSermonNotes();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<SermonNote | null>(null);
-  const [filteredNotes, setFilteredNotes] = useState<SermonNote[]>(notes);
   const [searchTerm, setSearchTerm] = useState("");
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
+  const [filters, setFilters] = useState({ icons: [] as string[], colors: [] as string[] });
+
+  // Filter and search notes
+  const filteredNotes = useMemo(() => {
+    let result = notes;
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      result = result.filter((note) => {
+        return (
+          note.title.toLowerCase().includes(term) ||
+          note.content.toLowerCase().includes(term) ||
+          note.date.includes(term)
+        );
+      });
+    }
+
+    // Apply icon and color filters
+    if (filters.icons.length > 0 || filters.colors.length > 0) {
+      result = result.filter((note) => {
+        const matchesIcon = filters.icons.length === 0 || (note.icon && filters.icons.includes(note.icon));
+        const matchesColor = filters.colors.length === 0 || (note.color && filters.colors.includes(note.color));
+        return matchesIcon && matchesColor;
+      });
+    }
+
+    return result;
+  }, [notes, searchTerm, filters]);
 
   // Group notes by month
   const groups = useMemo(() => {
     const order: string[] = [];
     const map = new Map<string, SermonNote[]>();
     
-    const notesToUse = searchTerm ? filteredNotes : notes;
-    
-    for (const note of notesToUse) {
+    for (const note of filteredNotes) {
       const date = parseISO(note.date);
       const monthKey = format(date, "MMMM yyyy", { locale: es });
       const monthLabel = format(date, "MMMM yyyy", { locale: es });
@@ -43,7 +70,7 @@ const Notes = () => {
       label: monthKey.charAt(0).toUpperCase() + monthKey.slice(1), 
       items: map.get(monthKey)! 
     }));
-  }, [notes, filteredNotes, searchTerm]);
+  }, [filteredNotes]);
 
   const openNew = () => {
     setEditingNote(null);
@@ -97,8 +124,11 @@ const Notes = () => {
   };
 
   const handleSearch = (filtered: SermonNote[], term: string) => {
-    setFilteredNotes(filtered);
     setSearchTerm(term);
+  };
+
+  const handleFilter = (newFilters: { icons: string[]; colors: string[] }) => {
+    setFilters(newFilters);
   };
 
   const handleUpdateIcon = (id: string, icon: string, color: string) => {
@@ -125,7 +155,12 @@ const Notes = () => {
         </Button>
 
         {notes.length > 0 && (
-          <NoteSearch notes={notes} onSearch={handleSearch} />
+          <>
+            <NoteSearch notes={notes} onSearch={handleSearch} />
+            <div className="mt-4">
+              <NoteFilters onFilter={handleFilter} activeFilters={filters} />
+            </div>
+          </>
         )}
 
         {notes.length === 0 ? (
@@ -140,7 +175,7 @@ const Notes = () => {
               Presiona «Nueva nota» para empezar a tomar apuntes durante el sermón.
             </p>
           </div>
-        ) : filteredNotes.length === 0 && searchTerm ? (
+        ) : filteredNotes.length === 0 && (searchTerm || filters.icons.length > 0 || filters.colors.length > 0) ? (
           <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-border bg-card/50 px-6 py-16 text-center">
             <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-primary">
               <NotebookPen className="h-8 w-8" />
@@ -149,7 +184,10 @@ const Notes = () => {
               No se encontraron notas
             </h2>
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-              No hay notas que coincidan con "{searchTerm}". Intenta con otra búsqueda.
+              {searchTerm 
+                ? `No hay notas que coincidan con "${searchTerm}"`
+                : "No hay notas que coincidan con los filtros seleccionados"
+              }
             </p>
           </div>
         ) : null}
@@ -183,6 +221,7 @@ const Notes = () => {
             <p className="mt-1 text-sm text-muted-foreground">
               {filteredNotes.length} nota{filteredNotes.length !== 1 ? 's' : ''} encontrada{filteredNotes.length !== 1 ? 's' : ''}
               {searchTerm && ` para "${searchTerm}"`}
+              {(filters.icons.length > 0 || filters.colors.length > 0) && ' (filtradas)'}
             </p>
           </div>
 
