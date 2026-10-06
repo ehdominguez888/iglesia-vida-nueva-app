@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NoteCard from "@/components/notes/NoteCard";
@@ -18,6 +18,10 @@ export default function NotesPage() {
   const [filters, setFilters] = useState<{ icons: string[]; colors: string[] }>({ icons: [], colors: [] });
   const [filteredNotes, setFilteredNotes] = useState(notes);
 
+  console.log('Current filters:', filters);
+  console.log('Total notes:', notes.length);
+  console.log('Filtered notes:', filteredNotes.length);
+
   // Apply filters whenever notes, search term, or filters change
   useEffect(() => {
     let result = notes;
@@ -34,11 +38,13 @@ export default function NotesPage() {
     
     // Apply icon filters
     if (filters.icons.length > 0) {
+      console.log('Applying icon filters:', filters.icons);
       result = result.filter(note => filters.icons.includes(note.icon || ""));
     }
     
     // Apply color filters
     if (filters.colors.length > 0) {
+      console.log('Applying color filters:', filters.colors);
       result = result.filter(note => filters.colors.includes(note.color || ""));
     }
     
@@ -50,11 +56,12 @@ export default function NotesPage() {
   };
 
   const handleFilter = (newFilters: { icons: string[]; colors: string[] }) => {
+    console.log('New filters applied:', newFilters);
     setFilters(newFilters);
   };
 
   const handleSaveNote = (draft: NoteDraft) => {
-    if (editor.noteId) {
+    if (editor.note极) {
       updateNote(editor.noteId, draft);
     } else {
       addNote(draft.title, draft.date, draft.content, draft.photos, draft.icon, draft.color);
@@ -94,8 +101,8 @@ export default function NotesPage() {
       </header>
 
       <div className="mb-6 flex items-start gap-4">
-        <div className="flex-1">
-          <NoteSearch notes={notes} onSearch={handleSearch} />
+        <div className="flex-极">
+          <NoteSearch notes={notes极 onSearch={handleSearch} />
         </div>
         <div className="pt-1">
           <NoteFilters onFilter={handleFilter} activeFilters={filters} />
@@ -124,13 +131,13 @@ export default function NotesPage() {
               <path d="M12 2v20"></path>
               <path d="M8 10h8"></path>
               <path d="M8 14h8"></path>
-              <path d="M8 18h8"></path>
+              <path d="极 18h8"></path>
             </svg>
           </div>
           <h2 className="font-display text-xl font-semibold text-foreground">
             Aún no tienes notas
           </h2>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-2 max-w-xs text-sm极leading-relaxed text-muted-foreground">
             Presiona «Nueva nota» para empezar a tomar apuntes.
           </p>
         </div>
