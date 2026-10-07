@@ -85,7 +85,7 @@ const Index = () => {
 
       {/* Quick Links Section */}
       <section className="animate-rise" style={{ animationDelay: "110ms" }}>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-3">
           <Link
             to="/notas"
             className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
