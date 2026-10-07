@@ -50,24 +50,61 @@ const Connect = () => {
         description="Queremos acompañar tu paso por nuestra comunidad. Elige cómo quieres comenzar."
       />
 
+      {/* Upcoming Events Section */}
       <section>
+        <h2 className="mb-3 font-display text-lg font-semibold text-foreground">
+          Calendario
+        </h2>
         <div className="grid grid-cols-1 gap-3">
-          {CHURCH_CONFIG.connect.entries.map((entry) => {
-            const Icon = KIND_ICONS[entry.kind];
-            return (
-              <Link
-                key={entry.to}
-                to={entry.to}
-                className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
-              >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                  <Icon className="h-6 w-6" />
-                </span>
-                <span className="min-w-0 flex-1 font-semibold text-foreground">{entry.title}</span>
-                <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-              </Link>
-            );
-          })}
+          <Link
+            to="/conectar/eventos"
+            className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+              <CalendarDays className="h-6 w-6" />
+            </span>
+            <span className="min-w-0 flex-1 font-semibold text-foreground">Próximos eventos</span>
+            <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+          </Link>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="my-8 relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border"></div>
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-background px-4 text-sm text-muted-foreground">
+            O contáctanos directamente
+          </span>
+        </div>
+      </div>
+
+      {/* Contact Forms Section */}
+      <section>
+        <h2 className="mb-3 font-display text-lg font-semibold text-foreground">
+          Ponte en contacto
+        </h2>
+        <div className="grid grid-cols-1 gap-3">
+          {CHURCH_CONFIG.connect.entries
+            .filter(entry => entry.kind !== "events")
+            .map((entry) => {
+              const Icon = KIND_ICONS[entry.kind];
+              return (
+                <Link
+                  key={entry.to}
+                  to={entry.to}
+                  className="group flex items-center gap-3 rounded-3xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <span className="min-w-0 flex-1 font-semibold text-foreground">{entry.title}</span>
+                  <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                </Link>
+              );
+            })}
         </div>
       </section>
 
