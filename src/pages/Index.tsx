@@ -13,6 +13,10 @@ import {
   UserRound,
   Youtube,
   Heart,
+  NotebookPen,
+  Calendar,
+  Plus,
+  Clock
 } from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
 import SectionHeading from "@/components/layout/SectionHeading";
@@ -75,6 +79,26 @@ const Index = () => {
               {CHURCH_CONFIG.contact.phone}
             </span>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Links Section */}
+      <section className="animate-rise" style={{ animationDelay: "110ms" }}>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            to="/notas"
+            className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <Plus className="h-5 w-5 text-primary" />
+            <span className="font-medium text-foreground">Nueva nota</span>
+          </Link>
+          <Link
+            to="/conectar/eventos"
+            className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <Calendar className="h-5 w-5 text-primary" />
+            <span className="font-medium text-foreground">Eventos</span>
+          </Link>
         </div>
       </section>
 
