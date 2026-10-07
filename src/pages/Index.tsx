@@ -88,14 +88,14 @@ const Index = () => {
         <div className="grid grid-cols-3 gap-3">
           <Link
             to="/notas"
-            className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+            className="group flex items-center justify-center gap-2 rounded-2xl border border-primary bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
           >
             <Plus className="h-5 w-5 text-primary" />
             <span className="font-medium text-foreground">Nueva nota</span>
           </Link>
           <Link
             to="/conectar/eventos"
-            className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+            className="group flex items-center justify-center gap-2 rounded-2xl border border-primary bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
           >
             <Calendar className="h-5 w-5 text-primary" />
             <span className="font-medium text-foreground">Eventos</span>
@@ -104,7 +104,7 @@ const Index = () => {
             href={CHURCH_CONFIG.offering.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-center gap-2 rounded-2xl border border-border bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+            className="group flex items-center justify-center gap-2 rounded-2xl border border-primary bg-muted p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
           >
             <HeartHandshake className="h-5 w-5 text-primary" />
             <span className="font-medium text-foreground">Ofrenda</span>
