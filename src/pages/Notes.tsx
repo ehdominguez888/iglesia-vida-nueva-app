@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { NotebookPen, Plus, ChevronUp, ChevronDown } from "lucide-react";
+import { useMemo, useState, useCallback } from "react";
+import { NotebookPen, Plus, ChevronUp, ChevronDown, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import NoteCard from "@/components/notes/NoteCard";
@@ -123,6 +123,46 @@ const Notes = () => {
     }
   };
 
+  const handleShareAllNotes = useCallback(async () => {
+    if (notes.length === 0) {
+      toast("No hay notas para compartir");
+      return;
+    }
+
+    // Format all notes
+    const formattedNotes = notes
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .map(note => {
+        const title = note.title.trim() || "Nota sin título";
+        const date = format(parseISO(note.date), "d 'de' MMMM yyyy", { locale: es });
+        const photoCount = note.photos?.length ?? 0;
+        const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
+        return `---\n${title} - ${date}\n\n${note.content}${photoNote}`;
+      })
+      .join('\n\n');
+
+    const shareData = {
+      title: "Mis Notas - Iglesia Vida Nueva",
+      text: formattedNotes
+    };
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // User cancelled the share
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(formattedNotes);
+      toast("Todas las notas copiadas al portapapeles");
+    } catch {
+      toast("No se pudieron compartir las notas");
+    }
+  }, [notes]);
+
   const handleSearch = (filtered: SermonNote[], term: string) => {
     setSearchTerm(term);
   };
@@ -146,13 +186,26 @@ const Notes = () => {
 
       {/* Collapsible Header Section */}
       <div className={`transition-all duration-300 ${isHeaderCollapsed ? 'max-h-0 overflow-hidden' : 'max-h-96'}`}>
-        <Button
-          onClick={openNew}
-          className="mb-6 h-14 w-full rounded-full text-base font-semibold shadow-sm active:scale-[0.99]"
-        >
-          <Plus className="mr-1 h-5 w-5" />
-          Nueva nota
-        </Button>
+        <div className="flex gap-2 mb-4">
+          <Button
+            onClick={openNew}
+            className="flex-1 h-14 rounded-full text-base font-semibold shadow-sm active:scale-[0.99]"
+          >
+            <Plus className="mr-1 h-5 w-5" />
+            Nueva nota
+          </Button>
+          
+          {notes.length > 0 && (
+            <Button
+              onClick={handleShareAllNotes}
+              variant="outline"
+              className="h-14 rounded-full px-4"
+              aria-label="Compartir todas las notas"
+            >
+              <Share2 className="h-5 w-5" />
+            </Button>
+          )}
+        </div>
 
         {notes.length > 0 && (
           <>

@@ -1,8 +1,10 @@
 import { createRoot } from "react-dom/client";
-import { registerSW } from "virtual:pwa-register";
 import App from "./App.tsx";
 import "./globals.css";
 
-registerSW({ immediate: true });
+// Request persistent storage to protect user notes
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist();
+}
 
 createRoot(document.getElementById("root")!).render(<App />);
