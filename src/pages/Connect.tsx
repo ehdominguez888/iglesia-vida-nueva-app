@@ -154,14 +154,13 @@ const Connect = () => {
                 Escanea para descargar
               </h3>
               
-              {/* QR Code Placeholder - In a real app, you'd generate a QR code here */}
+              {/* Actual QR Code Image */}
               <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-4">
-                <div className="text-center">
-                  <QrCode className="mx-auto h-24 w-24 text-foreground" />
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Código QR de la app
-                  </p>
-                </div>
+                <img 
+                  src="/qr-code.png" 
+                  alt="Código QR de la aplicación Iglesia Vida Nueva"
+                  className="h-full w-full object-contain"
+                />
               </div>
               
               <p className="text-sm text-muted-foreground mb-4">
