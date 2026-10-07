@@ -222,15 +222,15 @@ const EventCard = ({ event }: EventCardProps) => {
           
           {/* Time */}
           <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4 text-primary" />
+            <Clock className="h-4 w-4 flex-shrink-0 text-primary" />
             {formatDateRange()}
           </div>
           
           {/* Location */}
           {event.location && (
-            <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4 text-primary" />
-              {event.location}
+            <div className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4 flex-shrink-0 text-primary mt-0.5" />
+              <span className="break-words">{event.location}</span>
             </div>
           )}
           
