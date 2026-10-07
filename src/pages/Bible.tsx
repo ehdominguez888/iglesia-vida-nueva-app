@@ -29,7 +29,7 @@ const BibleApps = () => {
       <PageHeader
         eyebrow="Palabra de Dios"
         title="Biblia"
-        description="Explora la Biblia con estas aplicaciones gratuitas y fáciles de usar."
+        description="Accede a la Palabra de Dios desde tu celular con estas aplicaciones gratuitas."
       />
 
       <div className="rounded-3xl border border-border bg-card p-6">
@@ -38,10 +38,10 @@ const BibleApps = () => {
             <BookOpen className="h-8 w-8" />
           </div>
           <h2 className="font-display text-xl font-semibold text-foreground mb-2">
-            ¿Buscas una aplicación bíblica?
+            ¿Sin tu Biblia física?
           </h2>
           <p className="text-muted-foreground">
-            Te recomendamos estas excelentes opciones gratuitas para estudiar la Palabra de Dios en tu celular.
+            No te preocupes, estas aplicaciones gratuitas te permiten llevar la Palabra de Dios contigo en todo momento.
           </p>
         </div>
       </div>
