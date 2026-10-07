@@ -14,6 +14,7 @@ import VisitorForm from "./pages/VisitorForm";
 import Prayer from "./pages/Prayer";
 import Events from "./pages/Events";
 import ServeForm from "./pages/ServeForm";
+import Bible from "./pages/Bible";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/acerca-de" element={<About />} />
             <Route path="/pastor" element={<Pastor />} />
             <Route path="/notas" element={<Notes />} />
+            <Route path="/bible" element={<Bible />} />
             <Route path="/ofrenda" element={<Offering />} />
             <Route path="/conectar" element={<Connect />} />
             <Route path="/conectar/visita" element={<VisitorForm />} />
