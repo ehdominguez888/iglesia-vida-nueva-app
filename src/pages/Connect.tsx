@@ -108,20 +108,6 @@ const Connect = () => {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-border bg-card/60 p-6 sm:p-7 mt-5">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <HandHeart className="h-6 w-6" />
-        </span>
-        <h2 className="mt-4 font-display text-xl font-semibold text-foreground">
-          Estamos aquí para ti
-        </h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-          {CHURCH_CONFIG.connect.entries.length > 0
-            ? "Elige la opción que mejor se adapte a lo que necesitas. Nuestro equipo te responderá lo antes posible."
-            : "Pronto encontrarás aquí todas las formas de conectarte con nosotros."}
-        </p>
-      </section>
-
       {/* Share App Section */}
       <section className="rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8 mt-6">
         <div className="flex items-center gap-4">
