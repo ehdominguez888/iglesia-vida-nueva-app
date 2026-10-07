@@ -28,12 +28,27 @@ const Notes = () => {
     // Apply search filter
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
+      
+      // Get month names in Spanish for matching
+      const monthNames = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+      ];
+      
       result = result.filter((note) => {
-        return (
+        // Original search criteria
+        const matchesOriginal = (
           note.title.toLowerCase().includes(term) ||
           note.content.toLowerCase().includes(term) ||
           note.date.includes(term)
         );
+        
+        // Month name search
+        const noteDate = parseISO(note.date);
+        const monthName = monthNames[noteDate.getMonth()];
+        const matchesMonth = monthName.includes(term);
+        
+        return matchesOriginal || matchesMonth;
       });
     }
 
