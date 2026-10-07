@@ -70,15 +70,8 @@ const Connect = () => {
       </section>
 
       {/* Divider */}
-      <div className="my-8 relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-background px-4 text-sm text-muted-foreground">
-            O contáctanos directamente
-          </span>
-        </div>
+      <div className="my-8">
+        <div className="border-t border-border"></div>
       </div>
 
       {/* Contact Forms Section */}
