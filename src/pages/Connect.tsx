@@ -16,6 +16,8 @@ const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
 const Connect = () => {
   usePageTitle("Conectar");
   const [showQRCode, setShowQRCode] = useState(false);
+  const [qrCodeLoaded, setQrCodeLoaded] = useState(false);
+  const [qrCodeError, setQrCodeError] = useState(false);
 
   const handleCopyLink = async () => {
     try {
@@ -40,6 +42,16 @@ const Connect = () => {
     } else {
       handleCopyLink();
     }
+  };
+
+  const handleQrCodeLoad = () => {
+    setQrCodeLoaded(true);
+    setQrCodeError(false);
+  };
+
+  const handleQrCodeError = () => {
+    setQrCodeError(true);
+    setQrCodeLoaded(false);
   };
 
   return (
@@ -154,12 +166,27 @@ const Connect = () => {
                 Escanea para descargar
               </h3>
               
-              {/* Actual QR Code Image */}
+              {/* QR Code Image Container */}
               <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-4">
+                {!qrCodeLoaded && !qrCodeError && (
+                  <div className="flex items-center justify-center h-full w-full">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                )}
+                
+                {qrCodeError && (
+                  <div className="flex flex-col items-center justify-center h-full w-full text-muted-foreground">
+                    <QrCode className="h-12 w-12 mb-2" />
+                    <p className="text-sm">Error al cargar el código QR</p>
+                  </div>
+                )}
+                
                 <img 
                   src="/qr-code.png" 
                   alt="Código QR de la aplicación Iglesia Vida Nueva"
-                  className="h-full w-full object-contain"
+                  className={`h-full w-full object-contain ${qrCodeLoaded ? 'block' : 'hidden'}`}
+                  onLoad={handleQrCodeLoad}
+                  onError={handleQrCodeError}
                 />
               </div>
               
