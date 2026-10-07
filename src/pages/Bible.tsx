@@ -46,6 +46,12 @@ const BibleApps = () => {
         </div>
       </div>
 
+      <div className="mt-6 rounded-3xl border border-border bg-card p-6">
+        <p className="text-sm text-muted-foreground text-center">
+          Todas estas aplicaciones incluyen múltiples versiones en español de la Biblia y son completamente gratuitas.
+        </p>
+      </div>
+
       <div className="mt-6 space-y-4">
         {apps.map((app) => (
           <div key={app.name} className="rounded-3xl border border-border bg-card p-6">
