@@ -78,7 +78,7 @@ const BibleApps = () => {
       <div className="mt-6 rounded-3xl bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8">
         <div className="flex flex-col items-center text-center">
           <h2 className="font-display text-xl font-semibold text-foreground mb-2">
-            ¿Necesitas una Biblia física?
+            ¿Te gustaría una Biblia física?
           </h2>
           <p className="text-muted-foreground">
             Si prefieres tener una copia física de la Biblia, contáctanos y con gusto te proporcionaremos una.
