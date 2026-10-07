@@ -16,8 +16,6 @@ const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
 const Connect = () => {
   usePageTitle("Conectar");
   const [showQRCode, setShowQRCode] = useState(false);
-  const [qrCodeLoaded, setQrCodeLoaded] = useState(false);
-  const [qrCodeError, setQrCodeError] = useState(false);
 
   const handleCopyLink = async () => {
     try {
@@ -42,16 +40,6 @@ const Connect = () => {
     } else {
       handleCopyLink();
     }
-  };
-
-  const handleQrCodeLoad = () => {
-    setQrCodeLoaded(true);
-    setQrCodeError(false);
-  };
-
-  const handleQrCodeError = () => {
-    setQrCodeError(true);
-    setQrCodeLoaded(false);
   };
 
   return (
@@ -166,27 +154,42 @@ const Connect = () => {
                 Escanea para descargar
               </h3>
               
-              {/* QR Code Image Container */}
+              {/* QR Code Image */}
               <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-4">
-                {!qrCodeLoaded && !qrCodeError && (
-                  <div className="flex items-center justify-center h-full w-full">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  </div>
-                )}
-                
-                {qrCodeError && (
-                  <div className="flex flex-col items-center justify-center h-full w-full text-muted-foreground">
-                    <QrCode className="h-12 w-12 mb-2" />
-                    <p className="text-sm">Error al cargar el código QR</p>
-                  </div>
-                )}
-                
                 <img 
                   src="/qr-code.png" 
                   alt="Código QR de la aplicación Iglesia Vida Nueva"
-                  className={`h-full w-full object-contain ${qrCodeLoaded ? 'block' : 'hidden'}`}
-                  onLoad={handleQrCodeLoad}
-                  onError={handleQrCodeError}
+                  className="h-full w-full object-contain"
+                  onError={(e) => {
+                    // Fallback to show error message if image fails to load
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.style.display = 'none';
+                    // Create fallback element
+                    const parent = target.parentElement;
+                    if (parent) {
+                      const fallback = document.createElement('div');
+                      fallback.className = 'flex flex-col items-center justify-center h-full w-full text-muted-foreground';
+                      fallback.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code mb-2">
+                          <rect width="5" height="5" x="3" y="3" rx="1"/>
+                          <rect width="5" height="5" x="16" y="3" rx="1"/>
+                          <rect width="5" height="5" x="3" y="16" rx="1"/>
+                          <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                          <path d="M21 21v.01"/>
+                          <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                          <path d="M3 12h.01"/>
+                          <path d="M12 3h.01"/>
+                          <path d="M12 16v.01"/>
+                          <path d="M16 12h1"/>
+                          <path d="M21 12v.01"/>
+                          <path d="M12 21v-1"/>
+                        </svg>
+                        <p className="text-sm">Imagen QR no disponible</p>
+                      `;
+                      parent.appendChild(fallback);
+                    }
+                  }}
                 />
               </div>
               
