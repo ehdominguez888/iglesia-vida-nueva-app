@@ -272,15 +272,6 @@ const EventCard = ({ event }: EventCardProps) => {
               )}
             </div>
           )}
-          
-          {/* Recurring event note */}
-          {event.isRecurring && event.totalInstances && event.totalInstances > 1 && (
-            <div className="mt-3 rounded-lg bg-secondary/30 p-2">
-              <p className="text-xs text-muted-foreground">
-                Este es un evento recurrente. Se muestra solo la próxima fecha de {event.totalInstances} instancias futuras.
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </article>
