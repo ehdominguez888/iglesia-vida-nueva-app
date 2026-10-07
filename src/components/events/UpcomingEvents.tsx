@@ -33,6 +33,8 @@ interface EventCardProps {
 const parseDescription = (description: string) => {
   if (!description) return [];
   
+  console.log("Original description:", description); // Debug log
+  
   const elements = [];
   let currentIndex = 0;
   
@@ -65,6 +67,8 @@ const parseDescription = (description: string) => {
           .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
           .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
           .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
+          .replace(/[<>]/g, '') // Remove any remaining angle brackets
+          .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
           .trim();
         
         // Only add if it's meaningful text (not just HTML structure)
@@ -74,6 +78,7 @@ const parseDescription = (description: string) => {
             !filteredText.match(/^[<>\/\\]+$/) && // Not just HTML punctuation
             !filteredText.match(/^&[a-z]+;$/) // Not HTML entities
         ) {
+          console.log("Adding text element:", filteredText); // Debug log
           elements.push({ type: 'text', content: filteredText });
         }
       }
@@ -95,6 +100,7 @@ const parseDescription = (description: string) => {
         .trim();
       
       if (cleanDisplayText && cleanDisplayText.length > 1) {
+        console.log("Adding link element:", cleanDisplayText, url); // Debug log
         elements.push({ 
           type: 'link', 
           text: cleanDisplayText,
@@ -102,6 +108,7 @@ const parseDescription = (description: string) => {
         });
       } else {
         // Fallback if display text is empty or too short
+        console.log("Adding fallback link element"); // Debug log
         elements.push({ 
           type: 'link', 
           text: "Registro del evento",
@@ -110,6 +117,7 @@ const parseDescription = (description: string) => {
       }
     } else {
       // Fallback if we can't find proper display text
+      console.log("Adding fallback link element (no proper display text)"); // Debug log
       elements.push({ 
         type: 'link', 
         text: "Registro del evento",
@@ -133,6 +141,8 @@ const parseDescription = (description: string) => {
         .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
         .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
         .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
+        .replace(/[<>]/g, '') // Remove any remaining angle brackets
+        .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
         .trim();
       
       // Only add if it's meaningful text
@@ -142,11 +152,13 @@ const parseDescription = (description: string) => {
           !cleanText.match(/^[<>\/\\]+$/) && // Not just HTML punctuation
           !cleanText.match(/^&[a-z]+;$/) // Not HTML entities
       ) {
+        console.log("Adding remaining text element:", cleanText); // Debug log
         elements.push({ type: 'text', content: cleanText });
       }
     }
   }
   
+  console.log("Final elements:", elements); // Debug log
   return elements;
 };
 
