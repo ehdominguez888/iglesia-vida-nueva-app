@@ -41,15 +41,9 @@ const BibleApps = () => {
             ¿Sin tu Biblia física?
           </h2>
           <p className="text-muted-foreground">
-            No te preocupes, estas aplicaciones gratuitas te permiten llevar la Palabra de Dios contigo en todo momento.
+            No te preocupes, estas aplicaciones gratuitas te permiten llevar la Palabra de Dios contigo en todo momento. Todas incluyen múltiples versiones en español de la Biblia.
           </p>
         </div>
-      </div>
-
-      <div className="mt-6 rounded-3xl border border-border bg-card p-6">
-        <p className="text-sm text-muted-foreground text-center">
-          Todas estas aplicaciones incluyen múltiples versiones en español de la Biblia y son completamente gratuitas.
-        </p>
       </div>
 
       <div className="mt-6 space-y-4">
