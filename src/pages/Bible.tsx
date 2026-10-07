@@ -29,12 +29,11 @@ const BibleApps = () => {
       <PageHeader
         eyebrow="Palabra de Dios"
         title="Biblia"
-        description="Accede a la Palabra de Dios desde tu celular con estas aplicaciones gratuitas."
       />
 
-      <div className="rounded-3xl border border-border bg-card p-6">
+      <div className="rounded-3xl bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8">
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground">
             <BookOpen className="h-8 w-8" />
           </div>
           <h2 className="font-display text-xl font-semibold text-foreground mb-2">
