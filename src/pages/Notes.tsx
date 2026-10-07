@@ -194,17 +194,6 @@ const Notes = () => {
             <Plus className="mr-1 h-5 w-5" />
             Nueva nota
           </Button>
-          
-          {notes.length > 0 && (
-            <Button
-              onClick={handleShareAllNotes}
-              variant="outline"
-              className="h-14 rounded-full px-4"
-              aria-label="Compartir todas las notas"
-            >
-              <Share2 className="h-5 w-5" />
-            </Button>
-          )}
         </div>
 
         {notes.length > 0 && (
@@ -267,15 +256,25 @@ const Notes = () => {
       {notes.length > 0 && filteredNotes.length > 0 && (
         <div className="space-y-8">
           {/* Section Title with Background */}
-          <div className="rounded-3xl bg-secondary/30 p-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">
-              Tus notas
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {filteredNotes.length} nota{filteredNotes.length !== 1 ? 's' : ''} encontrada{filteredNotes.length !== 1 ? 's' : ''}
-              {searchTerm && ` para "${searchTerm}"`}
-              {(filters.icons.length > 0 || filters.colors.length > 0) && ' (filtradas)'}
-            </p>
+          <div className="rounded-3xl bg-secondary/30 p-6 flex justify-between items-center">
+            <div>
+              <h2 className="font-display text-2xl font-semibold text-foreground">
+                Tus notas
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {filteredNotes.length} nota{filteredNotes.length !== 1 ? 's' : ''} encontrada{filteredNotes.length !== 1 ? 's' : ''}
+                {searchTerm && ` para "${searchTerm}"`}
+                {(filters.icons.length > 0 || filters.colors.length > 0) && ' (filtradas)'}
+              </p>
+            </div>
+            <Button
+              onClick={handleShareAllNotes}
+              variant="outline"
+              className="h-10 w-10 p-0 rounded-full"
+              aria-label="Compartir todas las notas"
+            >
+              <Share2 className="h-5 w-5" />
+            </Button>
           </div>
 
           {/* Monthly Groups */}
