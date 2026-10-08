@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, HandHeart, Heart, UsersRound, UserRound, Share2, QrCode, Copy } from "lucide-react";
+import { ArrowRight, CalendarDays, HandHeart, Heart, UsersRound, UserRound, Share2, QrCode, Copy, X } from "lucide-react";
 import CHURCH_CONFIG, { ConnectKind } from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -145,74 +145,91 @@ const Connect = () => {
         </div>
       </section>
 
-      {/* QR Code Modal */}
+      {/* QR Code Modal — full-screen optimized for scanning */}
       {showQRCode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="w-full max-w-sm rounded-3xl bg-card p-6">
-            <div className="text-center">
-              <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-                Escanea para descargar
-              </h3>
-              
-              {/* QR Code Image */}
-              <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-4">
-                <img 
-                  src="/qr-code.png" 
-                  alt="Código QR de la aplicación Iglesia Vida Nueva"
-                  className="h-full w-full object-contain"
-                  onError={(e) => {
-                    // Fallback to show error message if image fails to load
-                    const target = e.target as HTMLImageElement;
-                    target.onerror = null;
-                    target.style.display = 'none';
-                    // Create fallback element
-                    const parent = target.parentElement;
-                    if (parent) {
-                      const fallback = document.createElement('div');
-                      fallback.className = 'flex flex-col items-center justify-center h-full w-full text-muted-foreground';
-                      fallback.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code mb-2">
-                          <rect width="5" height="5" x="3" y="3" rx="1"/>
-                          <rect width="5" height="5" x="16" y="3" rx="1"/>
-                          <rect width="5" height="5" x="3" y="16" rx="1"/>
-                          <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
-                          <path d="M21 21v.01"/>
-                          <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-                          <path d="M3 12h.01"/>
-                          <path d="M12 3h.01"/>
-                          <path d="M12 16v.01"/>
-                          <path d="M16 12h1"/>
-                          <path d="M21 12v.01"/>
-                          <path d="M12 21v-1"/>
-                        </svg>
-                        <p className="text-sm">Imagen QR no disponible</p>
-                      `;
-                      parent.appendChild(fallback);
-                    }
-                  }}
-                />
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-4">
-                Escanea este código con la cámara de tu teléfono para abrir nuestra app
-              </p>
-              
-              <div className="flex gap-3">
-                <button
-                  onClick={handleCopyLink}
-                  className="flex-1 rounded-2xl border border-border bg-muted py-3 font-medium text-foreground flex items-center justify-center gap-2"
-                >
-                  <Copy className="h-4 w-4" />
-                  Copiar enlace
-                </button>
-                <button
-                  onClick={() => setShowQRCode(false)}
-                  className="flex-1 rounded-2xl bg-primary py-3 font-medium text-primary-foreground"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4"
+          onClick={() => setShowQRCode(false)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setShowQRCode(false)}
+            aria-label="Cerrar"
+            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white active:scale-90"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          {/* Title */}
+          <h3 className="mb-6 text-center font-display text-xl font-semibold text-white">
+            Escanea para descargar
+          </h3>
+
+          {/* QR container — sized dynamically with quiet zone */}
+          <div
+            className="flex aspect-square w-[min(80vw,80vh,420px)] items-center justify-center rounded-3xl bg-white p-[10%]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src="/qr-code.png"
+              alt="Código QR de la aplicación Iglesia Vida Nueva"
+              className="h-full w-full object-contain"
+              draggable={false}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.style.display = "none";
+                const parent = target.parentElement;
+                if (parent) {
+                  const fallback = document.createElement("div");
+                  fallback.className =
+                    "flex flex-col items-center justify-center h-full w-full text-muted-foreground gap-2";
+                  fallback.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="5" height="5" x="3" y="3" rx="1"/>
+                      <rect width="5" height="5" x="16" y="3" rx="1"/>
+                      <rect width="5" height="5" x="3" y="16" rx="1"/>
+                      <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                      <path d="M21 21v.01"/>
+                      <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                      <path d="M3 12h.01"/>
+                      <path d="M12 3h.01"/>
+                      <path d="M12 16v.01"/>
+                      <path d="M16 12h1"/>
+                      <path d="M21 12v.01"/>
+                      <path d="M12 21v-1"/>
+                    </svg>
+                    <p class="text-sm">Imagen QR no disponible</p>
+                  `;
+                  parent.appendChild(fallback);
+                }
+              }}
+            />
+          </div>
+
+          {/* Hint text */}
+          <p className="mt-6 max-w-xs text-center text-sm text-white/70">
+            Apunta la cámara de tu teléfono al código para abrir nuestra app
+          </p>
+
+          {/* Action buttons */}
+          <div
+            className="mt-6 flex w-full max-w-xs gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleCopyLink}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-white/10 py-3 font-medium text-white active:scale-[0.97]"
+            >
+              <Copy className="h-4 w-4" />
+              Copiar enlace
+            </button>
+            <button
+              onClick={() => setShowQRCode(false)}
+              className="flex flex-1 items-center justify-center rounded-2xl bg-primary py-3 font-medium text-primary-foreground active:scale-[0.97]"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}
