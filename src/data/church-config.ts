@@ -40,8 +40,7 @@ const CHURCH_CONFIG = {
 
   /** Sección "Acerca de nosotros". */
   about: {
-      mission:
-        "Conectando amigos a tener una vida con Jesús. Mateo 28:19\n\nTodo el que pertenece a Cristo se ha convertido en una persona nueva. La vida antigua ha pasado; una vida nueva ha comenzado! 2 Corintios 5:17",
+      mission: "FORMATTED_IN_COMPONENT",
       history: "FORMATTED_IN_COMPONENT",
       vision:
         "En IGLESIA VIDA NUEVA STONE OAK buscamos el Desarrollo Espiritual, Personal y Familiar de cada uno de los miembros con un Fundamento Sólido en la Palabra de Dios.",
@@ -102,12 +101,6 @@ const CHURCH_CONFIG = {
             },
           ],
   
-      /**
-       * Código de inserción de los formularios de Google.
-       * Pega aquí el `src` del iframe que Google Forms te genera al compartir el formulario
-       * (por ejemplo, `https://docs.google.com/forms/d/e/.../viewform?embedded=true`).
-       * Deja vacío si aún no has creado el formulario.
-       */
       visitorFormEmbed:
             "https://docs.google.com/forms/d/e/1FAIpQLSe3CrdjKNLHVke_J5onshTganWTLZeDxKzlBbFSV_531FxblQ/viewform?embedded=true",
           prayerFormEmbed:

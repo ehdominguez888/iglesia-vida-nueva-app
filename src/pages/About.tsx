@@ -5,14 +5,10 @@ import PageHeader from "@/components/layout/PageHeader";
 import SectionHeading from "@/components/layout/SectionHeading";
 import { usePageTitle } from "@/hooks/use-page-title";
 import HistoryContent from "@/components/about/HistoryContent";
+import MissionContent from "@/components/about/MissionContent";
 
 const About = () => {
   usePageTitle("Acerca de nosotros");
-
-  const textSnippets = [
-    { icon: Compass, title: "Nuestra misión", text: CHURCH_CONFIG.about.mission },
-    { icon: Lightbulb, title: "Nuestra visión", text: CHURCH_CONFIG.about.vision },
-  ];
 
   return (
     <div>
@@ -23,26 +19,29 @@ const About = () => {
       />
 
       <div className="space-y-5">
-        {textSnippets.map(({ icon: Icon, title, text }) => (
-          <section
-            key={title}
-            className="rounded-3xl border border-border bg-card p-6"
-          >
-            <div className="mb-3 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-              </span>
-              <h2 className="font-display text-xl font-semibold text-foreground">{title}</h2>
-            </div>
-            <div className="space-y-3">
-              {text.split("\n\n").map((paragraph, index) => (
-                <p key={index} className="leading-relaxed text-muted-foreground">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </section>
-        ))}
+        {/* Nuestra misión — with rich formatting */}
+        <section className="rounded-3xl border border-border bg-card p-6">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Compass className="h-5 w-5" />
+            </span>
+            <h2 className="font-display text-xl font-semibold text-foreground">Nuestra misión</h2>
+          </div>
+          <MissionContent />
+        </section>
+
+        {/* Nuestra visión */}
+        <section className="rounded-3xl border border-border bg-card p-6">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Lightbulb className="h-5 w-5" />
+            </span>
+            <h2 className="font-display text-xl font-semibold text-foreground">Nuestra visión</h2>
+          </div>
+          <p className="leading-relaxed text-muted-foreground">
+            {CHURCH_CONFIG.about.vision}
+          </p>
+        </section>
 
         {/* Nuestra historia — with rich formatting */}
         <section className="rounded-3xl border border-border bg-card p-6">
