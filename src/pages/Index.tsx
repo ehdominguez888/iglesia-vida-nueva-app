@@ -134,7 +134,37 @@ const Index = () => {
           <p className="mt-1.5 text-sm text-muted-foreground">
             Sigue nuestras transmisiones en vivo desde donde estés.
           </p>
-          <div className="mt-5 flex items-center justify-center gap-4">
+          <div className="mt-5 flex items-end justify-center gap-4">
+            {/* Facebook */}
+            <div className="flex flex-col items-center gap-1">
+              <a
+                href={CHURCH_CONFIG.liveStreams.facebook}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
+                }}
+                aria-label="Facebook"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04608e] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <span className="h-4" />
+            </div>
+            {/* Instagram */}
+            <div className="flex flex-col items-center gap-1">
+              <a
+                href={CHURCH_CONFIG.liveStreams.instagram}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(CHURCH_CONFIG.liveStreams.instagram, "_blank", "noopener,noreferrer");
+                }}
+                aria-label="Instagram"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <span className="h-4" />
+            </div>
             {/* YouTube — disabled / coming soon */}
             <div className="flex flex-col items-center gap-1">
               <span
@@ -143,30 +173,8 @@ const Index = () => {
               >
                 <Youtube className="h-5 w-5" />
               </span>
-              <span className="text-[10px] font-medium text-muted-foreground">Próximamente</span>
+              <span className="h-4 text-[10px] font-medium text-muted-foreground leading-4">Próximamente</span>
             </div>
-            <a
-              href={CHURCH_CONFIG.liveStreams.facebook}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="Facebook"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04608e] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a
-              href={CHURCH_CONFIG.liveStreams.instagram}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.instagram, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="Instagram"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
           </div>
         </div>
       </section>
