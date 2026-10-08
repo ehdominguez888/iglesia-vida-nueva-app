@@ -32,8 +32,17 @@ const Offering = () => {
       <PageHeader
         eyebrow="Con generosidad"
         title="Ofrenda"
-        description="Gracias por bendecir la obra de Dios con tu ofrenda. Cada aporte ayuda a nuestra comunidad a crecer."
       />
+
+      {/* Scripture verse */}
+      <div className="mb-8 rounded-3xl border border-border bg-card p-6">
+        <p className="leading-relaxed text-muted-foreground italic">
+          &ldquo;Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría. Y Dios puede hacer que toda gracia abunde para ustedes, de manera que siempre, en toda circunstancia, tengan todo lo necesario y toda buena obra abunde en ustedes.&rdquo;
+        </p>
+        <p className="mt-3 text-sm font-semibold text-foreground">
+          2 Corintios 9:7-8 NVI
+        </p>
+      </div>
 
       {/* Primary Donation Card */}
       <section className="overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-primary/10 backdrop-blur-sm">
