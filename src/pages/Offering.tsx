@@ -30,8 +30,15 @@ const Offering = () => {
       <PageHeader
         eyebrow="Con generosidad"
         title="Ofrenda"
-        description="«Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría. Y Dios puede hacer que toda gracia abunde para ustedes, de manera que siempre, en toda circunstancia, tengan todo lo necesario y toda buena obra abunde en ustedes.» — 2 Corintios 9:7-8 NVI"
       />
+      <div className="mb-8 max-w-xl">
+        <p className="text-sm italic leading-relaxed text-muted-foreground">
+          "Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría. Y Dios puede hacer que toda gracia abunde para ustedes, de manera que siempre, en toda circunstancia, tengan todo lo necesario y toda buena obra abunde en ustedes."
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          2 Corintios 9:7-8 NVI
+        </p>
+      </div>
 
       {/* Primary Donation Card */}
       <section className="overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 to-primary/10 backdrop-blur-sm">
