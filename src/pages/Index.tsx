@@ -135,22 +135,21 @@ const Index = () => {
             Sigue nuestras transmisiones en vivo desde donde estés.
           </p>
           <div className="mt-5 flex items-center justify-center gap-4">
-            <a
-              href={CHURCH_CONFIG.liveStreams.youtube}
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.youtube, "_blank", "noopener,noreferrer");
-              }}
-              aria-label="YouTube"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FF0000] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Youtube className="h-5 w-5" />
-            </a>
+            {/* YouTube — disabled / coming soon */}
+            <div className="flex flex-col items-center gap-1">
+              <span
+                aria-label="YouTube (próximamente)"
+                className="flex h-12 w-12 cursor-default items-center justify-center rounded-full bg-[#FF0000]/30 text-white/50 shadow-sm"
+              >
+                <Youtube className="h-5 w-5" />
+              </span>
+              <span className="text-[10px] font-medium text-muted-foreground">Próximamente</span>
+            </div>
             <a
               href={CHURCH_CONFIG.liveStreams.facebook}
               onClick={(e) => {
                 e.preventDefault();
-                window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,nereferrer");
+                window.open(CHURCH_CONFIG.liveStreams.facebook, "_blank", "noopener,noreferrer");
               }}
               aria-label="Facebook"
               className="flex h-12 w-12 items-center justify-center rounded-full bg-[#04608e] text-white transition-transform active:scale-95 cursor-pointer shadow-sm"
