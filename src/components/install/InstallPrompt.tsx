@@ -16,6 +16,11 @@ const detectPlatform = (): Platform => {
 };
 
 const isStandalone = (): boolean => {
+  // iOS Safari uses navigator.standalone
+  if ("standalone" in window.navigator) {
+    return !!(window.navigator as any).standalone;
+  }
+  // Other browsers use display-mode media query
   try {
     return window.matchMedia("(display-mode: standalone)").matches;
   } catch {
@@ -34,7 +39,7 @@ const FLOWS: Record<Platform, Flow> = {
   ios: {
     icon: Apple,
     label: "Abrir como app",
-    step1: "En Safari, toca el botón Compartir (un cuadrado con una flecha hacia arriba).",
+    step1: "En Safari, toca el botón Compartir (un cuadrado con una flecha hacia arriba) en la barra inferior.",
     step2: "Desplázate y elige «Añadir a pantalla de inicio».",
   },
   android: {
@@ -56,13 +61,17 @@ const InstallPrompt = () => {
   const [platform, setPlatform] = useState<Platform>("desktop");
 
   useEffect(() => {
+    // Already running as installed app — don't show
     if (isStandalone()) return;
+
+    // User previously dismissed the prompt
     try {
       if (window.localStorage.getItem(IGNORE_KEY)) return;
     } catch {
-      /* sin almacenamiento: igual se muestra una sola vez en la sesión */
+      /* localStorage unavailable — show once per session */
     }
 
+    // Small delay so the page renders first
     const timer = setTimeout(() => {
       setPlatform(detectPlatform());
       setOpen(true);
@@ -74,15 +83,15 @@ const InstallPrompt = () => {
     try {
       window.localStorage.setItem(IGNORE_KEY, "1");
     } catch {
-      /* ignorar */
+      /* ignore */
     }
     setOpen(false);
   };
 
   /**
-   * Escritorio: se puede iniciar la descarga de un acceso directo (.url).
-   * En móvil (iOS/Android) el sistema operativo no permite que una web lo haga
-   * automáticamente, por eso ahí guiamos con los pasos del navegador.
+   * Desktop: download a .url shortcut file.
+   * On mobile (iOS/Android) the OS doesn't allow programmatic install,
+   * so we guide the user with browser steps instead.
    */
   const downloadShortcut = () => {
     const url = window.location.origin + window.location.pathname;
@@ -102,7 +111,7 @@ const InstallPrompt = () => {
   if (!open) return null;
 
   const flow = FLOWS[platform];
-    const isDesktop = platform === "desktop";
+  const isDesktop = platform === "desktop";
 
   return (
     <div
