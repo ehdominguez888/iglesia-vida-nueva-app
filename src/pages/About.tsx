@@ -1,4 +1,5 @@
-import { Compass, Heart, Lightbulb } from "lucide-react";
+import { Compass, Heart, Lightbulb, Mail, Phone, HandHeart } from "lucide-react";
+import { Link } from "react-router-dom";
 import CHURCH_CONFIG from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import SectionHeading from "@/components/layout/SectionHeading";
@@ -55,15 +56,48 @@ const About = () => {
         </section>
       </div>
 
+      {/* Contáctanos */}
       <section className="mt-10">
-        <SectionHeading eyebrow="Lo que valoramos" title="Nuestros valores" />
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {CHURCH_CONFIG.about.values.map((value) => (
-            <div key={value.title} className="rounded-3xl bg-secondary/70 p-5">
-              <h3 className="font-semibold text-foreground">{value.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{value.description}</p>
+        <SectionHeading title="Contáctanos" />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <a
+            href={`mailto:${CHURCH_CONFIG.contact.email}`}
+            className="flex items-center gap-3 rounded-3xl bg-secondary/70 p-5 transition-colors hover:bg-secondary"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Mail className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-semibold text-foreground">Correo</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">{CHURCH_CONFIG.contact.email}</p>
             </div>
-          ))}
+          </a>
+
+          <a
+            href={`tel:${CHURCH_CONFIG.contact.phone.replace(/[^+\d]/g, "")}`}
+            className="flex items-center gap-3 rounded-3xl bg-secondary/70 p-5 transition-colors hover:bg-secondary"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Phone className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-semibold text-foreground">Teléfono</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">{CHURCH_CONFIG.contact.phone}</p>
+            </div>
+          </a>
+
+          <Link
+            to="/conectar"
+            className="flex items-center gap-3 rounded-3xl bg-secondary/70 p-5 transition-colors hover:bg-secondary"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <HandHeart className="h-5 w-5" />
+            </span>
+            <div>
+              <h3 className="font-semibold text-foreground">Conectar</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">Ponte en contacto</p>
+            </div>
+          </Link>
         </div>
       </section>
     </div>
