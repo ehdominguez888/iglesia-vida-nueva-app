@@ -29,7 +29,7 @@ const CHURCH_CONFIG = {
   website: "https://www.vidanuevaso.com/",
 
   /** Horarios de los servicios. Agrega o quita tantos como necesites. */
-  serviceTimes: [{ day: "Domingo", name: "Servicio de Adoración", time: "1:00 p. m." }],
+  serviceTimes: [{ day: "Domingos", name: "Servicio de Adoración", time: "1:00 p. m." }],
 
   /** Enlaces a las transmisiones en vivo y a las redes sociales. */
   liveStreams: {

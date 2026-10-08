@@ -26,6 +26,8 @@ import { usePageTitle } from "@/hooks/use-page-title";
 const Index = () => {
   usePageTitle("Inicio");
 
+  const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(CHURCH_CONFIG.contact.address)}`;
+
   return (
     <div className="space-y-10">
       {/* Portada */}
@@ -67,18 +69,29 @@ const Index = () => {
             ))}
           </ul>
           <div className="mt-4 flex flex-col gap-1.5 border-t border-border pt-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" />
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-primary transition-colors"
+            >
+              <MapPin className="h-4 w-4 shrink-0 text-primary" />
               {CHURCH_CONFIG.contact.address}
-            </span>
-            <span className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" />
+            </a>
+            <a
+              href={`mailto:${CHURCH_CONFIG.contact.email}`}
+              className="flex items-center gap-2 hover:text-primary transition-colors"
+            >
+              <Mail className="h-4 w-4 shrink-0 text-primary" />
               {CHURCH_CONFIG.contact.email}
-            </span>
-            <span className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-primary" />
+            </a>
+            <a
+              href={`tel:${CHURCH_CONFIG.contact.phone.replace(/[^+\d]/g, "")}`}
+              className="flex items-center gap-2 hover:text-primary transition-colors"
+            >
+              <Phone className="h-4 w-4 shrink-0 text-primary" />
               {CHURCH_CONFIG.contact.phone}
-            </span>
+            </a>
           </div>
         </div>
       </section>
