@@ -5,6 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useState } from "react";
 import { toast } from "sonner";
+import InstallButton from "@/components/install/InstallButton";
 
 const KIND_ICONS: Record<ConnectKind, typeof Heart> = {
   visitor: UserRound,
@@ -135,6 +136,9 @@ const Connect = () => {
             <QrCode className="h-5 w-5" />
             Mostrar código QR
           </button>
+
+          {/* Install / Add to Home Screen */}
+          <InstallButton />
         </div>
 
         <div className="mt-4 rounded-2xl bg-background/50 p-4">
