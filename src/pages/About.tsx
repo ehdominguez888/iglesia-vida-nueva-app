@@ -3,14 +3,14 @@ import CHURCH_CONFIG from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import SectionHeading from "@/components/layout/SectionHeading";
 import { usePageTitle } from "@/hooks/use-page-title";
+import HistoryContent from "@/components/about/HistoryContent";
 
 const About = () => {
   usePageTitle("Acerca de nosotros");
 
-  const snippets = [
+  const textSnippets = [
     { icon: Compass, title: "Nuestra misión", text: CHURCH_CONFIG.about.mission },
     { icon: Lightbulb, title: "Nuestra visión", text: CHURCH_CONFIG.about.vision },
-    { icon: Heart, title: "Nuestra historia", text: CHURCH_CONFIG.about.history },
   ];
 
   return (
@@ -22,7 +22,7 @@ const About = () => {
       />
 
       <div className="space-y-5">
-        {snippets.map(({ icon: Icon, title, text }) => (
+        {textSnippets.map(({ icon: Icon, title, text }) => (
           <section
             key={title}
             className="rounded-3xl border border-border bg-card p-6"
@@ -42,6 +42,17 @@ const About = () => {
             </div>
           </section>
         ))}
+
+        {/* Nuestra historia — with rich formatting */}
+        <section className="rounded-3xl border border-border bg-card p-6">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Heart className="h-5 w-5" />
+            </span>
+            <h2 className="font-display text-xl font-semibold text-foreground">Nuestra historia</h2>
+          </div>
+          <HistoryContent />
+        </section>
       </div>
 
       <section className="mt-10">

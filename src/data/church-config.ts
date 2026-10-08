@@ -42,8 +42,7 @@ const CHURCH_CONFIG = {
   about: {
       mission:
         "Conectando amigos a tener una vida con Jesús. Mateo 28:19\n\nTodo el que pertenece a Cristo se ha convertido en una persona nueva. La vida antigua ha pasado; una vida nueva ha comenzado! 2 Corintios 5:17",
-      history:
-        "Aquí va la historia de la iglesia: cómo comenzó, dónde se reúne y cómo ha crecido. Edita este texto cuando esté listo.",
+      history: "FORMATTED_IN_COMPONENT",
       vision:
         "En IGLESIA VIDA NUEVA STONE OAK buscamos el Desarrollo Espiritual, Personal y Familiar de cada uno de los miembros con un Fundamento Sólido en la Palabra de Dios.",
     values: [
