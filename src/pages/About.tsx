@@ -1,4 +1,4 @@
-import { Compass, Heart, Lightbulb, Mail, Phone, HandHeart, Sparkles } from "lucide-react";
+import { Compass, Heart, Lightbulb, Mail, Phone, HandHeart, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import CHURCH_CONFIG from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
@@ -76,7 +76,7 @@ const About = () => {
         <div className="rounded-3xl bg-gradient-to-br from-primary/5 to-secondary/30 p-6 sm:p-8">
           <div className="flex items-center gap-4">
             <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground">
-              <Sparkles className="h-8 w-8" />
+              <Crown className="h-8 w-8" />
             </span>
             <div>
               <h2 className="font-display text-2xl font-semibold text-foreground">
