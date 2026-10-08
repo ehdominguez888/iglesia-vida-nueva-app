@@ -17,16 +17,19 @@ const TabBar = () => {
           <NavLink key={to} to={to} end={end} className="block">
             {({ isActive }) => (
               <span
-                className={`flex flex-col items-center gap-0.5 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] text-[11px] font-medium transition-colors ${
+                className={`flex flex-col items-center gap-0.5 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] text-[0.6875rem] sm:text-xs font-medium transition-colors ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 <span
-                  className={`flex h-8 w-16 items-center justify-center rounded-full transition-colors ${
+                  className={`flex h-[2rem] w-[3.5rem] sm:h-[2.25rem] sm:w-[4rem] items-center justify-center rounded-full transition-colors ${
                     isActive ? "bg-primary/10" : ""
                   }`}
                 >
-                  <Icon className="h-5 w-5" strokeWidth={isActive ? 2.3 : 2} />
+                  <Icon
+                    className="h-[1.25rem] w-[1.25rem] sm:h-[1.375rem] sm:w-[1.375rem]"
+                    strokeWidth={isActive ? 2.3 : 2}
+                  />
                 </span>
                 {label}
               </span>
