@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { RefreshCw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
+import { format, parseISO, isToday, isTomorrow, isThisWeek, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
 
 // Use the full iCal URL - the server will extract the correct calendar ID
@@ -23,6 +23,11 @@ interface CalendarEvent {
   description?: string;
   isRecurring?: boolean;
   totalInstances?: number;
+  isMultiDay?: boolean;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
 }
 
 interface EventCardProps {
@@ -58,7 +63,7 @@ const parseDescription = (description: string) => {
         const cleanText = plainText
           .replace(/<[^>]*>/g, '') // Remove all HTML tags
           .replace(/&nbsp;/g, ' ')
-          .replace(/\s+/g, ' ')
+          .replace(/\\s+/g, ' ')
           .trim();
         
         // Filter out HTML tag fragments and other unwanted text
@@ -95,7 +100,7 @@ const parseDescription = (description: string) => {
       const cleanDisplayText = displayText
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
-        .replace(/\s+/g, ' ')
+        .replace(/\\s+/g, ' ')
         .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
         .trim();
       
@@ -136,7 +141,7 @@ const parseDescription = (description: string) => {
       const cleanText = remainingText
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
-        .replace(/\s+/g, ' ')
+        .replace(/\\s+/g, ' ')
         .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
         .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
         .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
@@ -175,7 +180,19 @@ const EventCard = ({ event }: EventCardProps) => {
   
   const isAllDay = !event.start.dateTime;
   
+  // Format date range for multi-day events
   const formatDateRange = () => {
+    if (event.isMultiDay && event.dateRange) {
+      const start = parseISO(event.dateRange.start);
+      const end = parseISO(event.dateRange.end);
+      
+      // For multi-day events, show the full date range
+      const startFormatted = format(start, "MMM d", { locale: es });
+      const endFormatted = format(end, "MMM d", { locale: es });
+      
+      return `${startFormatted} - ${endFormatted}`;
+    }
+    
     if (isAllDay) {
       return format(startDate, "EEE, MMM d", { locale: es });
     }
@@ -216,6 +233,11 @@ const EventCard = ({ event }: EventCardProps) => {
               <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
                 <Repeat className="h-3 w-3" />
                 Recurrente
+              </span>
+            )}
+            {event.isMultiDay && (
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                Múltiples días
               </span>
             )}
           </div>

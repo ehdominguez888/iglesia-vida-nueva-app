@@ -47,8 +47,8 @@ export default defineHandler(async (event) => {
     
     const data = await response.json();
     
-    // Process events to handle recurring events
-    const processedEvents = processRecurringEvents(data.items || []);
+    // Process events to handle recurring events and multi-day events
+    const processedEvents = processEvents(data.items || []);
     
     // Debug logging
     console.log("API Response:", {
@@ -58,7 +58,8 @@ export default defineHandler(async (event) => {
         summary: item.summary,
         start: item.start,
         end: item.end,
-        status: item.status
+        status: item.status,
+        isMultiDay: item.isMultiDay
       })),
       timeZone: data.timeZone,
       summary: data.summary
@@ -86,8 +87,8 @@ export default defineHandler(async (event) => {
   }
 });
 
-// Helper function to process recurring events
-function processRecurringEvents(events: any[]): any[] {
+// Helper function to process events
+function processEvents(events: any[]): any[] {
   if (!events || events.length === 0) return [];
   
   // Group events by their original recurring event ID
@@ -137,12 +138,38 @@ function processRecurringEvents(events: any[]): any[] {
   // Combine non-recurring and processed recurring events
   const allEvents = [...nonRecurringEvents, ...recurringEvents];
   
+  // Process multi-day events
+  const finalEvents = allEvents.map(event => {
+    const startDate = event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date);
+    const endDate = event.end.dateTime ? new Date(event.end.dateTime) : new Date(event.end.date);
+    
+    // Check if this is a multi-day event (more than 1 day)
+    const isMultiDay = (endDate.getTime() - startDate.getTime()) > (24 * 60 * 60 * 1000);
+    
+    return {
+      ...event,
+      isMultiDay,
+      // Add formatted date range for display
+      dateRange: isMultiDay ? {
+        start: event.start.date || event.start.dateTime,
+        end: event.end.date || event.end.dateTime
+      } : null
+    };
+  });
+  
+  // Filter out events that have already ended (for multi-day events, check if the end date has passed)
+  const now = new Date();
+  const upcomingEvents = finalEvents.filter(event => {
+    const endDate = event.end.dateTime ? new Date(event.end.dateTime) : new Date(event.end.date);
+    return endDate > now;
+  });
+  
   // Sort all events by start time
-  allEvents.sort((a: any, b: any) => {
+  upcomingEvents.sort((a: any, b: any) => {
     const aTime = a.start.dateTime || a.start.date;
     const bTime = b.start.dateTime || b.start.date;
     return new Date(aTime).getTime() - new Date(bTime).getTime();
   });
   
-  return allEvents;
+  return upcomingEvents;
 }
