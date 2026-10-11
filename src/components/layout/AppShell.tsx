@@ -2,8 +2,11 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import TabBar from "./TabBar";
 import InstallPrompt from "@/components/install/InstallPrompt";
+import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 
 const AppShell = () => {
+  useScrollRestoration();
+  
   return (
     <div className="flex min-h-dvh flex-col">
       <Header />

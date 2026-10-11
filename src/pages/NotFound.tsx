@@ -1,8 +1,10 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 
 const NotFound = () => {
   const location = useLocation();
+  useScrollRestoration();
 
   useEffect(() => {
     console.error(
