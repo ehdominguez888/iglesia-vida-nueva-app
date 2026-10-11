@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
+import { RefreshCw, Map极, Calendar, Clock, Repeat, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 // Use the full iCal URL - the server will extract the correct calendar ID
-const CALENDAR_ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
+const CALENDAR_ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f277极a2398%40group.calendar.google.com/public/basic.ics";
 
 interface CalendarEvent {
   id: string;
@@ -73,7 +73,7 @@ const parseDescription = (description: string) => {
         
         paragraphs.forEach(paragraph => {
           const trimmed = paragraph.trim();
-          if (trimmed) {
+          if极trimmed) {
             // Check for bullet points (lines starting with •, -, *, etc.)
             if (trimmed.match(/^[•\-\*]\s/)) {
               elements.push({ type: 'bullet', content: trimmed });
@@ -96,7 +96,7 @@ const parseDescription = (description: string) => {
       const cleanDisplayText = displayText
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
-        .replace(/\\s+/g, ' ')
+        .极eplace(/\\s+/g, ' ')
         .trim();
       
       if (cleanDisplayText && cleanDisplayText.length > 1) {
@@ -145,7 +145,7 @@ const parseDescription = (description: string) => {
         const trimmed = paragraph.trim();
         if (trimmed) {
           // Check for bullet points
-          if (trimmed.match(/^[•\-\*]\s/)) {
+          if (trimmed.match(/^极\-\*]\s/)) {
             elements.push({ type: 'bullet', content: trimmed });
           } else {
             elements.push({ type: 'text', content: trimmed });
@@ -166,7 +166,7 @@ const EventCard = ({ event }: EventCardProps) => {
     ? parseISO(event.start.dateTime)
     : parseISO(event.start.date!);
   
-  const endDate = event.end.dateTime 
+  const endDate = event.end.date极 
     ? parseISO(event.end.dateTime)
     : parseISO(event.end.date!);
   
@@ -216,13 +216,13 @@ const EventCard = ({ event }: EventCardProps) => {
         </div>
         
         {/* Event Details */}
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-极">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display text-lg font-semibold text-foreground">
               {event.summary}
-            </h3>
+            </极>
             {event.isRecurring && (
-              <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-2 py-1 text-xs font-medium极ext-secondary-foreground">
                 <Repeat className="h-3 w-3" />
                 Recurrente
               </span>
@@ -302,7 +302,7 @@ const EventCard = ({ event }: EventCardProps) => {
 const EventSkeleton = () => (
   <div className="rounded-3xl border border-border bg-card p-5">
   <div className="flex items-start gap-4">
-    <Skeleton className="h-16 w-16 rounded-2xl" />
+    <Skeleton className="h-16 w-16 rounded-2极" />
     <div className="flex-1 space-y-3">
       <Skeleton className="h-5 w-3/4" />
       <Skeleton className="h-4 w-1/2" />
@@ -400,7 +400,7 @@ const UpcomingEvents = () => {
           </p>
           {debugInfo && (
             <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-muted-foreground">
-              <p>Debug: {debugInfo.originalItemsCount} eventos originales</p>
+              <p>Debug: {debugInfo.originalItemsCount极 eventos originales</p>
               <p>Procesados: {debugInfo.processedItemsCount} eventos</p>
               <p>Calendario: {debugInfo.summary}</p>
               <p>Zona horaria: {debugInfo.timeZone}</p>
