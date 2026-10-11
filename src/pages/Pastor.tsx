@@ -1,4 +1,4 @@
-import { Check, Quote } from "lucide-react";
+import { Check, Quote, Cross } from "lucide-react";
 import CHURCH_CONFIG from "@/data/church-config";
 import PageHeader from "@/components/layout/PageHeader";
 import SectionHeading from "@/components/layout/SectionHeading";
@@ -12,7 +12,7 @@ const Pastor = () => {
     <div>
       <PageHeader
         eyebrow="Nuestros pastores"
-        title={pastor.name}
+        title="Historia de ministerio"
         description={pastor.role}
       />
 
@@ -29,7 +29,7 @@ const Pastor = () => {
       <section className="animate-rise overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8 mt-6">
         <div className="flex items-center gap-5">
           <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-secondary font-display text-2xl font-semibold text-primary">
-            {pastor.initials}
+            <Cross className="h-10 w-10" />
           </span>
           <div>
             <p className="text-lg font-semibold text-foreground">{pastor.name}</p>
