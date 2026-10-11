@@ -20,7 +20,7 @@ const BibleApps = () => {
     {
       name: "AndBible: Bible Study",
       playStoreUrl: "https://play.google.com/store/apps/details?id=net.bible.android.activity",
-      appStoreUrl: "https://apps.apple.com/us/app/andbible/id1524292004",
+      appStoreUrl: "https://apps.apple.com/us/app/andbible-bible-study/id1524292004",
     },
   ];
 
