@@ -5,13 +5,13 @@ import SectionHeading from "@/components/layout/SectionHeading";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 const Pastor = () => {
-  usePageTitle("Nuestro pastor");
+  usePageTitle("Nuestros pastores");
   const { pastor } = CHURCH_CONFIG;
 
   return (
     <div>
       <PageHeader
-        eyebrow="Nuestro pastor"
+        eyebrow="Nuestros pastores"
         title={pastor.name}
         description={pastor.role}
       />
