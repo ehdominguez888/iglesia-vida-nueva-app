@@ -54,10 +54,10 @@ const CHURCH_CONFIG = {
 
   /** Sección "Nuestro pastor". */
   pastor: {
-    name: "Carlos and Paty Castanedo",
+    name: "Carlos y Paty Castanedo",
     role: "",
     initials: "CC",
-    bio: "Los Pastores Carlos and Paty Castanedo han tenido el privilegio de servir a Dios como Pastores en diferentes lugares. En el 2004, Iniciaron una Iglesia en Cuernavaca donde sirvieron al Señor en la Iglesia junto con sus Hijos y ayudando en la comunidad. En al Año del 2009, se mudaron a San Antonio, Tx junto con sus 3 hijos. Y en el 2014, Dios les abrió las puertas en una Congregación local para continuar haciendo el trabajo Pastoral, donde Dios los ha guiado para servirle a Él en la comunidad Latina. Dios abrió las puertas para Iniciar una nueva Obra con Iglesia Vida Nueva Stone Oak iniciando en el año 2019. Sirviendo a Dios en la Iglesia buscando el crecimiento y desarrollo espiritual de sus miembros enfocándose en la comunidad de habla Hispana en el area de Stone Oak",
+    bio: "Los Pastores Carlos y Paty Castanedo han tenido el privilegio de servir a Dios como Pastores en diferentes lugares. En el 2004, Iniciaron una Iglesia en Cuernavaca donde sirvieron al Señor en la Iglesia junto con sus Hijos y ayudando en la comunidad. En al Año del 2009, se mudaron a San Antonio, Tx junto con sus 3 hijos. Y en el 2014, Dios les abrió las puertas en una Congregación local para continuar haciendo el trabajo Pastoral, donde Dios los ha guiado para servirle a Él en la comunidad Latina. Dios abrió las puertas para Iniciar una nueva Obra con Iglesia Vida Nueva Stone Oak iniciando en el año 2019. Sirviendo a Dios en la Iglesia buscando el crecimiento y desarrollo espiritual de sus miembros enfocándose en la comunidad de habla Hispana en el area de Stone Oak",
     philosophyTitle: "Filosofía de ministerio",
     philosophy: [
       "Predicar la Palabra con fidelidad y claridad.",
