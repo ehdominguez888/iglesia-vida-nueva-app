@@ -34,7 +34,7 @@ interface EventCardProps {
   event: CalendarEvent;
 }
 
-// Function to parse HTML-like event description to extract links and plain text
+// Function to parse HTML-like event description to extract links and preserve formatting
 const parseDescription = (description: string) => {
   if (!description) return [];
   
@@ -59,33 +59,29 @@ const parseDescription = (description: string) => {
     if (linkStartIndex > lastIndex) {
       const plainText = description.substring(lastIndex, linkStartIndex).trim();
       if (plainText) {
-        // Clean up HTML tags from plain text and filter out unwanted text
+        // Clean up HTML tags but preserve formatting
         const cleanText = plainText
-          .replace(/<[^>]*>/g, '') // Remove all HTML tags
+          .replace(/<br\s*\/?>/gi, '\n') // Convert <br> to newlines
+          .replace(/<\/p>|<\/div>/gi, '\n\n') // Convert paragraph/div ends to double newlines
+          .replace(/<[^>]*>/g, '') // Remove all remaining HTML tags
           .replace(/&nbsp;/g, ' ')
           .replace(/\\s+/g, ' ')
           .trim();
         
-        // Filter out HTML tag fragments and other unwanted text
-        const filteredText = cleanText
-          .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags specifically
-          .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
-          .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
-          .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
-          .replace(/[<>]/g, '') // Remove any remaining angle brackets
-          .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
-          .trim();
+        // Split by newlines to preserve paragraph structure
+        const paragraphs = cleanText.split(/\n+/).filter(p => p.trim());
         
-        // Only add if it's meaningful text (not just HTML structure)
-        if (filteredText && 
-            !filteredText.match(/^(div|span|p|br|style|script|meta|link|a)$/i) &&
-            filteredText.length > 1 &&
-            !filteredText.match(/^[<>\/\\]+$/) && // Not just HTML punctuation
-            !filteredText.match(/^&[a-z]+;$/) // Not HTML entities
-        ) {
-          console.log("Adding text element:", filteredText); // Debug log
-          elements.push({ type: 'text', content: filteredText });
-        }
+        paragraphs.forEach(paragraph => {
+          const trimmed = paragraph.trim();
+          if (trimmed) {
+            // Check for bullet points (lines starting with •, -, *, etc.)
+            if (trimmed.match(/^[•\-\*]\s/)) {
+              elements.push({ type: 'bullet', content: trimmed });
+            } else {
+              elements.push({ type: 'text', content: trimmed });
+            }
+          }
+        });
       }
     }
     
@@ -96,16 +92,14 @@ const parseDescription = (description: string) => {
     
     if (gtIndex !== -1 && ltIndex !== -1) {
       const displayText = description.substring(gtIndex + 1, ltIndex).trim();
-      // Filter out any HTML tags or unwanted text from display text
+      // Clean display text
       const cleanDisplayText = displayText
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
         .replace(/\\s+/g, ' ')
-        .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
         .trim();
       
       if (cleanDisplayText && cleanDisplayText.length > 1) {
-        console.log("Adding link element:", cleanDisplayText, url); // Debug log
         elements.push({ 
           type: 'link', 
           text: cleanDisplayText,
@@ -113,7 +107,6 @@ const parseDescription = (description: string) => {
         });
       } else {
         // Fallback if display text is empty or too short
-        console.log("Adding fallback link element"); // Debug log
         elements.push({ 
           type: 'link', 
           text: "Registro del evento",
@@ -122,7 +115,6 @@ const parseDescription = (description: string) => {
       }
     } else {
       // Fallback if we can't find proper display text
-      console.log("Adding fallback link element (no proper display text)"); // Debug log
       elements.push({ 
         type: 'link', 
         text: "Registro del evento",
@@ -137,29 +129,29 @@ const parseDescription = (description: string) => {
   if (lastIndex < description.length) {
     const remainingText = description.substring(lastIndex).trim();
     if (remainingText) {
-      // Clean up HTML tags from plain text and filter out unwanted text
+      // Clean up HTML tags but preserve formatting
       const cleanText = remainingText
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/p>|<\/div>/gi, '\n\n')
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
         .replace(/\\s+/g, ' ')
-        .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
-        .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
-        .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
-        .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
-        .replace(/[<>]/g, '') // Remove any remaining angle brackets
-        .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
         .trim();
       
-      // Only add if it's meaningful text
-      if (cleanText && 
-          !cleanText.match(/^(div|span|p|br|style|script|meta|link|a)$/i) &&
-          cleanText.length > 1 &&
-          !cleanText.match(/^[<>\/\\]+$/) && // Not just HTML punctuation
-          !cleanText.match(/^&[a-z]+;$/) // Not HTML entities
-      ) {
-        console.log("Adding remaining text element:", cleanText); // Debug log
-        elements.push({ type: 'text', content: cleanText });
-      }
+      // Split by newlines to preserve paragraph structure
+      const paragraphs = cleanText.split(/\n+/).filter(p => p.trim());
+      
+      paragraphs.forEach(paragraph => {
+        const trimmed = paragraph.trim();
+        if (trimmed) {
+          // Check for bullet points
+          if (trimmed.match(/^[•\-\*]\s/)) {
+            elements.push({ type: 'bullet', content: trimmed });
+          } else {
+            elements.push({ type: 'text', content: trimmed });
+          }
+        }
+      });
     }
   }
   
@@ -266,7 +258,7 @@ const EventCard = ({ event }: EventCardProps) => {
                 {expanded ? "Ver menos" : "Ver más"}
               </button>
               {expanded && (
-                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <div className="mt-2 text-sm leading-relaxed text-muted-foreground space-y-2">
                   {descriptionElements.map((element, index) => {
                     if (element.type === 'link') {
                       return (
@@ -281,6 +273,13 @@ const EventCard = ({ event }: EventCardProps) => {
                           <span className="font-medium">{element.text}</span>
                           <ExternalLink className="h-3 w-3" />
                         </a>
+                      );
+                    } else if (element.type === 'bullet') {
+                      return (
+                        <div key={index} className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0"></span>
+                          <span>{element.content.replace(/^[•\-\*]\s/, '')}</span>
+                        </div>
                       );
                     } else {
                       return (
@@ -302,15 +301,15 @@ const EventCard = ({ event }: EventCardProps) => {
 
 const EventSkeleton = () => (
   <div className="rounded-3xl border border-border bg-card p-5">
-    <div className="flex items-start gap-4">
-      <Skeleton className="h-16 w-16 rounded-2xl" />
-      <div className="flex-1 space-y-3">
-        <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-        <Skeleton className="h-4 w-2/3" />
-      </div>
+  <div className="flex items-start gap-4">
+    <Skeleton className="h-16 w-16 rounded-2xl" />
+    <div className="flex-1 space-y-3">
+      <Skeleton className="h-5 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="h-4 w-2/3" />
     </div>
   </div>
+</div>
 );
 
 const UpcomingEvents = () => {
