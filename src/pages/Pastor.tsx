@@ -12,7 +12,7 @@ const Pastor = () => {
     <div>
       <PageHeader
         eyebrow="Nuestros pastores"
-        title="Historia de ministerio"
+        title="Carlos and Paty Castanedo"
         description={pastor.role}
       />
 
@@ -32,7 +32,7 @@ const Pastor = () => {
             <Cross className="h-10 w-10" />
           </span>
           <div>
-            <p className="text-lg font-semibold text-foreground">{pastor.name}</p>
+            <p className="text-lg font-semibold text-foreground">Historia de ministerio</p>
           </div>
         </div>
         <p className="mt-6 leading-relaxed text-muted-foreground">{pastor.bio}</p>
