@@ -12,7 +12,7 @@ const Pastor = () => {
     <div>
       <PageHeader
         eyebrow="Nuestros pastores"
-        title="Carlos and Paty Castanedo"
+        title="Carlos y Paty Castanedo"
         description={pastor.role}
       />
 
@@ -20,7 +20,7 @@ const Pastor = () => {
       <div className="mt-6 flex justify-center">
         <img 
           src="/Pastors.png" 
-          alt="Pastores Carlos and Paty Castanedo" 
+          alt="Pastores Carlos y Paty Castanedo" 
           className="rounded-3xl border border-border object-cover w-full max-w-md"
         />
       </div>
