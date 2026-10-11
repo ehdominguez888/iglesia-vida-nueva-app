@@ -204,7 +204,7 @@ const Index = () => {
               <UserRound className="h-6 w-6" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block font-semibold text-foreground">Nuestros pastores</span>
+              <span className="block font-semibold text-foreground">Historia de ministerio</span>
               <span className="block text-sm text-muted-foreground">Conoce a nuestro equipo</span>
             </span>
             <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />

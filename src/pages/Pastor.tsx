@@ -16,15 +16,23 @@ const Pastor = () => {
         description={pastor.role}
       />
 
+      {/* Pastor Photo */}
+      <div className="mt-6 flex justify-center">
+        <img 
+          src="/Pastors.png" 
+          alt="Pastores Carlos and Paty Castanedo" 
+          className="rounded-3xl border border-border object-cover w-full max-w-md"
+        />
+      </div>
+
       {/* Tarjeta del pastor */}
-      <section className="animate-rise overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8">
+      <section className="animate-rise overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8 mt-6">
         <div className="flex items-center gap-5">
           <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-secondary font-display text-2xl font-semibold text-primary">
             {pastor.initials}
           </span>
           <div>
             <p className="text-lg font-semibold text-foreground">{pastor.name}</p>
-            <p className="text-sm text-muted-foreground">{pastor.role}</p>
           </div>
         </div>
         <p className="mt-6 leading-relaxed text-muted-foreground">{pastor.bio}</p>
