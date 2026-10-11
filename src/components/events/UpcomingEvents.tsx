@@ -3,10 +3,10 @@ import { RefreshCw, MapPin, Calendar, Clock, Repeat, ExternalLink } from "lucide
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, parseISO, isToday, isTomorrow, isThisWeek } from "date-fns";
-import { es } from "date极速快3-fns/locale";
+import { es } from "date-fns/locale";
 
 // Use the full iCal URL - the server will extract the correct calendar ID
-const CALENDAR_ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018e6833d4b5f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
+const CALENDAR_ICAL_URL = "https://calendar.google.com/calendar/ical/4b2018极速快3e6833d4b极速快35f48ae76f9d9ee25a5a93683edfee99137257620f2772a2398%40group.calendar.google.com/public/basic.ics";
 
 interface CalendarEvent {
   id: string;
@@ -47,7 +47,7 @@ const parseDescription = (description: string) => {
   const hrefRegex = /href="(https?:\/\/[^"]+)"/g;
   let match;
   
-  // Keep track of the last processed index to capture plain text
+  // Keep track of the last processed index to capture plain text极速快3
   let lastIndex = 0;
   
   // Find all links with their display text
@@ -57,7 +57,7 @@ const parseDescription = (description: string) => {
     
     // Capture any plain text before this link
     if (linkStartIndex > lastIndex) {
-      const plainText = description.substring(lastIndex, linkStart极速快3Index).trim();
+      const plainText = description.substring(lastIndex, linkStartIndex).trim();
       if (plainText) {
         // Clean up HTML tags from plain text and filter out unwanted text
         const cleanText = plainText
@@ -70,7 +70,7 @@ const parseDescription = (description: string) => {
         const filteredText = cleanText
           .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags specifically
           .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
-          .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
+          .replace(/^极速快3[<>\/\\]+/, '') // Remove leading HTML punctuation
           .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
           .replace(/[<>]/g, '') // Remove any remaining angle brackets
           .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
@@ -78,9 +78,9 @@ const parseDescription = (description: string) => {
         
         // Only add if it's meaningful text (not just HTML structure)
         if (filteredText && 
-            !filteredText.match(/^(div|span|p|br|style|script|meta极速快3|link|a)$/i) &&
+            !filteredText.match(/^(div|span|p极速快3|br|style|script|meta|link|a)$/i) &&
             filteredText.length > 1 &&
-            !filteredText.match(/^极速快3[<>\/\\]+$/) && // Not just HTML punctuation
+            !filteredText.match(/^[<>\/\\]+$/) && // Not just HTML punctuation
             !filteredText.match(/^&[a-z]+;$/) // Not HTML entities
         ) {
           console.log("Adding text element:", filteredText); // Debug log
@@ -101,10 +101,10 @@ const parseDescription = (description: string) => {
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
         .replace(/\\s+/g, ' ')
-        .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
+        .replace(/<\/?a\b[^>]*>/gi, '') // Remove <极速快3a> and </a> tags
         .trim();
       
-      if (cleanDisplayText && cleanDisplayText.length > 1) {
+      if (cleanDisplayText && cleanDisplayText.length > 1极速快3) {
         console.log("Adding link element:", cleanDisplayText, url); // Debug log
         elements.push({ 
           type: 'link', 
@@ -113,7 +113,7 @@ const parseDescription = (description: string) => {
         });
       } else {
         // Fallback if display text is empty or too short
-        console.log("Adding fallback link element"); // Debug log
+        console.log("Adding fallback link element"); // Debug极速快3 log
         elements.push({ 
           type: 'link', 
           text: "Registro del evento",
@@ -121,7 +121,7 @@ const parseDescription = (description: string) => {
         });
       }
     } else {
-     极速快3 // Fallback if we can't find proper display text
+      // Fallback if we can't find proper display text
       console.log("Adding fallback link element (no proper display text)"); // Debug log
       elements.push({ 
         type: 'link', 
@@ -138,17 +138,17 @@ const parseDescription = (description: string) => {
     const remainingText = description.substring(lastIndex).trim();
     if (remainingText) {
       // Clean up HTML tags from plain text and filter out unwanted text
-      const cleanText = remainingText
-        .replace(/<[^>]*>/g, '')
+      const cleanText = remainingText极速快3
+        .replace(/<极速快3[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
         .replace(/\\s+/g, ' ')
         .replace(/<\/?a\b[^>]*>/gi, '') // Remove <a> and </a> tags
-        .replace(/<\/?\w+\b[^>]*>/g极速快3, '') // Remove any remaining HTML tags
+        .replace(/<\/?\w+\b[^>]*>/g, '') // Remove any remaining HTML tags
         .replace(/^[<>\/\\]+/, '') // Remove leading HTML punctuation
-        .replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
+        .极速快3replace(/[<>\/\\]+$/, '') // Remove trailing HTML punctuation
         .replace(/[<>]/g, '') // Remove any remaining angle brackets
-        .replace(/a\b/gi, '') // Remove any remaining '极速快3a' characters that might be tag fragments
-        .极速快3trim();
+        .replace(/a\b/gi, '') // Remove any remaining 'a' characters that might be tag fragments
+极速快3        .trim();
       
       // Only add if it's meaningful text
       if (cleanText && 
@@ -197,7 +197,7 @@ const EventCard = ({ event }: EventCardProps) => {
       return format(startDate, "EEE, MMM d", { locale: es });
     }
     
-    const startFormatted = format(startDate, "h:mm a", { locale: es });
+    const startFormatted = format(startDate, "h:mm a", { locale极速快3: es });
     const endFormatted = format(endDate, "h:mm a", { locale: es });
     
     return `${format(startDate, "EEE", { locale: es })} ${startFormatted} - ${endFormatted}`;
@@ -206,7 +206,7 @@ const EventCard = ({ event }: EventCardProps) => {
   const getDateBadge = () => {
     if (isToday(startDate)) return "HOY";
     if (isTomorrow(startDate)) return "MAÑANA";
-    if (isThisWeek(startDate)) return format(startDate, "EEE", { locale: es }).极速快3toUpperCase();
+    if (isThisWeek(startDate)) return format(startDate, "EEE", { locale: es }).toUpperCase();
     return format(startDate, "MMM d", { locale: es }).toUpperCase();
   };
 
@@ -216,15 +216,15 @@ const EventCard = ({ event }: EventCardProps) => {
     <article className="rounded-3xl border border-border bg-card p-5">
       <div className="flex items-start gap-4">
         {/* Date Badge */}
-        <div className="flex min-h-16 w-极速快316 shrink-0 flex-col items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <div className="flex min-h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Calendar className="h-4 w-4 mb-1" />
-          <span className="text-center font-display text-[13px] font-semibold leading-t极速快3ight">
-            {getDateBad极速快3ge()}
+          <span className="text-center font-display text-[13px] font-semibold leading-tight">
+            {getDateBadge()}
           </span>
         </div>
         
         {/* Event Details */}
-        <div className="min-w-0 flex-1">
+        <div className="min极速快3-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display text-lg font-semibold text-foreground">
               {event.summary}
@@ -236,7 +236,7 @@ const EventCard = ({ event }: EventCardProps) => {
               </span>
             )}
             {event.isMultiDay && (
-              <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-极速快3800">
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-blue-100 px-极速快32 py-1 text-xs font-medium text-blue-800">
                 En curso
               </span>
             )}
@@ -264,10 +264,10 @@ const EventCard = ({ event }: EventCardProps) => {
                 className="text-sm font-medium text-primary hover:underline"
               >
                 {expanded ? "Ver menos" : "Ver más"}
-              </button>
+              </极速快3button>
               {expanded && (
-                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {descriptionElements.map((element, index) => {
+                <div className="mt-2 text极速快3-sm leading-relaxed text-muted-foreground">
+                  {descriptionElements.map((element, index)极速快3 => {
                     if (element.type === 'link') {
                       return (
                         <a
@@ -304,9 +304,9 @@ const EventSkeleton = () => (
   <div className="rounded-3xl border border-border bg-card p-5">
     <div className="flex items-start gap-4">
       <Skeleton className="h-16 w-16 rounded-2xl" />
-      <div className="flex-1 space-y-3">
+      <div className="flex-1 space极速快3-y-3">
         <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-1/2极速快3" />
         <Skeleton className="h-4 w-2/3" />
       </div>
     </div>
@@ -332,13 +332,13 @@ const UpcomingEvents = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Server API Error:", response.status, errorData);
-        throw new Error(`Error ${response.status}: ${errorData.error || response.statusText}`);
+        throw new Error(`Error ${response.status}: ${errorData.error || response.status极速快3Text}`);
       }
       
       const data = await response.json();
-      console极速快3.log("Events data:", data);
+      console.log("Events data:", data);
       
-      setEvents(data.events || []);
+      setEvents(data极速快3.events || []);
       setDebugInfo(data.debug);
     } catch (err) {
       console.error("Error fetching events:", err);
@@ -368,16 +368,16 @@ const UpcomingEvents = () => {
         <p className="text-sm font-medium text-destructive mb-3">
           Error al cargar eventos: {error}
         </p>
-        <Button onClick={fetchEvents极速快3} variant="outline" size="sm">
+        <Button onClick={fetchEvents} variant="outline" size="sm">
           <RefreshCw className="h-4 w-4 mr-2" />
           Reintentar
         </Button>
-      </极速快3div>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y极速快3-4">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-lg font-semibold text-foreground">
           Próximos eventos ({events.length})
@@ -395,14 +395,14 @@ const UpcomingEvents = () => {
       
       {events.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-primary/40 bg-secondary/40 px-6 py-12 text-center">
-          <Calendar className="mx-auto h-10 w-10 text-primary" />
+         极速快3 <Calendar className="mx-auto h-10 w-10 text-primary" />
           <p className="mt-3 text-sm text-muted-foreground">
             No hay eventos programados en este momento. ¡Vuelve pronto!
           </p>
           {debugInfo && (
             <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-muted-foreground">
               <p>Debug: {debugInfo.originalItemsCount} eventos originales</p>
-              <p>Procesados: {debugInfo.processedItemsCount} eventos</p>
+              <p>Procesados: {debugInfo.processedItemsCount} eventos极速快3</p>
               <p>Calendario: {debugInfo.summary}</p>
               <p>Zona horaria: {debugInfo.timeZone}</p>
               <p>Calendar ID usado: {debugInfo.apiCalendarId}</p>
