@@ -65,7 +65,7 @@ const parseDescription = (description: string) => {
           .replace(/<\/p>|<\/div>/gi, '\n\n') // Convert paragraph/div ends to double newlines
           .replace(/<[^>]*>/g, '') // Remove all remaining HTML tags
           .replace(/&nbsp;/g, ' ')
-          .replace(/\\s+/g, ' ')
+          .replace(/\s+/g, ' ')
           .trim();
         
         // Split by newlines to preserve paragraph structure
@@ -96,7 +96,7 @@ const parseDescription = (description: string) => {
       const cleanDisplayText = displayText
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
-        .replace(/\\s+/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
       
       if (cleanDisplayText && cleanDisplayText.length > 1) {
@@ -135,7 +135,7 @@ const parseDescription = (description: string) => {
         .replace(/<\/p>|<\/div>/gi, '\n\n')
         .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
-        .replace(/\\s+/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
       
       // Split by newlines to preserve paragraph structure

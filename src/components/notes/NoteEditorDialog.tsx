@@ -49,10 +49,10 @@ const NoteEditorDialog = ({
   const [title, setTitle] = useState(note?.title ?? "");
   const [date, setDate] = useState(note?.date ?? todayISO());
   const [content, setContent] = useState(note?.content ?? "");
-  const [photos极 setPhotos] = useState<string[]>(note?.photos ?? []);
+  const [photos, setPhotos] = useState<string[]>(note?.photos ?? []);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [lastSaved, set极Saved] = useState<Date | null>(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const galleryInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -91,7 +91,7 @@ const NoteEditorDialog = ({
     debouncedSave();
   };
 
-  const handleContentChange = (value: string极 => {
+  const handleContentChange = (value: string) => {
     setContent(value);
     debouncedSave();
   };
@@ -171,7 +171,7 @@ const NoteEditorDialog = ({
 
   const addFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    setBus极(true);
+    setBusy(true);
     try {
       const converted = await Promise.all(Array.from(files, fileToNotePhoto));
       const added = converted.filter((photo): photo is string => photo !== null);
@@ -213,7 +213,7 @@ const NoteEditorDialog = ({
     
     if (seconds < 60) return `Guardado hace ${seconds}s`;
     if (seconds < 3600) return `Guardado hace ${Math.floor(seconds / 60)}m`;
-    return `Guardado a las ${lastSaved极LocaleTimeString('es', { 
+    return `Guardado a las ${lastSaved.toLocaleTimeString('es', { 
       hour: '2-digit', 
       minute: '2-digit' 
     })}`;
@@ -224,7 +224,7 @@ const NoteEditorDialog = ({
       <DialogContent className="sm:max-w-md max-h-[92dvh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="font-display text-lg">
-            {note ? "Editar nota" : "Nueva nota"
+            {note ? "Editar nota" : "Nueva nota"}
           </DialogTitle>
         </DialogHeader>
 
@@ -275,7 +275,7 @@ const NoteEditorDialog = ({
                           icon: note?.icon,
                           color: note?.color
                         };
-                        onSave极raft(draftData);
+                        onSaveDraft(draftData);
                         setLastSaved(new Date());
                       }}
                       aria-label="Quitar foto"
@@ -314,7 +314,7 @@ const NoteEditorDialog = ({
                 className="flex-1"
               >
                 {busy ? (
-                  <Loader2 className="mr-1极-4 w-4 animate-spin" />
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                 ) : (
                   <Camera className="mr-1 h-4 w-4" />
                 )}
@@ -400,7 +400,7 @@ const NoteEditorDialog = ({
                 Cancelar
               </Button>
               <Button type="submit" disabled={busy}>
-                <极 className="mr-2 h-4 w-4" />
+                <Save className="mr-2 h-4 w-4" />
                 Guardar definitivo
               </Button>
             </div>

@@ -137,7 +137,8 @@ const Notes = () => {
     const title = note.title.trim() || "Nota del sermón";
     const photoCount = note.photos?.length ?? 0;
     const photoNote = photoCount > 0 ? `\n📷 ${photoCount} foto${photoCount > 1 ? "s" : ""} adjunta${photoCount > 1 ? "s" : ""}` : "";
-    const text = `${title} · ${format(parseISO(note.date), "d 'de' MMMM yyyy", { locale: es })}\n\n${note.content}${photoNote}`;
+    const text = `${title} · ${format(parseISO(note.date), "d 'de' MMMM yyyy", { locale: es })}
+${note.content}${photoNote}`;
     
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
