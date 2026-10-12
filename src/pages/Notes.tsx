@@ -14,12 +14,25 @@ import NoteFilters from "@/components/notes/NoteFilters";
 
 const Notes = () => {
   usePageTitle("Notas del sermón");
-  const { notes, addNote, updateNote, deleteNote, photosWithinBudget } = useSermonNotes();
+  const { 
+    notes, 
+    addNote, 
+    updateNote, 
+    deleteNote, 
+    photosWithinBudget, 
+    saveDraftNote, 
+    clearDraft, 
+    getDraft,
+    isSaving,
+    setIsSaving
+  } = useSermonNotes();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<SermonNote | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
   const [filters, setFilters] = useState({ icons: [] as string[], colors: [] as string[] });
+
+  const draft = getDraft();
 
   // Filter and search notes
   const filteredNotes = useMemo(() => {
@@ -98,15 +111,20 @@ const Notes = () => {
   };
 
   const handleSave = (draft: NoteDraft) => {
-    const photos = photosWithinBudget(draft.photos);
-    const limited = photos.length < draft.photos.length;
-    
-    if (editingNote) {
-      updateNote(editingNote.id, { ...draft, photos });
-      toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
-    } else {
-      addNote(draft.title, draft.date, draft.content, photos, draft.icon, draft.color);
-      toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
+    setIsSaving(true);
+    try {
+      const photos = photosWithinBudget(draft.photos);
+      const limited = photos.length < draft.photos.length;
+      
+      if (editingNote) {
+        updateNote(editingNote.id, { ...draft, photos });
+        toast(limited ? "Guardada (fotos limitadas)" : "Nota actualizada");
+      } else {
+        addNote(draft.title, draft.date, draft.content, photos, draft.icon, draft.color);
+        toast(limited ? "Guardada (fotos limitadas)" : "Nota guardada");
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -287,6 +305,7 @@ const Notes = () => {
               variant="outline"
               className="h-10 w-10 p-0 rounded-full"
               aria-label="Compartir todas las notas"
+              disabled={isSaving}
             >
               <Share2 className="h-5 w-5" />
             </Button>
@@ -320,6 +339,10 @@ const Notes = () => {
         note={editingNote}
         onSave={handleSave}
         onDelete={handleDelete}
+        onSaveDraft={saveDraftNote}
+        onClearDraft={clearDraft}
+        draft={draft}
+        isSaving={isSaving}
       />
     </div>
   );
